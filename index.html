@@ -700,7 +700,7 @@ inventory.set("importantthings", 0); //idk i havent figured the plot yet
 
 const shownDialogs = new Set();
 let _dialogQueue = [];
-let _typingTimer = null;
+let _typingTimeout = null;
 let _isTyping = false;
 let _fullTextToDisplay = "";
 let _currentSpeaker = null;
@@ -1056,7 +1056,7 @@ function closeDialog() {
   sprite.style.display = "none";
 
   _isTyping = false;
-  clearInterval(_typingTimer);
+  clearInterval(_typingTimeout);
 
   if (typeof draw === "function") draw();
 }
