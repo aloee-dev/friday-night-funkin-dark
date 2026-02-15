@@ -432,6 +432,7 @@
  </div>
 </div>
 
+
     <div id="dev-console">
     <div id="dev-hint">CONSOLE</div>
     <input type="text" id="dev-input" placeholder="Enter command...">
@@ -467,6 +468,7 @@ const assets = [
     "assets/checkbox_check.png",
     "assets/arrow_right.png",
     "assets/arrow_left.png",
+    "sfx/scrollMenu.mp3",
     "sprites/Pico-determined.png"
 ];
 
@@ -505,6 +507,19 @@ const assets = [
 
     setTimeout(showDisclaimer, 1000);
 }
+
+
+const hoverSfx = new Audio("sfx/hover.mp3");
+hoverSfx.preload = "auto";
+
+document.querySelectorAll('.menu-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+        hoverSfx.currentTime = 0;
+        hoverSfx.play();
+    });
+});
+
+
 
 
 const disclaimerText = `
