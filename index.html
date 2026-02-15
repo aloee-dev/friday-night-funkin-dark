@@ -94,7 +94,6 @@
     cursor: pointer;
     transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1),
                 color 0.15s ease,
-                -webkit-text-stroke-color 0.15s ease;
 }
 
 .menu-btn:hover {
@@ -102,7 +101,11 @@
     background: transparent;
     color: black;
     box-shadow: none;
-    -webkit-text-stroke-color: white;
+    text-shadow:
+        -2px -2px 0 white,
+        2px -2px 0 white,
+        -2px 2px 0 white,
+        2px 2px 0 white;
 }
 
     #loading-text {
