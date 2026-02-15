@@ -100,12 +100,24 @@
     transform: scale(1.12);
     background: transparent;
     color: black;
-    box-shadow: none;
-    text-shadow:
-        -2px -2px 0 white,
-        2px -2px 0 white,
-        -2px 2px 0 white,
-        2px 2px 0 white;
+    animation: sketchy 0.12s infinite alternate;
+}
+
+    @keyframes sketchy {
+    0% {
+        text-shadow:
+            -2px -2px 0 white,
+             2px -1px 0 white,
+            -1px  2px 0 white,
+             1px  1px 0 white;
+    }
+    100% {
+        text-shadow:
+            -1px -1px 0 white,
+             1px -2px 0 white,
+            -2px  1px 0 white,
+             2px  2px 0 white;
+    }
 }
 
     #loading-text {
