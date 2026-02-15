@@ -708,22 +708,16 @@ let _currentEffect = null;
 let _currentOnFinish = null;
 
     function startTypewriter(text, element, speaker = null, effect = null, onFinish = null) {
-  clearInterval(_typingInterval);
+  clearTimeout(_typingTimeout); 
   _isTyping = true;
   _fullTextToDisplay = text;
   _currentSpeaker = speaker;
   _currentEffect = effect;
   _currentOnFinish = onFinish;
 
-const speedMap = {
-  0: 60,
-  1: 30,
-  2: 10,
-  3: 0
-};
-
-const config = speakerConfigs[speaker] || speakerConfigs['default'];
-config.speed = speedMap[settings.speed];
+  const speedMap = { 0: 60, 1: 30, 2: 10, 3: 0 };
+  const config = speakerConfigs[speaker] || speakerConfigs['default'];
+  const baseSpeed = speedMap[settings.speed];
 
   const charSound = new Audio(config.sound);
   charSound.volume = 0.5;
@@ -731,34 +725,50 @@ config.speed = speedMap[settings.speed];
   let i = 0;
   element.innerHTML = "";
 
-  _typingInterval = setInterval(() => {
+  function type() {
     if (i < text.length) {
       const char = text.charAt(i);
+      const nextChar = text.charAt(i + 1);
+      
       const span = document.createElement('span');
       span.className = 'dialog-char';
       span.textContent = char;
+      
       if (effect === 'shaky') span.classList.add('effect-shake');
       if (effect === 'sine' || effect === 'wave') {
           span.classList.add('effect-wave');
           span.style.animationDelay = (i * 0.1) + 's';
       }
-      if (effect === 'glitch') span.classList.add('effect-glitch');
+      
       element.appendChild(span);
 
-      if (i % config.frequency === 0) {
+      if (i % config.frequency === 0 && char !== " ") {
         const playClone = charSound.cloneNode();
         playClone.playbackRate = config.pitch;
         playClone.play().catch(e => {});
       }
+
+      let currentDelay = baseSpeed;
+      if (char === "." || char === "!" || char === "?") {
+          if (nextChar !== "." && nextChar !== "!" && nextChar !== "?") {
+              currentDelay += 500; 
+          }
+      } else if (char === ",") {
+          currentDelay += 250;
+      }
+
       i++;
+      _typingTimeout = setTimeout(type, currentDelay);
     } else {
       finishTyping(element, onFinish);
     }
-  }, config.speed);
+  }
+
+  type();
 }
 
-function finishTyping(element, onFinish = null) {
-  clearInterval(_typingInterval);
+    function finishTyping(element, onFinish = null) {
+  clearTimeout(_typingTimeout);
   _isTyping = false;
   
   element.innerHTML = "";
