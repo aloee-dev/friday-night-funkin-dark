@@ -509,13 +509,15 @@ const assets = [
 }
 
 
-const hoverSfx = new Audio("sfx/scrollMenu.mp3");
-hoverSfx.preload = "auto";
+window.addEventListener("DOMContentLoaded", () => {
+    const hoverSfx = new Audio("sfx/scrollMenu.mp3");
+    hoverSfx.preload = "auto";
 
-document.querySelectorAll('.menu-btn').forEach(btn => {
-    btn.addEventListener('mouseenter', () => {
-        hoverSfx.currentTime = 0;
-        hoverSfx.play();
+    document.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+            hoverSfx.currentTime = 0;
+            hoverSfx.play();
+        });
     });
 });
 
