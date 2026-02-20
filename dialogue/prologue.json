@@ -54,7 +54,7 @@
     "speaker": "Pico",
     "mood": "neutral",
     "position": "left",
-    "text": "Oh, fuck, I can’t possibly kill him. I would’ve never taken this job if I knew I had to kill him…",
+    "text": "Shit. I would’ve never taken this job if I knew I had to kill him…",
     "style": "pico",
     "triggers": []
   },
@@ -80,6 +80,55 @@
     "position": "left",
     "text": "He sounds upset.",
     "style": "picothink",
+    "triggers": []
+  },
+  {
+    "speaker": "Pico",
+    "mood": "neutral",
+    "position": "left",
+    "text": "Hey... Boyfriend.",
+    "style": "pico",
+    "triggers": []
+  },
+  {
+    "speaker": "Boyfriend",
+    "mood": "neutral",
+    "position": "right",
+    "text": "Yeah, you can cut the shit, I know what you're here for.",
+    "style": "bf",
+    "triggers": []
+  },
+  {
+    "speaker": "Pico",
+    "mood": "neutral",
+    "position": "left",
+    "text": "Fuck.",
+    "style": "picothink",
+    "triggers": []
+  },
+  {
+    "speaker": "Pico",
+    "mood": "neutral",
+    "position": "left",
+    "text": "You do?",
+    "style": "pico",
+    "triggers": []
+  },
+  {
+    "speaker": "Boyfriend",
+    "mood": "neutral",
+    "position": "right",
+    "text": "You're here to kill me, aren't you?",
+    "style": "bf",
+    "triggers": []
+  },
+  {
+    "speaker": "Pico",
+    "mood": "neutral",
+    "position": "left",
+    "text": "Testing out the shaky",
+    "effect": "shaky",
+    "style": "pico",
     "triggers": []
   }
 ]
