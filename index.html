@@ -197,7 +197,7 @@
 #disclaimer-text {
     font-family: "Blue Winter";
     position: absolute;
-    font-size: 24px;
+    font-size: 32px;
     max-width: 800px;
     top: 30%;
     margin-bottom: 20px;
@@ -205,7 +205,7 @@
 
 #press-enter {
     position: absolute;
-    font-size: 18px;
+    font-size: 22px;
     opacity: 0;
     top: 60%
 }
@@ -214,6 +214,39 @@
         opacity: 0;
         pointer-events: none;
     }
+
+    #credits-screen {
+    position: absolute;
+    inset: 0;
+    background: black;
+    z-index: 100;
+    display: none;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#credits-wrapper {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    text-align: center;
+    transition: top linear;
+}
+
+.credit-header {
+    font-family: "Docallisme", sans-serif;
+    font-size: 70px;
+    color: #ff4d4d;
+    margin: 60px 0 15px 0;
+    text-shadow: 0 0 10px rgba(255,0,0,0.5);
+}
+
+.credit-name {
+    font-family: "Blue Winter", sans-serif;
+    font-size: 35px;
+    color: white;
+    margin-bottom: 8px;
+}
 
 #dialog-background {
   display: none;
@@ -448,6 +481,13 @@
  </div>
 </div>
 
+    <div id="credits-screen" style="display:none;">
+    <div id="credits-wrapper">
+        <div id="credits-content">
+        </div>
+    </div>
+</div>
+
 
     <div id="dev-console">
     <div id="dev-hint">CONSOLE</div>
@@ -603,6 +643,54 @@ async function showDisclaimer() {
 
 
     preloadAll();
+
+    document.getElementById("btn-credits").onclick = async () => {
+    const fade = document.getElementById("fade-overlay");
+    const creditsScreen = document.getElementById("credits-screen");
+    const creditsWrapper = document.getElementById("credits-wrapper");
+    const creditsContent = document.getElementById("credits-content");
+    const titleButtons = document.getElementById("title-buttons");
+
+    const creditData = [
+        { header: "THE ORIGINAL FNF GAME", names: ["The Funkin Crew"] },
+        { header: "DEVELOPER", names: ["aloev"] },
+        { header: "STORY WRITER", names: ["aloev"] },
+        { header: "BACKGROUND ARTISTS", names: ["aloev"] },
+        { header: "SPRITE ARTISTS", names: ["aloev"] }
+    ];
+        // add animators, composers, charters to the list
+        // although it will be a visual novel, i plan 2 songs at the finale
+
+    creditsContent.innerHTML = creditData.map(section => `
+        <div class="credit-header">${section.header}</div>
+        ${section.names.map(name => `<div class="credit-name">${name}</div>`).join('')}
+    `).join('') + '<div style="height: 600px;"></div>';
+
+    fade.style.opacity = 1;
+    await new Promise(r => setTimeout(r, 1000));
+
+    titleButtons.style.display = "none";
+    creditsScreen.style.display = "flex";
+    creditsWrapper.style.transition = "none";
+    creditsWrapper.style.top = "100%";
+
+    fade.style.opacity = 0;
+    await new Promise(r => setTimeout(r, 500));
+
+    const scrollDistance = creditsContent.offsetHeight + 1099;
+    const duration = (scrollDistance / 150) * 1000;
+
+    creditsWrapper.style.transition = `top ${duration}ms linear`;
+    creditsWrapper.style.top = `-${creditsContent.offsetHeight}px`;
+    await new Promise(r => setTimeout(r, duration));
+
+    fade.style.opacity = 1;
+    await new Promise(r => setTimeout(r, 1000));
+
+    creditsScreen.style.display = "none";
+    titleButtons.style.display = "flex";
+    fade.style.opacity = 0;
+};
 
  document.getElementById("btn-play").onclick = () => {
     const titleButtons = document.getElementById("title-buttons");
