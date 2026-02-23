@@ -401,6 +401,14 @@
   height: 50px;
   cursor: pointer;
 }
+    #song-loading-screen {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 1000;
+    display: none;
+}
 
     #dev-console {
   display: none;
@@ -488,6 +496,8 @@
     </div>
 </div>
 
+<div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
+</div>
 
     <div id="dev-console">
     <div id="dev-hint">CONSOLE</div>
@@ -1043,6 +1053,9 @@ case "requireItem":
     if (!inventory.get(trig.key)) {
     }
     break;
+            case "song":
+            startSongSequence(trig.value);
+            break;
         case "flag":
             gameFlags[trig.key] = trig.value;
             break;
