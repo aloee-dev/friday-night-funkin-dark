@@ -1276,6 +1276,50 @@ function executeDevCommand(input) {
 function draw() {
     //nothing
 }
+
+    const songDatabase = {
+    "song": {
+        background: "backgrounds/street.png",
+        assets: [
+            "assets/final/song_inst.mp3",
+            "assets/final/song_voices.mp3"
+        ]
+    }
+};
+    async function startSongSequence(songId) {
+    const data = songDatabase[songId];
+    if (!data) return console.error("Song not found:", songId);
+
+    const fade = document.getElementById("fade-overlay");
+    const songLoading = document.getElementById("song-loading-screen");
+    const bg = document.getElementById("dialog-background");
+    const box = document.getElementById("dialog-box");
+
+    fade.style.transition = "opacity 0.5s ease";
+    fade.style.opacity = 1;
+
+    await new Promise(r => setTimeout(r, 500));
+
+    box.style.display = "none";
+    songLoading.style.display = "block";
+
+    fade.style.opacity = 0;
+    await new Promise(r => setTimeout(r, 500));
+    for (const src of data.assets) {
+        console.log("Future loader will wait for:", src);
+    }
+    await new Promise(r => setTimeout(r, 2000));
+
+    fade.style.opacity = 1;
+    await new Promise(r => setTimeout(r, 500));
+
+    songLoading.style.display = "none";
+    
+    bg.style.backgroundImage = `url('${data.background}')`;
+    bg.style.display = "block";
+
+    fade.style.opacity = 0;
+}
     
 </script>
 
