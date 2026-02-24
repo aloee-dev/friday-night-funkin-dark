@@ -1,0 +1,24 @@
+{
+  "background": "background.png",
+  "bpm": 170,
+  "scrollSpeed": 0.7,
+  "player": "bf",
+  "opponent": "gf",
+  "instSrc": "Inst.mp3",
+  "voicePlayer": "Voices_bf.mp3",
+  "voiceOpponent": "Voices_opponent.mp3",
+  "opponentNotes": [
+    [500, 0, 0],
+    [1000, 1, 0],
+    [1500, 2, 300],
+    [2500, 3, 0],
+    [3000, 1, 500]
+  ],
+  "playerNotes": [
+    [750, 2, 0],
+    [1250, 3, 0],
+    [1750, 0, 400],
+    [2600, 1, 0],
+    [3200, 2, 0]
+  ]
+}
