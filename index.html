@@ -409,6 +409,74 @@
     z-index: 1000;
     display: none;
 }
+    
+#rhythm-ui {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.lane-container {
+    position: absolute;
+    top: 50px;
+    display: flex;
+    gap: 40px;
+}
+
+#opponent-lanes { left: 100px; }
+#player-lanes { right: 100px; }
+
+.receptor {
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.r-0 { background-image: url('assets/arrow_0.png'); }
+.r-1 { background-image: url('assets/arrow_1.png'); }
+.r-2 { background-image: url('assets/arrow_2.png'); }
+.r-3 { background-image: url('assets/arrow_3.png'); }
+
+.note {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.sustain-body {
+    position: absolute;
+    width: 100px;
+    background-image: url('assets/sustain_body.png');
+    background-repeat: repeat-y;
+    background-size: 100% auto;
+    pointer-events: none;
+}
+
+.sustain-end {
+    position: absolute;
+    width: 100px;
+    height: 40px; 
+    background-image: url('assets/sustain_end.png');
+    background-size: cover;
+    pointer-events: none;
+}
+
+#countdown-display {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+}
+
+#countdown-display img {
+    width: 300px;
+}
+
 
     #dev-console {
   display: none;
@@ -498,6 +566,13 @@
 
 <div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
 </div>
+
+    <div id="rhythm-ui" style="display:none;">
+    <div id="opponent-lanes" class="lane-container"></div>
+    <div id="player-lanes" class="lane-container"></div>
+    <div id="countdown-display"></div>
+</div>
+
 
     <div id="dev-console">
     <div id="dev-hint">CONSOLE</div>
@@ -1277,18 +1352,40 @@ function draw() {
     //nothing
 }
 
-    const songDatabase = {
-    "song": {
-        background: "backgrounds/street.png",
-        assets: [
-            "assets/final/song_inst.mp3",
-            "assets/final/song_voices.mp3"
-        ]
+let _activeSong = null;
+let _inst = null;
+let _voicePlayer = null;
+let _voiceOpponent = null;
+let _rhythmStarted = false;
+
+async function loadSongData(songId) {
+    const base = `assets/final/songs/${songId}/`;
+    const res = await fetch(base + "chart.json");
+    if (!res.ok) {
+        console.error("Failed to load chart.json for song:", songId);
+        return null;
     }
-};
-    async function startSongSequence(songId) {
-    const data = songDatabase[songId];
-    if (!data) return console.error("Song not found:", songId);
+    const json = await res.json();
+
+    json.background = base + json.background;
+    json.instSrc = base + json.instSrc;
+    json.voicePlayer = base + json.voicePlayer;
+    json.voiceOpponent = base + json.voiceOpponent;
+
+    return json;
+}
+
+async function startSongSequence(songId) {
+    const data = await loadSongData(songId);
+    if (!data) return;
+
+    _activeSong = {
+        background: data.background,
+        bpm: data.bpm,
+        scrollSpeed: data.scrollSpeed,
+        opponentNotes: [...data.opponentNotes],
+        playerNotes: [...data.playerNotes]
+    };
 
     const fade = document.getElementById("fade-overlay");
     const songLoading = document.getElementById("song-loading-screen");
@@ -1297,7 +1394,6 @@ function draw() {
 
     fade.style.transition = "opacity 0.5s ease";
     fade.style.opacity = 1;
-
     await new Promise(r => setTimeout(r, 500));
 
     box.style.display = "none";
@@ -1305,21 +1401,137 @@ function draw() {
 
     fade.style.opacity = 0;
     await new Promise(r => setTimeout(r, 500));
-    for (const src of data.assets) {
-        console.log("Future loader will wait for:", src);
-    }
+
+    _inst = new Audio(data.instSrc);
+    _voicePlayer = new Audio(data.voicePlayer);
+    _voiceOpponent = new Audio(data.voiceOpponent);
+
+    _inst.load();
+    _voicePlayer.load();
+    _voiceOpponent.load();
+
     await new Promise(r => setTimeout(r, 2000));
 
     fade.style.opacity = 1;
     await new Promise(r => setTimeout(r, 500));
 
     songLoading.style.display = "none";
-    
     bg.style.backgroundImage = `url('${data.background}')`;
     bg.style.display = "block";
 
+    setupReceptors();
+    document.getElementById("rhythm-ui").style.display = "block";
+
     fade.style.opacity = 0;
+
+    await new Promise(r => setTimeout(r, 500));
+    await runCountdown();
+
+    _inst.currentTime = 0;
+    _voicePlayer.currentTime = 0;
+    _voiceOpponent.currentTime = 0;
+
+    _inst.play();
+    _voicePlayer.play();
+    _voiceOpponent.play();
+
+    _rhythmStarted = true;
+    requestAnimationFrame(updateRhythmLoop);
 }
+
+function setupReceptors() {
+    const opp = document.getElementById("opponent-lanes");
+    const pla = document.getElementById("player-lanes");
+    opp.innerHTML = "";
+    pla.innerHTML = "";
+    for (let i = 0; i < 4; i++) {
+        opp.innerHTML += `<div class="receptor r-${i}"></div>`;
+        pla.innerHTML += `<div class="receptor r-${i}"></div>`;
+    }
+}
+
+async function runCountdown() {
+    const display = document.getElementById("countdown-display");
+    const steps = ["3", "2", "1", "go"];
+    for (let s of steps) {
+        new Audio(`sfx/${s}.mp3`).play();
+        display.innerHTML = `<img src="assets/countdown/${s}.png">`;
+        await new Promise(r => setTimeout(r, 500));
+        display.innerHTML = "";
+    }
+}
+
+function updateRhythmLoop() {
+    if (!_rhythmStarted || !_inst) return;
+
+    const currentTime = _inst.currentTime * 1000;
+    const speed = _activeSong.scrollSpeed;
+
+    [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
+        const isPlayer = index === 1;
+        for (let i = list.length - 1; i >= 0; i--) {
+            const n = list[i];
+            if (n[0] < currentTime + 2000) {
+                createNoteElement(n, isPlayer);
+                list.splice(i, 1);
+            }
+        }
+    });
+
+    const noteElements = document.querySelectorAll(".note");
+    noteElements.forEach(el => {
+        const targetTime = parseFloat(el.dataset.time);
+        const diff = targetTime - currentTime;
+        const y = 50 + (diff * speed);
+        el.style.top = y + "px";
+
+        if (diff < -200) el.remove();
+    });
+
+    const bodies = document.querySelectorAll(".sustain-body");
+    bodies.forEach(el => {
+        const headTime = parseFloat(el.dataset.time);
+        const length = parseFloat(el.dataset.length);
+        const diff = headTime - currentTime;
+
+        const headY = 50 + (diff * speed);
+        const height = length * speed;
+
+        el.style.top = headY + "px";
+        el.style.height = height + "px";
+
+        if (diff < -length - 200) el.remove();
+    });
+
+    const ends = document.querySelectorAll(".sustain-end");
+    ends.forEach(el => {
+        const headTime = parseFloat(el.dataset.time);
+        const length = parseFloat(el.dataset.length);
+        const diff = headTime - currentTime;
+
+        const headY = 50 + (diff * speed);
+        const height = length * speed;
+
+        const endHeight = 40;
+        el.style.top = (headY + height - endHeight) + "px";
+
+        if (diff < -length - 200) el.remove();
+    });
+
+    requestAnimationFrame(updateRhythmLoop);
+}
+
+function createNoteElement(n, isPlayer) {
+    const laneContainer = isPlayer
+        ? document.getElementById("player-lanes")
+        : document.getElementById("opponent-lanes");
+
+    const time = n[0];
+    const lane = n[1];
+    const length = n[2];
+
+    const note = document.createElement("div");
+    note.class
     
 </script>
 
