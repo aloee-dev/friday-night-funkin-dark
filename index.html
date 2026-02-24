@@ -1541,8 +1541,8 @@ async function runCountdown() {
     const display = document.getElementById("countdown-display");
     const steps = ["3", "2", "1", "go"];
     for (let s of steps) {
-        new Audio(`sfx/${s}.mp3`).play();
-        display.innerHTML = `<img src="assets/countdown/${s}.png">`;
+        new Audio(`asses/final/${s}.mp3`).play();
+        display.innerHTML = `<img src="assets/final/${s}.png">`;
         await new Promise(r => setTimeout(r, 500));
         display.innerHTML = "";
     }
