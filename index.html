@@ -1389,6 +1389,10 @@ let _playerCtx = _playerCanvas.getContext("2d");
 let _opponentCanvas = document.getElementById("opponentCanvas");
 let _opponentCtx = _opponentCanvas.getContext("2d");
 
+let _playerKey = null; 
+window.addEventListener("keydown", e => _playerKey = e.key.toUpperCase());
+window.addEventListener("keyup", () => _playerKey = null);
+
 const CHARACTER_DATA = {
     bf: {
         src: "assets/final/bf-sprite.png",
