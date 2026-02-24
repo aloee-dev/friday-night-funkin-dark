@@ -1531,7 +1531,30 @@ function createNoteElement(n, isPlayer) {
     const length = n[2];
 
     const note = document.createElement("div");
-    note.class
+    note.className = "note";
+    note.dataset.time = time;
+    note.dataset.length = length;
+    note.style.left = (lane * 140) + "px";
+    note.style.backgroundImage = `url('assets/arrow_${lane}.png')`;
+    laneContainer.appendChild(note);
+
+    if (length > 0) {
+
+        const body = document.createElement("div");
+        body.className = "sustain-body";
+        body.dataset.time = time;
+        body.dataset.length = length;
+        body.style.left = (lane * 140) + "px";
+        laneContainer.appendChild(body);
+
+        const end = document.createElement("div");
+        end.className = "sustain-end";
+        end.dataset.time = time;
+        end.dataset.length = length;
+        end.style.left = (lane * 140) + "px";
+        laneContainer.appendChild(end);
+    }
+}
     
 </script>
 
