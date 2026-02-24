@@ -1,0 +1,8 @@
+{
+    "speaker": "Boyfriend",
+    "style": "bf",
+    "text": "oi lets go load this thang.",
+    "triggers": [
+        { "type": "song", "value": "song1" }
+    ]
+}
