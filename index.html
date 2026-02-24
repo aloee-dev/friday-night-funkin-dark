@@ -477,7 +477,23 @@
     width: 300px;
 }
 
+#playerCanvas {
+    position: absolute;
+    bottom: 50px;
+    left: 200px;
+    width: 300px;
+    height: 300px;
+}
 
+#opponentCanvas {
+    position: absolute;
+    bottom: 50px;
+    right: 200px;
+    width: 480px;
+    height: 480px;
+}
+
+    
     #dev-console {
   display: none;
   position: fixed;
@@ -572,6 +588,10 @@
     <div id="player-lanes" class="lane-container"></div>
     <div id="countdown-display"></div>
 </div>
+    
+<canvas id="playerCanvas" width="500" height="500"></canvas>
+<canvas id="opponentCanvas" width="800" height="800"></canvas>
+
 
 
     <div id="dev-console">
@@ -1357,6 +1377,39 @@ let _inst = null;
 let _voicePlayer = null;
 let _voiceOpponent = null;
 let _rhythmStarted = false;
+let _playerChar = null;
+let _opponentChar = null;
+
+let _playerSprite = null;
+let _opponentSprite = null;
+
+
+const CHARACTER_DATA = {
+    bf: {
+        src: "assets/final/bf-sprite.png",
+        frameWidth: 500,
+        frameHeight: 500,
+        columns: 4,
+        playable: true
+    },
+
+    pico: {
+        src: "assets/final/pico-sprite.png",
+        frameWidth: 500,
+        frameHeight: 500,
+        columns: 4,
+        playable: true
+    },
+
+    gf: {
+        src: "assets/final/gf-sprite.png",
+        frameWidth: 800,
+        frameHeight: 800,
+        columns: 4,
+        playable: false
+    }
+};
+
 
 async function loadSongData(songId) {
     const base = `assets/final/songs/${songId}/`;
@@ -1391,6 +1444,18 @@ async function startSongSequence(songId) {
     const songLoading = document.getElementById("song-loading-screen");
     const bg = document.getElementById("dialog-background");
     const box = document.getElementById("dialog-box");
+    const playerId = data.player;
+    const opponentId = data.opponent;
+
+    _playerChar = CHARACTER_DATA[playerId];
+    _opponentChar = CHARACTER_DATA[opponentId];
+
+    _playerSprite = new Image();
+    _playerSprite.src = _playerChar.src;
+
+    _opponentSprite = new Image();
+    _opponentSprite.src = _opponentChar.src;
+
 
     fade.style.transition = "opacity 0.5s ease";
     fade.style.opacity = 1;
@@ -1466,6 +1531,7 @@ function updateRhythmLoop() {
 
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
+    animateCharacters(currentTime);
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
         const isPlayer = index === 1;
@@ -1555,6 +1621,39 @@ function createNoteElement(n, isPlayer) {
         laneContainer.appendChild(end);
     }
 }
+    function drawCharacterFrame(ctx, img, charData, frameIndex) {
+    const fw = charData.frameWidth;
+    const fh = charData.frameHeight;
+    const cols = charData.columns;
+
+    const sx = (frameIndex % cols) * fw;
+    const sy = Math.floor(frameIndex / cols) * fh;
+
+    ctx.drawImage(img, sx, sy, fw, fh, 0, 0, fw, fh);
+}
+
+    function animateCharacters(currentTime) {
+    const bpm = _activeSong.bpm;
+    const ticksPerBeat = 10;
+    const tickRate = (bpm / 60) * ticksPerBeat;
+    const holdTicks = 3.5;
+
+    const t = currentTime / 1000;
+    const tick = Math.floor(t * tickRate);
+    const idleFrame = Math.floor(tick / holdTicks) % IDLE_FRAMES.length;
+
+    _playerCtx.clearRect(0, 0, _playerChar.frameWidth, _playerChar.frameHeight);
+
+    if (_playerKey && PLAYER_KEY_FRAMES[_playerKey] !== undefined) {
+        drawCharacterFrame(_playerCtx, _playerSprite, _playerChar, PLAYER_KEY_FRAMES[_playerKey]);
+    } else {
+        drawCharacterFrame(_playerCtx, _playerSprite, _playerChar, IDLE_FRAMES[idleFrame]);
+    }
+
+    _opponentCtx.clearRect(0, 0, _opponentChar.frameWidth, _opponentChar.frameHeight);
+    drawCharacterFrame(_opponentCtx, _opponentSprite, _opponentChar, IDLE_FRAMES[idleFrame]);
+}
+
     
 </script>
 
