@@ -1383,6 +1383,11 @@ let _opponentChar = null;
 let _playerSprite = null;
 let _opponentSprite = null;
 
+let _playerCanvas = document.getElementById("playerCanvas");
+let _playerCtx = _playerCanvas.getContext("2d");
+
+let _opponentCanvas = document.getElementById("opponentCanvas");
+let _opponentCtx = _opponentCanvas.getContext("2d");
 
 const CHARACTER_DATA = {
     bf: {
@@ -1410,6 +1415,13 @@ const CHARACTER_DATA = {
     }
 };
 
+const IDLE_FRAMES = [0, 1, 2, 3, 4];
+const PLAYER_KEY_FRAMES = {
+    "ARROWLEFT": 5,
+    "ARROWUP": 6,
+    "ARROWRIGHT": 7,
+    "ARROWDOWN": 8
+};
 
 async function loadSongData(songId) {
     const base = `assets/final/songs/${songId}/`;
