@@ -1799,7 +1799,10 @@ function updateHPBar(currentTime) {
     const barLeft = BAR_CENTER - (BAR_WIDTH / 2);
     
     const splitX = barLeft + (BAR_WIDTH * hpPercent);
-    document.getElementById("hp-green-wrapper").style.width = (hpPercent * 100) + "%";
+    
+    const Percent = 1 - (hp / maxHP);
+    document.getElementById("hp-green-wrapper").style.width = (Percent * 100) + "%";
+
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
 
