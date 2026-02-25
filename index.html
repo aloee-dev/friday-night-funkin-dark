@@ -501,7 +501,34 @@
     height: 480px;
     pointer-events: none;
 }
+    #healthbar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: auto;
+    width: auto;
+    pointer-events: none;
+}
 
+#healthbar img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#hp-red {
+    z-index: 1;
+}
+
+#hp-green {
+    z-index: 2;
+    transform-origin: right center;
+}
+
+#hp-outline {
+    z-index: 3;
+}
     
     #dev-console {
   display: none;
@@ -601,6 +628,11 @@
 <canvas id="playerCanvas" width="500" height="500"></canvas>
 <canvas id="opponentCanvas" width="800" height="800"></canvas>
 
+<div id="healthbar">
+    <img id="hp-red" src="assets/final/health-red.png">
+    <img id="hp-green" src="assets/final/health-green.png">
+    <img id="hp-outline" src="assets/ui/healthbar.png">
+</div>
 
 
     <div id="dev-console">
@@ -1389,6 +1421,8 @@ function executeDevCommand(input) {
 function draw() {
     //nothing
 }
+let hp = 100;
+const maxHP = 200;
 
 let _activeSong = null;
 let _inst = null;
@@ -1537,6 +1571,7 @@ async function startSongSequence(songId) {
     _voiceOpponent.play();
 
     _rhythmStarted = true;
+    hp = 100;
     requestAnimationFrame(updateRhythmLoop);
 }
     
@@ -1704,6 +1739,12 @@ function createNoteElement(n, isPlayer) {
     drawCharacterFrame(_opponentCtx, _opponentSprite, _opponentChar, IDLE_FRAMES[idleFrame]);
 }
 
+    function updateHPBar() {
+    const green = document.getElementById("hp-green");
+    const ratio = hp / maxHP;
+
+    green.style.transform = `scaleX(${ratio})`;
+}
     
 </script>
 
