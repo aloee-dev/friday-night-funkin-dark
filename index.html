@@ -543,6 +543,17 @@
     pointer-events: none;
 }
 
+.health-icon {
+    position: absolute;
+    bottom: 20px;
+    width: 1595px;
+    height: 281px;
+    z-index: 70;
+    pointer-events: none;
+    transform: translate(-50%, 0);
+}
+
+
     #dev-console {
   display: none;
   position: fixed;
@@ -649,6 +660,8 @@
     <img id="hp-outline" src="assets/final/healthbar.png">
 </div>
 
+    <img id="icon-opponent" class="health-icon">
+    <img id="icon-player" class="health-icon">
 
 
     <div id="dev-console">
@@ -1467,6 +1480,8 @@ const CHARACTER_DATA = {
         src: "assets/final/bf-sprite.png",
         frameWidth: 500,
         frameHeight: 500,
+        iconNormal: "assets/final/iconbf-neutral.png", 
+        iconLosing: "assets/final/iconbf-dying.png",
         columns: 4,
         playable: true
     },
@@ -1475,6 +1490,8 @@ const CHARACTER_DATA = {
         src: "assets/final/pico-sprite.png",
         frameWidth: 500,
         frameHeight: 500,
+        iconNormal: "assets/final/iconpico-neutral.png", 
+        iconLosing: "assets/final/iconpico-dying.png",
         columns: 4,
         playable: true
     },
@@ -1483,6 +1500,8 @@ const CHARACTER_DATA = {
         src: "assets/final/gf-sprite.png",
         frameWidth: 800,
         frameHeight: 800,
+        iconNormal: "assets/final/icongf-neutral.png", 
+        iconLosing: "assets/final/icongf-dying.png",
         columns: 4,
         playable: false
     }
@@ -1533,6 +1552,12 @@ async function startSongSequence(songId) {
     const box = document.getElementById("dialog-box");
     const playerId = data.player;
     const opponentId = data.opponent;
+    const iconPlayer = document.getElementById("icon-player");
+    const iconOpponent = document.getElementById("icon-opponent");
+
+    iconPlayer.src = _playerChar.iconNormal;
+    iconOpponent.src = _opponentChar.iconNormal;
+
 
     _playerChar = CHARACTER_DATA[playerId];
     _opponentChar = CHARACTER_DATA[opponentId];
@@ -1763,6 +1788,35 @@ function createNoteElement(n, isPlayer) {
     const percentage = ratio * 100;
 
     greenWrapper.style.clipPath = `inset(0 0 0 ${100 - percentage}%)`;
+
+    updateHealthIcons(ratio);
+}
+
+function updateHealthIcons(ratio) {
+    const bar = document.getElementById("healthbar");
+    const rect = bar.getBoundingClientRect();
+
+    const barX = rect.left;
+    const barWidth = rect.width;
+
+    const iconX = barX + (barWidth * ratio);
+
+    const iconPlayer = document.getElementById("icon-player");
+    const iconOpponent = document.getElementById("icon-opponent");
+
+    iconPlayer.style.left = (iconX + 40) + "px";
+    iconOpponent.style.left = (iconX - 40) + "px";
+
+    if (ratio < 0.25) {
+    iconPlayer.src = _playerChar.iconLosing;
+} else {
+    iconPlayer.src = _playerChar.iconNormal;
+    }
+if (ratio > 0.75) {
+    iconOpponent.src = _opponentChar.iconLosing;
+} else {
+    iconOpponent.src = _opponentChar.iconNormal;
+    }
 }
 
 
