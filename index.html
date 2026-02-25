@@ -1799,12 +1799,12 @@ function updateHPBar(currentTime) {
     const barLeft = BAR_CENTER - (BAR_WIDTH / 2);
     
     const splitX = barLeft + (BAR_WIDTH * hpPercent);
-
+    document.getElementById("hp-green-wrapper").style.width = (hpPercent * 100) + "%";
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
 
-    pIcon.style.left = (splitX - 75) + "px"; 
-    oIcon.style.left = (splitX - 75) + "px";
+    pIcon.style.left = (splitX - 75 + 200) + "px";
+    oIcon.style.left = (splitX - 75 - 200) + "px";
 
     if (hp < 40) {
         pIcon.src = `assets/final/icon${_currentPlayerChar}-dying.png`;
@@ -1825,7 +1825,7 @@ function updateHPBar(currentTime) {
     if (bounce < 0.6) bounce = 0.6;
 
     pIcon.style.transform = `scale(${bounce})`;
-    oIcon.style.transform = `scale(${-bounce}, ${bounce})`;
+    oIcon.style.transform = `scaleX(-1) scale(${bounce})`;
 }
 
     
