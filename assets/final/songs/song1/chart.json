@@ -1,5 +1,5 @@
 {
-  "background": "background.png",
+  "background": "concept/background-concept.png",
   "bpm": 170,
   "scrollSpeed": 0.7,
   "player": "bf",
