@@ -1807,8 +1807,8 @@ function updateHPBar(currentTime) {
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
 
-    pIcon.style.left = (splitX - 75 + 200) + "px";
-    oIcon.style.left = (splitX - 75 - 200) + "px";
+    pIcon.style.left = (splitX - 75 + 100) + "px";
+    oIcon.style.left = (splitX - 75 - 100) + "px";
 
     if (hp < 40) {
         pIcon.src = `assets/final/icon${_currentPlayerChar}-dying.png`;
