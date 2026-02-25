@@ -558,7 +558,6 @@
     position: absolute;
     width: 1595px;
     height: 281px;
-    transform-origin: center center;
 }
 
 #icon-opponent { transform: scaleX(-1); }
@@ -1775,12 +1774,9 @@ function createNoteElement(n, isPlayer) {
     const tickRate = (bpm / 60) * ticksPerBeat;
     const holdTicks = 3.5;
 
-    const bpm = _activeSong.bpm;
-    const beatLength = 60000 / bpm;
-    const totalFrames = IDLE_FRAMES.length;
-
-    const beatProgress = (currentTime % beatLength) / beatLength;
-    const idleFrame = Math.floor(beatProgress * totalFrames);
+    const t = currentTime / 1000;
+    const tick = Math.floor(t * tickRate);
+    const idleFrame = Math.floor(tick / holdTicks) % IDLE_FRAMES.length;
 
     _playerCtx.clearRect(0, 0, _playerChar.frameWidth, _playerChar.frameHeight);
 
