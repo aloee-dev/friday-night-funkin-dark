@@ -1561,9 +1561,9 @@ async function startSongSequence(songId) {
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
     
+    document.getElementById("health-icon").style.display = "block";
     document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
     document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
-    document.getElementById("health-icon").style.display = "block";
 
     _playerChar = CHARACTER_DATA[playerId];
     _opponentChar = CHARACTER_DATA[opponentId];
