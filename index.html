@@ -634,6 +634,13 @@ const assets = [
     "assets/arrow_left.png",
     "assets/final/bf-sprite.png",
     "assets/final/loading-song.png",
+    "assets/final/2.png",
+    "assets/final/1.png",
+    "assets/final/go.png",
+    "assets/final/3.mp3",
+    "assets/final/2.mp3",
+    "assets/final/1.mp3",
+    "assets/final/go.mp3",
     "sfx/scrollMenu.mp3",
     "sfx/blip1.wav",
     "sfx/blip2.wav"
@@ -1625,7 +1632,7 @@ function createNoteElement(n, isPlayer) {
     note.dataset.time = time;
     note.dataset.length = length;
     note.style.left = (lane * 140) + "px";
-    note.style.backgroundImage = `url('assets/arrow_${lane}.png')`;
+    note.style.backgroundImage = `url('assets/final/notes/arrow_${lane}.png')`;
     laneContainer.appendChild(note);
 
     if (length > 0) {
