@@ -1441,8 +1441,6 @@ function draw() {
 let hp = 100;
 const maxHP = 200;
 
-let _animStartTime = 0;
-let _animOffset = 0;
 let _activeSong = null;
 let _inst = null;
 let _voicePlayer = null;
@@ -1579,7 +1577,7 @@ async function startSongSequence(songId) {
 
     setupReceptors();
     document.getElementById("rhythm-ui").style.display = "block";
-    _animStartTime = performance.now();
+
     fade.style.opacity = 0;
 
     await new Promise(r => setTimeout(r, 500));
@@ -1592,7 +1590,6 @@ async function startSongSequence(songId) {
     _inst.play();
     _voicePlayer.play();
     _voiceOpponent.play();
-    _animOffset = (performance.now() - _animStartTime) - (_inst.currentTime * 1000);
 
     _rhythmStarted = true;
     
@@ -1635,18 +1632,9 @@ async function runCountdown() {
 function updateRhythmLoop() {
     if (!_rhythmStarted || !_inst) return;
 
-    
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
-    let animTime;
-
-if (_rhythmStarted) {
-    animTime = (_inst.currentTime * 1000) + _animOffset;
-} else {
-    animTime = performance.now() - _animStartTime;
-}
-
-animateCharacters(animTime);
+    animateCharacters(currentTime);
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
         const isPlayer = index === 1;
