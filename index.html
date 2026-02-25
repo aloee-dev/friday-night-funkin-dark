@@ -1588,23 +1588,16 @@ function setupReceptors() {
     opp.innerHTML = "";
     pla.innerHTML = "";
 
-    let delay = 0;
     for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-            const div = document.createElement("div");
-            div.className = `receptor r-${i}`;
-            opp.appendChild(div);
-        }, delay);
-        delay += 200;
-    }
+        const o = document.createElement("div");
+        o.className = `receptor r-${i}`;
+        o.style.animationDelay = `${i * 0.2}s`;
+        opp.appendChild(o);
 
-    for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-            const div = document.createElement("div");
-            div.className = `receptor r-${i}`;
-            pla.appendChild(div);
-        }, delay);
-        delay += 200;
+        const p = document.createElement("div");
+        p.className = `receptor r-${i}`;
+        p.style.animationDelay = `${(i + 4) * 0.2}s`;
+        pla.appendChild(p);
     }
 }
     
