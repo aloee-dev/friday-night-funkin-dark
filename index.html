@@ -1562,6 +1562,8 @@ async function startSongSequence(songId) {
     _currentOpponentChar = data.opponent;
     
     document.getElementById("icon-container").style.display = "block";
+    document.getElementById("icon-player").style.display = "block";
+    document.getElementById("icon-opponent").style.display = "block";
     document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
     document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
 
@@ -1796,7 +1798,7 @@ function updateHPBar(currentTime) {
     const BAR_CENTER = 1595 / 2;
     const barLeft = BAR_CENTER - (BAR_WIDTH / 2);
     
-    const splitX = barLeft + (BAR_WIDTH * (1 - hpPercent));
+    const splitX = barLeft + (BAR_WIDTH * hpPercent);
 
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
