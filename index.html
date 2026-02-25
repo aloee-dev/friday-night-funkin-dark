@@ -1829,7 +1829,7 @@ function updateHPBar(currentTime) {
     if (bounce < 0.6) bounce = 0.6;
 
     pIcon.style.transform = `scale(${bounce})`;
-    oIcon.style.transform = `scale(${-bounce}, ${bounce})`;
+    oIcon.style.transform = `scaleX(-1) scale(${bounce})`;
 }
 
     
