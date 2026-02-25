@@ -1560,12 +1560,6 @@ async function startSongSequence(songId) {
 
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
-    
-    document.getElementById("icon-container").style.display = "block";
-    document.getElementById("icon-player").style.display = "block";
-    document.getElementById("icon-opponent").style.display = "block";
-    document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
-    document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
 
     _playerChar = CHARACTER_DATA[playerId];
     _opponentChar = CHARACTER_DATA[opponentId];
@@ -1603,6 +1597,12 @@ async function startSongSequence(songId) {
     songLoading.style.display = "none";
     bg.style.backgroundImage = `url('${data.background}')`;
     bg.style.display = "block";
+
+    document.getElementById("icon-container").style.display = "block";
+    document.getElementById("icon-player").style.display = "block";
+    document.getElementById("icon-opponent").style.display = "block";
+    document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
+    document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
 
     document.getElementById("healthbar").style.display = "block";
     hp = 100;
