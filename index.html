@@ -1668,6 +1668,7 @@ function updateRhythmLoop() {
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
     animateCharacters(currentTime);
+    updateHPBar(currentTime);
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
         const isPlayer = index === 1;
