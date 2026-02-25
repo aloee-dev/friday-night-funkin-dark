@@ -1585,14 +1585,18 @@ function setupReceptors() {
     let delay = 0;
     for (let i = 0; i < 4; i++) {
         setTimeout(() => {
-            opp.innerHTML += `<div class="receptor r-${i}"></div>`;
+            const div = document.createElement("div");
+            div.className = `receptor r-${i}`;
+            opp.appendChild(div);
         }, delay);
         delay += 200;
     }
 
     for (let i = 0; i < 4; i++) {
         setTimeout(() => {
-            pla.innerHTML += `<div class="receptor r-${i}"></div>`;
+            const div = document.createElement("div");
+            div.className = `receptor r-${i}`;
+            pla.appendChild(div);
         }, delay);
         delay += 200;
     }
