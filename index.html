@@ -543,6 +543,24 @@
     pointer-events: none;
 }
 
+    #icon-container {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 1595px;
+    height: 281px;
+    pointer-events: none;
+    z-index: 70;
+}
+
+.health-icon {
+    position: absolute;
+    width: 1595px;
+    height: 281px;
+}
+
+#icon-opponent { transform: scaleX(-1); }
+
     #dev-console {
   display: none;
   position: fixed;
@@ -649,6 +667,10 @@
     <img id="hp-outline" src="assets/final/healthbar.png">
 </div>
 
+    <div id="icon-container">
+    <img id="icon-opponent" class="health-icon" src="assets/final/icongf-neutral.png">
+    <img id="icon-player" class="health-icon" src="assets/final/iconbf-neutral.png">
+</div>
 
 
     <div id="dev-console">
@@ -1448,7 +1470,8 @@ let _voiceOpponent = null;
 let _rhythmStarted = false;
 let _playerChar = null;
 let _opponentChar = null;
-
+let _currentPlayerChar = "bf";
+let _currentOpponentChar = "gf";
 let _playerSprite = null;
 let _opponentSprite = null;
 
@@ -1533,6 +1556,12 @@ async function startSongSequence(songId) {
     const box = document.getElementById("dialog-box");
     const playerId = data.player;
     const opponentId = data.opponent;
+
+    _currentPlayerChar = data.player;
+    _currentOpponentChar = data.opponent;
+    
+    document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
+    document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
 
     _playerChar = CHARACTER_DATA[playerId];
     _opponentChar = CHARACTER_DATA[opponentId];
@@ -1757,14 +1786,43 @@ function createNoteElement(n, isPlayer) {
     drawCharacterFrame(_opponentCtx, _opponentSprite, _opponentChar, IDLE_FRAMES[idleFrame]);
 }
 
-    function updateHPBar() {
-    const greenWrapper = document.getElementById("hp-green-wrapper");
-    const ratio = Math.max(0, hp / maxHP);
-    const percentage = ratio * 100;
+    
+function updateHPBar(currentTime) {
+    const hpPercent = hp / maxHP;
+    
+    const BAR_WIDTH = 930; 
+    const BAR_CENTER = 1595 / 2;
+    const barLeft = BAR_CENTER - (BAR_WIDTH / 2);
+    
+    const splitX = barLeft + (BAR_WIDTH * (1 - hpPercent));
 
-    greenWrapper.style.clipPath = `inset(0 0 0 ${100 - percentage}%)`;
+    const pIcon = document.getElementById("icon-player");
+    const oIcon = document.getElementById("icon-opponent");
+
+    pIcon.style.left = (splitX - 75) + "px"; 
+    oIcon.style.left = (splitX - 75) + "px";
+
+    if (hp < 40) {
+        pIcon.src = `assets/icons/icon${_currentPlayerChar}-dying.png`;
+    } else {
+        pIcon.src = `assets/icons/icon${_currentPlayerChar}-neutral.png`;
+    }
+    if (hp > 160) {
+        oIcon.src = `assets/icons/icon${_currentOpponentChar}-dying.png`;
+    } else {
+        oIcon.src = `assets/icons/icon${_currentOpponentChar}-neutral.png`;
+    }
+
+    const bpm = _activeSong.bpm;
+    const msPerBeat = (60 / bpm) * 1000;
+    const beatProgress = (currentTime % msPerBeat) / msPerBeat;
+
+    let bounce = 1.0 - (beatProgress * 0.4); 
+    if (bounce < 0.6) bounce = 0.6;
+
+    pIcon.style.transform = `scale(${bounce})`;
+    oIcon.style.transform = `scale(${-bounce}, ${bounce})`;
 }
-
 
     
 </script>
