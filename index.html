@@ -1358,6 +1358,7 @@ function closeDialog() {
 
  document.addEventListener("keydown", e => {
   if (e.key === "Enter") {
+      if (_rhythmStarted) return;
 
     if (_isTyping) {
       finishTyping(document.getElementById("dialog-text"), _currentOnFinish);
