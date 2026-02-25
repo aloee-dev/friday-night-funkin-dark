@@ -1794,15 +1794,15 @@ function createNoteElement(n, isPlayer) {
     
 function updateHPBar(currentTime) {
     const hpPercent = hp / maxHP;
-    
-    const BAR_WIDTH = 930; 
-    const BAR_CENTER = 1595 / 2;
-    const barLeft = BAR_CENTER - (BAR_WIDTH / 2);
-    
-    const splitX = barLeft + (BAR_WIDTH * hpPercent);
-    
-    const Percent = 1 - (hp / maxHP);
-    document.getElementById("hp-green-wrapper").style.width = (Percent * 100) + "%";
+    const BAR_WIDTH = 930;
+    const HUD_WIDTH = 1595;
+    const barLeft = (HUD_WIDTH - BAR_WIDTH) / 2;
+
+    const splitInsideBar = BAR_WIDTH * hpPercent;
+
+    const splitX = barLeft + splitInsideBar;
+
+    document.getElementById("hp-green-wrapper").style.width = (hpPercent * 100) + "%";
 
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
@@ -1815,17 +1815,17 @@ function updateHPBar(currentTime) {
     } else {
         pIcon.src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
     }
+
     if (hp > 160) {
         oIcon.src = `assets/final/icon${_currentOpponentChar}-dying.png`;
     } else {
         oIcon.src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
     }
-
     const bpm = _activeSong.bpm;
     const msPerBeat = (60 / bpm) * 1000;
     const beatProgress = (currentTime % msPerBeat) / msPerBeat;
 
-    let bounce = 1.0 - (beatProgress * 0.4); 
+    let bounce = 1.0 - (beatProgress * 0.4);
     if (bounce < 0.6) bounce = 0.6;
 
     pIcon.style.transform = `scale(${bounce})`;
