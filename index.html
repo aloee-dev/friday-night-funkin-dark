@@ -433,11 +433,11 @@
     background-size: contain;
     background-repeat: no-repeat;
     opacity: 0;
-    animation: receptorFade 0.2s forwards;
+    animation: receptorFade 0.4s forwards;
 }
 
 @keyframes receptorFade {
-    from { opacity: 0; transform: scale(0.8); }
+    from { opacity: 0; transform: scale(1); }
     to { opacity: 1; transform: scale(1); }
 }
     
@@ -1552,14 +1552,14 @@ function setupReceptors() {
         setTimeout(() => {
             opp.innerHTML += `<div class="receptor r-${i}"></div>`;
         }, delay);
-        delay += 100;
+        delay += 200;
     }
 
     for (let i = 0; i < 4; i++) {
         setTimeout(() => {
             pla.innerHTML += `<div class="receptor r-${i}"></div>`;
         }, delay);
-        delay += 100;
+        delay += 200;
     }
 }
     
