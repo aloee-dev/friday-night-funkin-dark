@@ -502,34 +502,35 @@
     pointer-events: none;
 }
     #healthbar {
-    display: none;
     position: absolute;
     width: 1595px;
     height: 281px;
     bottom: 20px;
-    z-index: 200;
-    pointer-events: none;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-#healthbar img {
+#hp-green-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: right center;
+}
+
+#hp-green, #hp-red, #hp-outline {
     position: absolute;
     top: 0;
     left: 0;
 }
 
-#hp-red {
-    z-index: 50;
-}
-
-#hp-green {
-    z-index: 50;
-    transform-origin: right center;
-}
-
 #hp-outline {
     z-index: 50;
 }
-    
+
     #dev-console {
   display: none;
   position: fixed;
@@ -630,9 +631,12 @@
 
 <div id="healthbar" style="display:none;">
     <img id="hp-red" src="assets/final/health-red.png">
-    <img id="hp-green" src="assets/final/health-green.png">
+    <div id="hp-green-wrapper">
+        <img id="hp-green" src="assets/final/health-green.png">
+    </div>
     <img id="hp-outline" src="assets/final/healthbar.png">
 </div>
+
 
 
     <div id="dev-console">
@@ -1741,11 +1745,12 @@ function createNoteElement(n, isPlayer) {
 }
 
     function updateHPBar() {
-    const green = document.getElementById("hp-green");
+    const greenWrapper = document.getElementById("hp-green-wrapper");
     const ratio = hp / maxHP;
 
-    green.style.transform = `scaleX(${ratio})`;
+    greenWrapper.style.transform = `scaleX(${ratio})`;
 }
+
     
 </script>
 
