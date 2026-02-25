@@ -1803,14 +1803,14 @@ function updateHPBar(currentTime) {
     oIcon.style.left = (splitX - 75) + "px";
 
     if (hp < 40) {
-        pIcon.src = `assets/icons/icon${_currentPlayerChar}-dying.png`;
+        pIcon.src = `assets/final/icon${_currentPlayerChar}-dying.png`;
     } else {
-        pIcon.src = `assets/icons/icon${_currentPlayerChar}-neutral.png`;
+        pIcon.src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
     }
     if (hp > 160) {
-        oIcon.src = `assets/icons/icon${_currentOpponentChar}-dying.png`;
+        oIcon.src = `assets/final/icon${_currentOpponentChar}-dying.png`;
     } else {
-        oIcon.src = `assets/icons/icon${_currentOpponentChar}-neutral.png`;
+        oIcon.src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
     }
 
     const bpm = _activeSong.bpm;
