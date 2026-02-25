@@ -507,7 +507,6 @@
     width: 1595px;
     height: 281px;
     bottom: 20px;
-    left: 50%;
     transform: translateX(-50%);
     z-index: 200;
     pointer-events: none;
@@ -1556,6 +1555,10 @@ async function startSongSequence(songId) {
     bg.style.backgroundImage = `url('${data.background}')`;
     bg.style.display = "block";
 
+    document.getElementById("healthbar").style.display = "block";
+    hp = 100;
+    updateHPBar();
+
     setupReceptors();
     document.getElementById("rhythm-ui").style.display = "block";
 
@@ -1573,10 +1576,6 @@ async function startSongSequence(songId) {
     _voiceOpponent.play();
 
     _rhythmStarted = true;
-    
-    document.getElementById("healthbar").style.display = "block";
-    hp = 100;
-    updateHPBar();
     
     requestAnimationFrame(updateRhythmLoop);
 }
