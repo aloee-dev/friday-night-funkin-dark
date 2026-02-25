@@ -1556,6 +1556,10 @@ async function startSongSequence(songId) {
     bg.style.backgroundImage = `url('${data.background}')`;
     bg.style.display = "block";
 
+    document.getElementById("healthbar").style.display = "block";
+    hp = 100;
+    updateHPBar();
+
     setupReceptors();
     document.getElementById("rhythm-ui").style.display = "block";
 
@@ -1573,10 +1577,6 @@ async function startSongSequence(songId) {
     _voiceOpponent.play();
 
     _rhythmStarted = true;
-    
-    document.getElementById("healthbar").style.display = "block";
-    hp = 100;
-    updateHPBar();
     
     requestAnimationFrame(updateRhythmLoop);
 }
