@@ -1635,6 +1635,8 @@ async function runCountdown() {
 function updateRhythmLoop() {
     if (!_rhythmStarted || !_inst) return;
 
+    
+    const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
     let animTime;
 
