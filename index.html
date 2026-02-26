@@ -1683,16 +1683,17 @@ async function runCountdown() {
 }
 
 function updateRhythmLoop() {
-    alert("function called");
+
     if (!_rhythmStarted || !_inst) return;
-    alert("suceeded beginning");
     
     const currentTime = _inst.currentTime * 1000;
+    alert("succeed time");
+    
     const speed = _activeSong.scrollSpeed;
+    alert("succeed speed");
     animateCharacters(currentTime);
+    alert("succeed animate characters");
     updateHPBar(currentTime);
-
-    alert("succeeded this");
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
         const isPlayer = index === 1;
