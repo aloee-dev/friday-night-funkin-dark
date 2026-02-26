@@ -1683,12 +1683,16 @@ async function runCountdown() {
 }
 
 function updateRhythmLoop() {
+    alert("function called");
     if (!_rhythmStarted || !_inst) return;
-
+    alert("suceeded beginning");
+    
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
     animateCharacters(currentTime);
     updateHPBar(currentTime);
+
+    alert("succeeded this");
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
         const isPlayer = index === 1;
@@ -1710,6 +1714,8 @@ function updateRhythmLoop() {
 
         if (diff < -200) el.remove();
     });
+
+    alert("i think it will stop here honestly");
 
     const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
@@ -1741,8 +1747,9 @@ function updateRhythmLoop() {
         if (diff < -length - 200) el.remove();
     });
 
+    alert("succeeded notes");
+
     requestAnimationFrame(updateRhythmLoop);
-    alert("reached the end of update loop");
 }
 
 function createNoteElement(n, isPlayer) {
