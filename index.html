@@ -1820,7 +1820,7 @@ function updateHPBar(currentTime) {
     }
 
     if (_activeSong) {
-        const bpm = _activeSong.bpm;
+        const bpm = (_activeSong && _activeSong.bpm) ? _activeSong.bpm : 170;
         const msPerBeat = (60 / bpm) * 1000;
         const beatProgress = (currentTime % msPerBeat) / msPerBeat;
 
