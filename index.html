@@ -1559,21 +1559,18 @@ async function startSongSequence(songId) {
     const songLoading = document.getElementById("song-loading-screen");
     const bg = document.getElementById("dialog-background");
     const box = document.getElementById("dialog-box");
-    const playerId = data.player;
-    const opponentId = data.opponent;
 
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
 
-    _playerChar = CHARACTER_DATA[playerId];
-    _opponentChar = CHARACTER_DATA[opponentId];
+    _playerChar = CHARACTER_DATA[data.player];
+    _opponentChar = CHARACTER_DATA[data.opponent];
 
     _playerSprite = new Image();
     _playerSprite.src = _playerChar.src;
 
     _opponentSprite = new Image();
     _opponentSprite.src = _opponentChar.src;
-
 
     fade.style.transition = "opacity 0.5s ease";
     fade.style.opacity = 1;
@@ -1587,13 +1584,28 @@ async function startSongSequence(songId) {
 
     _inst = new Audio(data.instSrc);
     _voicePlayer = new Audio(data.voicePlayer);
-    _voiceOpponent = new Audio(data.voiceOpponent);
+    _voiceOpponent = new Audio(data.voiceOpponent)
+    const waitForAudio = audio =>
+        new Promise((resolve, reject) => {
+            const onReady = () => resolve();
+            const onError = () => reject(new Error("Audio failed to load: " + audio.src));
 
-    _inst.load();
-    _voicePlayer.load();
-    _voiceOpponent.load();
+            audio.addEventListener("canplaythrough", onReady, { once: true });
+            audio.addEventListener("error", onError, { once: true });
 
-    await new Promise(r => setTimeout(r, 2000));
+            audio.load();
+        });
+
+    try {
+        await Promise.all([
+            waitForAudio(_inst),
+            waitForAudio(_voicePlayer),
+            waitForAudio(_voiceOpponent)
+        ]);
+    } catch (err) {
+        console.error(err);
+        return;
+    }
 
     fade.style.opacity = 1;
     await new Promise(r => setTimeout(r, 500));
@@ -1616,22 +1628,25 @@ async function startSongSequence(songId) {
     document.getElementById("rhythm-ui").style.display = "block";
 
     fade.style.opacity = 0;
-
     await new Promise(r => setTimeout(r, 500));
+
     await runCountdown();
 
     _inst.currentTime = 0;
     _voicePlayer.currentTime = 0;
     _voiceOpponent.currentTime = 0;
 
-    _inst.play();
-    _voicePlayer.play();
-    _voiceOpponent.play();
+    const tryPlay = audio => audio.play().catch(() => {
+    });
+
+    tryPlay(_inst);
+    tryPlay(_voicePlayer);
+    tryPlay(_voiceOpponent);
 
     _rhythmStarted = true;
-    
     requestAnimationFrame(updateRhythmLoop);
 }
+
     
 function setupReceptors() {
     const opp = document.getElementById("opponent-lanes");
