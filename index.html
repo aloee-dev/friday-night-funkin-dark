@@ -1845,7 +1845,7 @@ function updateHPBar(currentTime) {
         const beatProgress = (currentTime % msPerBeat) / msPerBeat;
 
         let bounce = 1.0 - (beatProgress * 0.4); 
-        if (bounce < 0.6) bounce = 0.6;
+        if (bounce < 0.8) bounce = 0.8;
 
         pIcon.style.transform = `scale(${bounce})`;
         oIcon.style.transform = `scaleX(-${bounce}) scaleY(${bounce})`;
