@@ -1794,7 +1794,7 @@ function createNoteElement(n, isPlayer) {
     const bpm = _activeSong.bpm;
     const ticksPerBeat = 10;
     const tickRate = (bpm / 60) * ticksPerBeat;
-    const holdTicks = 3.5;
+    const holdTicks = 4;
 
     const t = currentTime / 1000;
     const tick = Math.floor(t * tickRate);
