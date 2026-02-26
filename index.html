@@ -1687,12 +1687,8 @@ function updateRhythmLoop() {
     if (!_rhythmStarted || !_inst) return;
     
     const currentTime = _inst.currentTime * 1000;
-    alert("succeed time");
-    
     const speed = _activeSong.scrollSpeed;
-    alert("succeed speed");
     animateCharacters(currentTime);
-    alert("succeed animate characters");
     updateHPBar(currentTime);
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
