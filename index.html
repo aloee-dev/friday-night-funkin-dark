@@ -1554,7 +1554,9 @@ async function startSongSequence(songId) {
         opponentNotes: [...data.opponentNotes],
         playerNotes: [...data.playerNotes]
     };
-
+    
+    _rhythmStarted = true;
+    
     const fade = document.getElementById("fade-overlay");
     const songLoading = document.getElementById("song-loading-screen");
     const bg = document.getElementById("dialog-background");
@@ -1643,7 +1645,6 @@ async function startSongSequence(songId) {
     tryPlay(_voicePlayer);
     tryPlay(_voiceOpponent);
 
-    _rhythmStarted = true;
     requestAnimationFrame(updateRhythmLoop);
 }
 
