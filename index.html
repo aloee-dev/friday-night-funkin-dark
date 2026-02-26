@@ -1712,8 +1712,6 @@ function updateRhythmLoop() {
         if (diff < -200) el.remove();
     });
 
-    alert("i think it will stop here honestly");
-
     const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
@@ -1743,8 +1741,6 @@ function updateRhythmLoop() {
 
         if (diff < -length - 200) el.remove();
     });
-
-    alert("succeeded notes");
 
     requestAnimationFrame(updateRhythmLoop);
 }
