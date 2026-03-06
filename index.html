@@ -337,14 +337,29 @@
   font-size: 24px;
   line-height: 1.2;
 }
-    
-    #dialog-speaker {
+    #speaker-tag {
+  display: none;
+  position: absolute;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 80px;
+  background-image: url('assets/speaker-tag.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#dialog-speaker {
   text-align: center;
   width: 100%;
-  margin-bottom: 6px;
+  padding-top: 15px;
   font-family: 'Blue Winter', sans-serif;
-  font-size: 30px;
-  color: #ffffff; 
+  font-size: 28px;
+  color: #ffffff;
 }
 
 #settings-menu {
@@ -692,6 +707,7 @@
 <img id="dialog-sprite" class="char" src="" alt="">
 
 <div id="dialog-box">
+<div id="speaker-tag">
   <div id="dialog-speaker"></div>
   <div id="dialog-text"></div>
 </div>
@@ -1165,11 +1181,15 @@ function applyDialogStyle(box, style) {
     box.style.fontSize = '18px';
   }
 }
+    // effects like shaky arent working, i think this is the reason but ill edit later
+    
     function renderLine(line) {
     const textDiv = document.getElementById("dialog-text");
     const box = document.getElementById("dialog-box");
     const sprite = document.getElementById("dialog-sprite");
     const bg = document.getElementById("dialog-background");
+    const speakerTag = document.getElementById("speaker-tag");
+    const speakerText = document.getElementById("dialog-speaker");
 
     applyDialogStyle(box, line.style);
 
@@ -1180,6 +1200,14 @@ function applyDialogStyle(box, style) {
         
         bg.style.backgroundImage = "url('" + bgPath + "')";
         bg.style.display = "block";
+    }
+
+        if (line.speaker && line.speaker !== "null") {
+        speakerTag.style.display = "block";
+        speakerText.textContent = line.speaker;
+    } else {
+        speakerTag.style.display = "none";
+        speakerText.textContent = "";
     }
 
     if (line.speaker && line.mood) {
