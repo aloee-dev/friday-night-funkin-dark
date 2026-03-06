@@ -1215,14 +1215,27 @@ function applyDialogStyle(box, style) {
         speakerText.textContent = "";
     }
 
+    sprite.style.opacity = "0"; 
+
     if (line.speaker && line.mood) {
-        sprite.src = `sprites/${line.speaker}-${line.mood}.png`;
-        sprite.className = "char " + (line.position || "center");
-        if (line.position === "right") {
-            sprite.classList.add("flip");
+        const newSrc = `sprites/${line.speaker}-${line.mood}.png`;
+
+        if (sprite.src !== new URL(newSrc, window.location.href).href) {
+            sprite.src = newSrc;
         }
-        
-        sprite.style.display = "block";
+
+        sprite.className = "char " + (line.position || "center");
+        if (line.position === "right") sprite.classList.add("flip");
+
+        sprite.decode()
+            .then(() => {
+                sprite.style.display = "block";
+                sprite.style.opacity = "1";
+            })
+            .catch(() => {
+                sprite.style.display = "block";
+                sprite.style.opacity = "1";
+            });
     } else {
         sprite.style.display = "none";
         sprite.src = ""; 
