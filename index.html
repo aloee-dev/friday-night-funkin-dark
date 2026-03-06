@@ -1207,12 +1207,6 @@ function applyDialogStyle(box, style) {
         bg.style.display = "block";
     }
 
-      if (line.effect === 'shaky') span.classList.add('effect-shake');
-      if (line.effect === 'sine' || effect === 'wave') {
-          span.classList.add('effect-wave');
-          span.style.animationDelay = (i * 0.1) + 's';
-      }
-
         if (line.speaker && line.speaker !== "null") {
         speakerTag.style.display = "block";
         speakerText.textContent = line.speaker;
