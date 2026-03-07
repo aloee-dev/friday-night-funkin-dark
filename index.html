@@ -1749,24 +1749,21 @@ async function runCountdown() {
         display.innerHTML = "";
     }
 }
-
+    
 function updateCamera() {
     camera.x += (camera.targetX - camera.x) * camera.lerpSpeed;
     camera.y += (camera.targetY - camera.y) * camera.lerpSpeed;
     camera.zoom += (camera.targetZoom - camera.zoom) * camera.lerpSpeed;
 
-    const scaledWidth = camera.viewport.width / camera.zoom;
-    const scaledHeight = camera.viewport.height / camera.zoom;
+    const maxScrollX = camera.worldW - (camera.viewportW / camera.zoom);
+    const maxScrollY = camera.worldH - (camera.viewportH / camera.zoom);
 
-    const maxX = camera.bounds.width - scaledWidth;
-    const maxY = camera.bounds.height - scaledHeight;
+    camera.x = Math.max(0, Math.min(camera.x, maxScrollX));
+    camera.y = Math.max(0, Math.min(camera.y, maxScrollY));
 
-    camera.x = Math.max(0, Math.min(camera.x, maxX));
-    camera.y = Math.max(0, Math.min(camera.y, maxY));
-
-    const world = document.getElementById("camera-container");
-    world.style.transformOrigin = "0 0";
-    world.style.transform = `scale(${camera.zoom}) translate(${-camera.x}px, ${-camera.y}px)`;
+    const container = document.getElementById("camera-container");
+    container.style.transformOrigin = "0 0";
+    container.style.transform = `scale(${camera.zoom}) translate(${-camera.x}px, ${-camera.y}px)`;
 }
 
     function autoFocusCamera(currentTime) {
