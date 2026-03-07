@@ -1640,6 +1640,15 @@ async function startSongSequence(songId) {
     const songLoading = document.getElementById("song-loading-screen");
     const stage = document.getElementById("rhythm-stage");
     const box = document.getElementById("dialog-box");
+    const cam = document.getElementById("camera-container");
+    const dialogBg = document.getElementById("dialog-background");
+
+
+    dialogBg.style.display = "none";
+    
+    stage.style.backgroundImage = `url("${data.background}")`;
+    cam.style.display = "block"; 
+    stage.style.display = "block";
 
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
