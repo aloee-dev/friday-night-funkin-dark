@@ -1766,11 +1766,11 @@ function updateCamera() {
     camera.y += (camera.targetY - camera.y) * camera.lerpSpeed;
     camera.zoom += (camera.targetZoom - camera.zoom) * camera.lerpSpeed;
 
-    const maxScrollX = camera.worldW - (camera.viewportW / camera.zoom);
-    const maxScrollY = camera.worldH - (camera.viewportH / camera.zoom);
-
-    camera.x = Math.max(0, Math.min(camera.x, maxScrollX));
-    camera.y = Math.max(0, Math.min(camera.y, maxScrollY));
+    const maxX = camera.worldW - (camera.viewportW / camera.zoom);
+    const maxY = camera.worldH - (camera.viewportH / camera.zoom);
+    
+    camera.x = Math.max(0, Math.min(camera.x, maxX));
+    camera.y = Math.max(0, Math.min(camera.y, maxY));
 
     const container = document.getElementById("camera-container");
     container.style.transformOrigin = "0 0";
