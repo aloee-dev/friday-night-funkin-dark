@@ -529,6 +529,17 @@
     z-index: 3;
 }
 
+    #rhythm-stage {
+    position: absolute;
+    width: 2048px;
+    height: 1500px;
+    top: 0;
+    left: 0;
+    background-size: auto; 
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+
     #healthbar {
     display: none;
     position: absolute;
@@ -679,6 +690,7 @@
 
 
     <div id="camera-container">
+        <div id="rhythm-stage"></div> 
         <canvas id="opponentCanvas" width="800" height="800"></canvas>
         <canvas id="playerCanvas" width="500" height="500"></canvas>
     </div>
@@ -1627,7 +1639,7 @@ async function startSongSequence(songId) {
     
     const fade = document.getElementById("fade-overlay");
     const songLoading = document.getElementById("song-loading-screen");
-    const bg = document.getElementById("dialog-background");
+    const stage = document.getElementById("rhythm-stage");
     const box = document.getElementById("dialog-box");
 
     _currentPlayerChar = data.player;
@@ -1681,8 +1693,8 @@ async function startSongSequence(songId) {
     await new Promise(r => setTimeout(r, 500));
 
     songLoading.style.display = "none";
-    bg.style.backgroundImage = `url('${data.background}')`;
-    bg.style.display = "block";
+    stage.style.backgroundImage = `url('${data.background}')`;
+    stage.style.display = "block";
 
     document.getElementById("icon-container").style.display = "block";
     document.getElementById("icon-player").style.display = "block";
