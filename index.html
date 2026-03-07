@@ -504,25 +504,31 @@
     width: 500px;
 }
 
-#playerCanvas {
+    #camera-container {
     position: absolute;
-    bottom: 100px;
-    right: 200px;
-    width: 500px;
-    height: 500px;
+    width: 2048px; 
+    height: 1500px;
+    top: 0;
+    left: 0;
     pointer-events: none;
-    z-index: 3;
+    will-change: transform; 
 }
+
 
 #opponentCanvas {
     position: absolute;
-    bottom: 50px;
+    bottom: 0;
     left: 200px;
-    width: 480px;
-    height: 480px;
-    pointer-events: none;
     z-index: 3;
 }
+
+#playerCanvas {
+    position: absolute;
+    bottom: 0;
+    right: 200px;
+    z-index: 3;
+}
+
     #healthbar {
     display: none;
     position: absolute;
@@ -670,17 +676,18 @@
 
 <div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
 </div>
-    
+
+
     <div id="camera-container">
+        <canvas id="opponentCanvas" width="800" height="800"></canvas>
+        <canvas id="playerCanvas" width="500" height="500"></canvas>
+    </div>
+    
     <div id="rhythm-ui" style="display:none;">
     <div id="opponent-lanes" class="lane-container"></div>
     <div id="player-lanes" class="lane-container"></div>
     <div id="countdown-display"></div>
 </div>
-    
-<canvas id="playerCanvas" width="500" height="500"></canvas>
-<canvas id="opponentCanvas" width="800" height="800"></canvas>
-    </div>
 
 <div id="healthbar" style="display:none;">
     <img id="hp-red" src="assets/final/health-red.png">
