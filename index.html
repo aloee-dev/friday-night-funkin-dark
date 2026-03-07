@@ -1643,13 +1643,6 @@ async function startSongSequence(songId) {
     const cam = document.getElementById("camera-container");
     const dialogBg = document.getElementById("dialog-background");
 
-
-    dialogBg.style.display = "none";
-    
-    stage.style.backgroundImage = `url("${data.background}")`;
-    cam.style.display = "block"; 
-    stage.style.display = "block";
-
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
 
@@ -1700,9 +1693,13 @@ async function startSongSequence(songId) {
     fade.style.opacity = 1;
     await new Promise(r => setTimeout(r, 500));
 
-    songLoading.style.display = "none";
-    stage.style.backgroundImage = `url('${data.background}')`;
+    dialogBg.style.display = "none";
+    
+    stage.style.backgroundImage = `url("${data.background}")`;
+    cam.style.display = "block"; 
     stage.style.display = "block";
+
+    songLoading.style.display = "none";
 
     document.getElementById("icon-container").style.display = "block";
     document.getElementById("icon-player").style.display = "block";
