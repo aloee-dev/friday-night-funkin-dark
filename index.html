@@ -670,7 +670,8 @@
 
 <div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
 </div>
-
+    
+    <div id="camera-container">
     <div id="rhythm-ui" style="display:none;">
     <div id="opponent-lanes" class="lane-container"></div>
     <div id="player-lanes" class="lane-container"></div>
@@ -679,6 +680,7 @@
     
 <canvas id="playerCanvas" width="500" height="500"></canvas>
 <canvas id="opponentCanvas" width="800" height="800"></canvas>
+    </div>
 
 <div id="healthbar" style="display:none;">
     <img id="hp-red" src="assets/final/health-red.png">
@@ -1514,6 +1516,19 @@ function draw() {
 let hp = 100;
 const maxHP = 200;
 
+let camera = {
+    x: 0,
+    y: 0,
+    targetX: 0,
+    targetY: 0,
+    zoom: 1,
+    targetZoom: 1,
+    lerpSpeed: 0.05,
+    overrideTimer: 0,
+    bounds: { width: 2048, height: 1500 },
+    viewport: { width: 1095, height: 1099 }
+};
+
 let _activeSong = null;
 let _inst = null;
 let _voicePlayer = null;
@@ -1728,6 +1743,51 @@ async function runCountdown() {
     }
 }
 
+function updateCamera() {
+    camera.x += (camera.targetX - camera.x) * camera.lerpSpeed;
+    camera.y += (camera.targetY - camera.y) * camera.lerpSpeed;
+    camera.zoom += (camera.targetZoom - camera.zoom) * camera.lerpSpeed;
+
+    const scaledWidth = camera.viewport.width / camera.zoom;
+    const scaledHeight = camera.viewport.height / camera.zoom;
+
+    const maxX = camera.bounds.width - scaledWidth;
+    const maxY = camera.bounds.height - scaledHeight;
+
+    camera.x = Math.max(0, Math.min(camera.x, maxX));
+    camera.y = Math.max(0, Math.min(camera.y, maxY));
+
+    const world = document.getElementById("camera-container");
+    world.style.transformOrigin = "0 0";
+    world.style.transform = `scale(${camera.zoom}) translate(${-camera.x}px, ${-camera.y}px)`;
+}
+
+    function autoFocusCamera(currentTime) {
+    if (camera.overrideTimer > 0) {
+        camera.overrideTimer -= 16;
+        return;
+    }
+
+    let opponentActive = false;
+    let playerActive = false;
+
+    const window = 100;
+    
+    opponentActive = _activeSong.opponentNotes.some(n => Math.abs(n[0] - currentTime) < window);
+    playerActive = _activeSong.playerNotes.some(n => Math.abs(n[0] - currentTime) < window);
+
+    if (opponentActive && playerActive) {
+        camera.targetX = 256; 
+        camera.targetY = 200;
+    } else if (opponentActive) {
+        camera.targetX = 0; 
+        camera.targetY = 401;
+    } else if (playerActive) {
+        camera.targetX = 453;
+        camera.targetY = 401;
+    }
+}
+
 function updateRhythmLoop() {
 
     if (!_rhythmStarted || !_inst) return;
@@ -1736,6 +1796,8 @@ function updateRhythmLoop() {
     const speed = _activeSong.scrollSpeed;
     animateCharacters(currentTime);
     updateHPBar(currentTime);
+    updateCamera();
+    autoFocusCamera(currentTime);
 
     [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
         const isPlayer = index === 1;
