@@ -1676,13 +1676,20 @@ async function startSongSequence(songId) {
     document.getElementById("rhythm-ui").style.display = "block";
 
     fade.style.opacity = 0;
-    await new Promise(r => setTimeout(r, 500));
+
+    _rhythmStarted = true;
+    _startTime = performance.now();
+    requestAnimationFrame(updateRhythmLoop);
 
     await runCountdown();
 
     _inst.currentTime = 0;
     _voicePlayer.currentTime = 0;
     _voiceOpponent.currentTime = 0;
+    
+    await new Promise(r => setTimeout(r, 500));
+
+    await runCountdown();
 
     const tryPlay = audio => audio.play().catch(() => {
     });
