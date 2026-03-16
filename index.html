@@ -1230,7 +1230,9 @@ function applyDialogStyle(box, style) {
   }
 }
     // effects like shaky arent working, i think this is the reason but ill edit later nope i didnt have css it didnt carry over ig lol
-    
+    let _nextScene = null;
+    let _isNewChapter = false;
+
     function renderLine(line) {
     const textDiv = document.getElementById("dialog-text");
     const box = document.getElementById("dialog-box");
@@ -1283,6 +1285,10 @@ function applyDialogStyle(box, style) {
         sprite.style.display = "none";
         sprite.src = ""; 
     }
+
+    if (line.next) _nextScene = line.next;
+    if (line.newChapter !== undefined) _isNewChapter = line.newChapter;
+
 
         if (line.ifFlag && !gameFlags[line.ifFlag]) {
         if (_dialogQueue.length > 0) renderLine(_dialogQueue.shift());
@@ -1483,22 +1489,33 @@ function closeDialog() {
 }
 
 
- document.addEventListener("keydown", e => {
+document.addEventListener("keydown", e => {
   if (e.key === "Enter") {
-      if (_rhythmStarted) return;
+    if (_rhythmStarted) return;
 
     if (_isTyping) {
       finishTyping(document.getElementById("dialog-text"), _currentOnFinish);
       return;
     }
-      if (document.getElementById("choice-container").style.display === "flex") return;
+    
+    if (document.getElementById("choice-container").style.display === "flex") return;
 
     if (_dialogQueue.length > 0) {
       renderLine(_dialogQueue.shift());
       return;
     }
 
-    closeDialog();
+    if (_nextScene) {
+        if (_isNewChapter) {
+            _isNewChapter = false;
+        }
+
+        let sceneToLoad = _nextScene;
+        _nextScene = null; 
+        loadDialogue(sceneToLoad);
+    } else {
+        closeDialog();
+    }
   }
 });
 
