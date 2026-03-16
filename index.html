@@ -972,36 +972,39 @@ async function showDisclaimer() {
     fade.style.opacity = 0;
 };
 
- document.getElementById("btn-play").onclick = () => {
+
+document.getElementById("btn-play").onclick = () => {
+    resetGame();
+    startTransitionAndLoad("prologue.json");
+};
+
+document.getElementById("btn-continue").onclick = () => {
+    const savedScene = loadGameData();
+    if (savedScene) {
+        startTransitionAndLoad(savedScene);
+    } else {
+        console.log("shit yourself"); 
+    }
+};
+
+async function startTransitionAndLoad(scene) {
+    const fade = document.getElementById("fade-overlay");
     const titleButtons = document.getElementById("title-buttons");
     const titleScreen = document.getElementById("title-screen");
-    const fade = document.getElementById("fade-overlay");
 
     titleButtons.style.opacity = 0;
     titleButtons.style.pointerEvents = "none";
     titleScreen.style.opacity = 0;
-
+    
     fade.style.opacity = 1;
-    setTimeout(() => {
-        titleButtons.style.display = "none";
-        titleScreen.style.display = "none";
-        fade.style.opacity = 0;
-        setTimeout(() => {
-            showDialog([
-                {
-                    speaker: "Pico",
-                    mood: "determined",
-                    position: "left",
-                    style: "pico",
-                    background: "street",
-                    text: "test idk"
-                }
-            ]);
-        }, 1500);
-
-    }, 1500);
-};
-
+    await new Promise(r => setTimeout(r, 1500));
+    
+    titleButtons.style.display = "none";
+    titleScreen.style.display = "none";
+    fade.style.opacity = 0;
+    
+    loadDialogue(scene);
+}
     
     // below i will yoink things from my previous game
 
@@ -1503,15 +1506,10 @@ function closeDialog() {
 
 
 
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown", async e => {
   if (e.key === "Enter") {
     if (_rhythmStarted) return;
-
-    if (_isTyping) {
-      finishTyping(document.getElementById("dialog-text"), _currentOnFinish);
-      return;
-    }
-    
+    if (_isTyping) { finishTyping(document.getElementById("dialog-text")); return; }
     if (document.getElementById("choice-container").style.display === "flex") return;
 
     if (_dialogQueue.length > 0) {
@@ -1520,18 +1518,41 @@ document.addEventListener("keydown", e => {
     }
 
     if (_nextScene) {
-        if (_isNewChapter) {
-            _isNewChapter = false;
-        }
-
         let sceneToLoad = _nextScene;
         _nextScene = null; 
-        loadDialogue(sceneToLoad);
+
+        if (_isNewChapter) {
+            _isNewChapter = false;
+            await runChapterCompleteSequence(sceneToLoad);
+        } else {
+            loadDialogue(sceneToLoad);
+        }
     } else {
         closeDialog();
     }
   }
 });
+
+async function runChapterCompleteSequence(nextScene) {
+    const fade = document.getElementById("fade-overlay");
+    const bg = document.getElementById("dialog-background");
+    const box = document.getElementById("dialog-box");
+
+    fade.style.opacity = 1;
+    await new Promise(r => setTimeout(r, 1000));
+
+    box.style.display = "none";
+    bg.style.backgroundImage = "url('backgrounds/chaptercomplete.png')";
+    bg.style.display = "block";
+    saveGame(nextScene);
+    fade.style.opacity = 0;
+    await new Promise(r => setTimeout(r, 3000));
+    fade.style.opacity = 1;
+    await new Promise(r => setTimeout(r, 1000));
+    
+    loadDialogue(nextScene);
+    fade.style.opacity = 0;
+}
 
 const devConsole = document.getElementById("dev-console");
 const devInput = document.getElementById("dev-input");
@@ -1592,6 +1613,35 @@ function executeDevCommand(input) {
         default:
             console.log("Unknown command. Type /help");
     }
+}
+
+    function saveGame(sceneName) {
+    const saveData = {
+        currentScene: sceneName,
+        flags: gameFlags,
+        meters: meters,
+        inventory: Object.fromEntries(inventory)
+    };
+    localStorage.setItem('fnf_dark_minds_save', JSON.stringify(saveData));
+    console.log("Game Saved at:", sceneName);
+}
+
+function loadGameData() {
+    const raw = localStorage.getItem('fnf_dark_minds_save');
+    if (!raw) return null;
+    
+    const data = JSON.parse(raw);
+    gameFlags = data.flags;
+    meters = data.meters;
+    inventory = new Map(Object.entries(data.inventory));
+    return data.currentScene;
+}
+
+function resetGame() {
+    gameFlags = { placeholder: false, place: false };
+    meters = { thing: 0, stuff: 0, doohickey: 0, thingamagig: 0 };
+    inventory = new Map([["guns", 2], ["ammo", 1], ["importantthings", 0]]);
+    localStorage.removeItem('fnf_dark_minds_save');
 }
     
 function draw() {
@@ -2047,6 +2097,7 @@ function updateHPBar(currentTime) {
     }
 }
 
+loadGameData();
     
 </script>
 
