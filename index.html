@@ -1484,21 +1484,23 @@ function showDialog(lines, opts = {}) {
 
 function closeDialog() {
   const textDiv = document.getElementById("dialog-text");
-  const sprite = document.getElementById("dialog-sprite");
   const box = document.getElementById("dialog-box");
   const bg = document.getElementById("dialog-background");
+  const activeSprite = document.querySelector(".char.visible");
+  if (activeSprite) {
+    activeSprite.classList.remove("visible");
+  }
 
   textDiv.innerHTML = "";
-  sprite.src = "";
   box.style.display = "none";
   bg.style.display = "none";
-  sprite.style.display = "none";
 
   _isTyping = false;
   clearInterval(_typingTimeout);
 
   if (typeof draw === "function") draw();
 }
+
 
 
 document.addEventListener("keydown", e => {
