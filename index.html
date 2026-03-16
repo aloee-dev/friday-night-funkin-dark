@@ -53,6 +53,29 @@
   100% { transform: translate(1px, -2px) rotate(0deg); }
 }
 
+.effect-shake {
+    display: inline-block;
+    animation: shakeChar 0.1s infinite;
+}
+
+@keyframes shakeChar {
+    0% { transform: translate(0px, 0px); }
+    25% { transform: translate(2px, -1px); }
+    50% { transform: translate(-1px, 2px); }
+    75% { transform: translate(1px, -2px); }
+    100% { transform: translate(0px, 0px); }
+}
+
+.effect-wave {
+    display: inline-block;
+    animation: waveChar 1.5s infinite ease-in-out;
+}
+
+@keyframes waveChar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
     #loading-screen {
     position: absolute;
     inset: 0;
@@ -1206,7 +1229,7 @@ function applyDialogStyle(box, style) {
     box.style.fontSize = '18px';
   }
 }
-    // effects like shaky arent working, i think this is the reason but ill edit later
+    // effects like shaky arent working, i think this is the reason but ill edit later nope i didnt have css it didnt carry over ig lol
     
     function renderLine(line) {
     const textDiv = document.getElementById("dialog-text");
@@ -1259,6 +1282,18 @@ function applyDialogStyle(box, style) {
     } else {
         sprite.style.display = "none";
         sprite.src = ""; 
+    }
+
+        if (line.ifFlag && !gameFlags[line.ifFlag]) {
+        if (_dialogQueue.length > 0) renderLine(_dialogQueue.shift());
+        else closeDialog();
+        return;
+    }
+        
+    if (line.ifNotFlag && gameFlags[line.ifNotFlag]) {
+        if (_dialogQueue.length > 0) renderLine(_dialogQueue.shift());
+        else closeDialog();
+        return;
     }
 
     if (line.triggers) {
