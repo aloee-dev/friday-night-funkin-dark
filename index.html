@@ -320,6 +320,10 @@
   z-index: 2;
 }
 
+.char.visible {
+  display: block; 
+}
+    
 .char.left {
   left: 37%;
   top: 47%;
@@ -814,6 +818,18 @@ const assets = [
     async function preloadAll() {
     for (const src of assets) {
         await preloadAsset(src);
+
+if (src.includes("sprites/")) {
+    const id = src.split('/').pop().split('.')[0]; 
+    
+    const img = new Image();
+    img.id = id; 
+    img.src = src;
+    img.className = "char"; 
+    document.body.appendChild(img);
+}
+
+        
         loaded++;
 
         const percent = Math.floor((loaded / assets.length) * 100);
@@ -1260,31 +1276,25 @@ function applyDialogStyle(box, style) {
         speakerText.textContent = "";
     }
 
-    sprite.style.opacity = "0"; 
 
-    if (line.speaker && line.mood) {
-        const newSrc = `sprites/${line.speaker}-${line.mood}.png`;
+const oldSprite = document.querySelector(".char.visible");
+if (oldSprite) {
+    oldSprite.classList.remove("visible");
+}
 
-        if (sprite.src !== new URL(newSrc, window.location.href).href) {
-            sprite.src = newSrc;
+if (line.speaker && line.mood) {
+    const nextId = line.speaker + "-" + line.mood;
+    const nextSprite = document.getElementById(nextId);
+
+    if (nextSprite) {
+        nextSprite.className = `char visible ${line.position || "center"}`;
+        
+        if (line.position === "right") {
+            nextSprite.classList.add("flip");
         }
-
-        sprite.className = "char " + (line.position || "center");
-        if (line.position === "right") sprite.classList.add("flip");
-
-        sprite.decode()
-            .then(() => {
-                sprite.style.display = "block";
-                sprite.style.opacity = "1";
-            })
-            .catch(() => {
-                sprite.style.display = "block";
-                sprite.style.opacity = "1";
-            });
-    } else {
-        sprite.style.display = "none";
-        sprite.src = ""; 
     }
+}
+
 
     if (line.next) _nextScene = line.next;
     if (line.newChapter !== undefined) _isNewChapter = line.newChapter;
