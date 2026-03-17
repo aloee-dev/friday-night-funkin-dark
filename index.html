@@ -123,13 +123,15 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background: black;
+    height: 120%;
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 1) 0%, 
+        rgba(0, 0, 0, 1) 80%, 
+        rgba(0, 0, 0, 0) 100%);
+    
     z-index: 9999;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.8s ease-in-out;
 }
-
 
 .menu-btn {
     font-family: "Funkin", sans-serif;
@@ -1137,7 +1139,7 @@ document.addEventListener('keydown', async (e) => {
         freePlay.style.display = "block";
         await new Promise(r => setTimeout(r, 1500));
 
-          curtain.style.transform = "translateY(-100%)";
+          curtain.style.transform = "translateY(-120%)";
           transition = false;
           inMenu = false;
           inFreeplay = true;
