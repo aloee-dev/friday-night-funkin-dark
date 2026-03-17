@@ -1174,6 +1174,8 @@ document.addEventListener('keydown', async (e) => {
   }
 });
 // probbably remove the json part as the load dialogue already adds json 
+    // might need to add some way to block meters/flags from incrementing, choices from showing up, and next transitions
+    // should skip choices & close so im cautious abt adding break to choice triggers
     
 const freeplayData = [
     {
@@ -1541,10 +1543,12 @@ if (line.speaker && line.mood) {
         handleBranch(trig);
         break;
             case "giveItem":
+            if (inFreeplay) break;
     inventory.set(trig.key, (inventory.get(trig.key) || 0) + trig.value);
     break;
 
 case "takeItem":
+            if (inFreeplay) break;
     inventory.set(trig.key, Math.max(0, (inventory.get(trig.key) || 0) - trig.value));
     break;
 
@@ -1556,9 +1560,11 @@ case "requireItem":
             startSongSequence(trig.value);
             break;
         case "flag":
+            if (inFreeplay) break;
             gameFlags[trig.key] = trig.value;
             break;
         case "meter":
+            if (inFreeplay) break;
             meters[trig.key] += trig.value;
             console.log(`${trig.key} is now ${meters[trig.key]}`);
             break;
