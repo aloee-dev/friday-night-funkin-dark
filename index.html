@@ -1177,15 +1177,24 @@ document.addEventListener('keydown', async (e) => {
 const freeplayData = [
     {
         chapterName: "Additional Content",
-        scenes: ["Thing 1", "Thing 2"]
+        scenes: [
+            { label: "This does nothing", file: "test.json" },
+            { label: "Ill edit later", file: "test.json" }
+        ]
     },
     {
         chapterName: "Chapter 1",
-        scenes: ["1.1", "1.2", "1.3"]
+        scenes: [
+            { label: "Uno", file: "test.json" },
+            { label: "Dos", file: "test.json" }
+        ]
     },
     {
         chapterName: "Chapter 2",
-        scenes: ["2.1", "2.2"]
+        scenes: [
+            { label: "Trois", file: "test.json" },
+            { label: "Quatre", file: "test.json" }
+        ]
     }
 ];
 
@@ -1228,7 +1237,7 @@ const freeplayData = [
 
     currentChapter.scenes.forEach((sceneName, index) => {
         const scene = document.createElement("div");
-        scene.innerText = sceneName;
+        scene.innerText = sceneObj.label;
         scene.className = "scene-item";
         if (index === sceneIndex) {
             scene.classList.add("selected");
