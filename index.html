@@ -1156,7 +1156,7 @@ document.addEventListener('keydown', async (e) => {
         inMenu = true;
         }
       if (inMenu) {
-        curtain.style.transform = "translateY(0%)";
+        curtain.style.transform = "translateY(100%)";
         transition = true;
 
         await new Promise(r => setTimeout(r, 300));
@@ -1166,7 +1166,7 @@ document.addEventListener('keydown', async (e) => {
         renderScenes();
         await new Promise(r => setTimeout(r, 1500));
 
-          curtain.style.transform = "translateY(-120%)";
+          curtain.style.transform = "translateY(0%)";
           transition = false;
           inMenu = false;
           inFreeplay = true;
