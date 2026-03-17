@@ -713,6 +713,15 @@
     </div>
 </div>
 
+    <div id="freeplay-menu">
+    <div id="chapter-navigation">
+        <h1 id="chapter-header">Additional Content</h1>
+    </div>
+    <div id="scene-list">
+    </div>
+</div>
+
+
 <div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
 </div>
 
@@ -1080,11 +1089,14 @@ let inFreeplay = false;
 document.addEventListener('keydown', (e) => {
   if (e.key === '7') {
     const titleButtons = document.getElementById("title-buttons");
+    const freePlay = document.getElementById("freeplay-menu");
+      
       if (titleButtons.style.display === "flex" || titleButtons.style.display === "block" ) {
           inMenu = true;
           }
       if (inMenu) {
     titleButtons.style.display = "none";
+    freePlay.style.display = "block";
       }
   }
 });
