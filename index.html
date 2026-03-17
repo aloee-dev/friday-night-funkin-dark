@@ -1706,13 +1706,13 @@ document.addEventListener("keydown", (e) => {
 
 devInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        executeDevCommand(devInput.value);
+        doCommand(devInput.value);
         devInput.value = "";
         devConsole.style.display = "none";
     }
 });
 
-function executeDevCommand(input) {
+function doCommand(input) {
     const parts = input.trim().split(/\s+/);
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
