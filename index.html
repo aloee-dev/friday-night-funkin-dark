@@ -1099,9 +1099,10 @@ document.getElementById("speed-right").onclick = () => {
 
 let inMenu = false;
 let inFreeplay = false;
+let transition = false;
         
 document.addEventListener('keydown', async (e) => {
-  if (e.key === '7') {
+  if (e.key === '7' && !transition ) {
     const titleButtons = document.getElementById("title-buttons");
     const freePlay = document.getElementById("freeplay-menu");
     const curtain = document.getElementById("black-curtain");
@@ -1110,16 +1111,18 @@ document.addEventListener('keydown', async (e) => {
           inMenu = true;
           }
       if (inMenu) {
-curtain.style.transform = "translateY(0%)";
+    curtain.style.transform = "translateY(0%)";
 
-await new Promise(r => setTimeout(r, 800));
+        await new Promise(r => setTimeout(r, 800));
 
-titleButtons.style.display = "none";
-freePlay.style.display = "block";
-await new Promise(r => setTimeout(r, 1000));
+        titleButtons.style.display = "none";
+        freePlay.style.display = "block";
+        await new Promise(r => setTimeout(r, 1000));
 
-curtain.style.transform = "translateY(-100%)";
-
+          curtain.style.transform = "translateY(-100%)";
+          transition = false;
+          inMenu = false;
+          inFreeplay = true;
       }
   }
 });
