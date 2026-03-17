@@ -1080,7 +1080,12 @@ let inFreeplay = false;
 document.addEventListener('keydown', (e) => {
   if (e.key === '7') {
     const titleButtons = document.getElementById("title-buttons");
+      if (titleButtons.style.display === "flex" || titleButtons.style.display === "block" ) {
+          inMenu = true;
+          }
+      if (inMenu) {
     titleButtons.style.display = "none";
+      }
   }
 });
 
