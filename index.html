@@ -1039,19 +1039,19 @@ async function showDisclaimer() {
 
 document.getElementById("btn-play").onclick = () => {
     resetGame();
-    startTransitionAndLoad("prologue");
+    transLoad("prologue");
 };
 
 document.getElementById("btn-continue").onclick = () => {
     const savedScene = loadGameData();
     if (savedScene) {
-        startTransitionAndLoad(savedScene);
+        transLoad(savedScene);
     } else {
         console.log("shit yourself"); 
     }
 };
 
-async function startTransitionAndLoad(scene) {
+async function transLoad(scene) {
     const fade = document.getElementById("fade-overlay");
     const titleButtons = document.getElementById("title-buttons");
     const titleScreen = document.getElementById("title-screen");
@@ -1173,7 +1173,8 @@ document.addEventListener('keydown', async (e) => {
       }
   }
 });
-
+// probbably remove the json part as the load dialogue already adds json 
+    
 const freeplayData = [
     {
         chapterName: "Additional Content",
@@ -1222,9 +1223,21 @@ const freeplayData = [
     renderScenes();
   } 
   else if (e.key === 'Enter') {
-      //load dialogue figure that out
+      const currentChapter = freeplayData[chapterIndex];
+    const selectedScene = currentChapter.scenes[sceneIndex];
+    startFreeScene(selectedScene.file);
   }
 });
+
+    async function startFreeScene(scene) {
+    const fade = document.getElementById("fade-overlay");
+    
+    fade.style.opacity = 1;
+    await new Promise(r => setTimeout(r, 1500));
+    fade.style.opacity = 0;
+    
+    loadDialogue(scene);
+}
 
 
     function renderScenes() {
