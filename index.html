@@ -1137,13 +1137,13 @@ document.addEventListener('keydown', async (e) => {
 
         titleButtons.style.display = "none";
         freePlay.style.display = "block";
+        renderScenes();
         await new Promise(r => setTimeout(r, 1500));
 
           curtain.style.transform = "translateY(-120%)";
           transition = false;
           inMenu = false;
           inFreeplay = true;
-          renderScenes();
       }
   }
 });
