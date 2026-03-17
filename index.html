@@ -460,14 +460,40 @@
   height: 50px;
   cursor: pointer;
 }
-    .scene-item {
-    height: 60px;
-    transition: margin-left 0.2s ease; 
-    margin-left: 0px; 
-    font-size: 40px;
-    list-style: none;
+
+#freeplay-menu {
+    display: none; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    text-align: left;
+    color: white;
+    font-family: "Funkin";
 }
 
+#chapter-header {
+    font-size: 70px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+#scene-list {
+    height: 300px;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.scene-item {
+    font-size: 50px;
+    transition: margin-left 0.2s ease;
+    margin-left: 0px;
+    flex-shrink: 0;
+}
+    
 .selected {
     margin-left: 30px;
     font-weight: bold;
