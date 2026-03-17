@@ -1111,7 +1111,8 @@ document.addEventListener('keydown', async (e) => {
           inMenu = true;
           }
       if (inMenu) {
-    curtain.style.transform = "translateY(0%)";
+        curtain.style.transform = "translateY(0%)";
+        transition = true;
 
         await new Promise(r => setTimeout(r, 800));
 
