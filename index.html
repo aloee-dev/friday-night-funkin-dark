@@ -1074,7 +1074,16 @@ document.getElementById("speed-right").onclick = () => {
   document.getElementById("settings-menu").style.display = "none";
 };
 
-// put 7 here
+let inMenu = false;
+let inFreeplay = false;
+        
+document.addEventListener('keydown', (e) => {
+  if (e.key === '7') {
+    const titleButtons = document.getElementById("title-buttons");
+    titleButtons.style.display = "none";
+  }
+});
+
     
 let inventory = new Map();
 
