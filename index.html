@@ -1189,6 +1189,35 @@ const freeplayData = [
     }
 ];
 
+    document.addEventListener('keydown', (e) => {
+  if (!inFreeplay || transition) return;
+
+  const currentChapter = freeplayData[chapterIndex];
+
+  if (e.key === 'ArrowRight') {
+    chapterIndex = (chapterIndex + 1) % freeplayData.length;
+    sceneIndex = 0;
+    renderScenes();
+  } 
+  else if (e.key === 'ArrowLeft') {
+    chapterIndex = (chapterIndex - 1 + freeplayData.length) % freeplayData.length;
+    sceneIndex = 0;
+    renderScenes();
+  } 
+  else if (e.key === 'ArrowDown') {
+    sceneIndex = (sceneIndex + 1) % currentChapter.scenes.length;
+    renderScenes();
+  } 
+  else if (e.key === 'ArrowUp') {
+    sceneIndex = (sceneIndex - 1 + currentChapter.scenes.length) % currentChapter.scenes.length;
+    renderScenes();
+  } 
+  else if (e.key === 'Enter') {
+      //load dialogue figure that out
+  }
+});
+
+
     function renderScenes() {
     const chapterHeader = document.getElementById("chapter-header");
     const sceneList = document.getElementById("scene-list");
