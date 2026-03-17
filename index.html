@@ -1253,7 +1253,7 @@ const freeplayData = [
 
     currentChapter.scenes.forEach((sceneName, index) => {
         const scene = document.createElement("div");
-        scene.innerText = sceneObj.label;
+        scene.innerText = sceneName.label;
         scene.className = "scene-item";
         if (index === sceneIndex) {
             scene.classList.add("selected");
