@@ -127,7 +127,7 @@
     background: black;
     z-index: 9999;
     transform: translateY(-100%);
-    transition: transform 0.8s ease-in-out;
+    transition: transform 0.3s ease-in-out;
 }
 
 
@@ -1131,11 +1131,11 @@ document.addEventListener('keydown', async (e) => {
         curtain.style.transform = "translateY(0%)";
         transition = true;
 
-        await new Promise(r => setTimeout(r, 800));
+        await new Promise(r => setTimeout(r, 300));
 
         titleButtons.style.display = "none";
         freePlay.style.display = "block";
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 1500));
 
           curtain.style.transform = "translateY(-100%)";
           transition = false;
