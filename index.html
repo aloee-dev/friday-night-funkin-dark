@@ -1115,16 +1115,18 @@ let inFreeplay = false;
 let transition = false;
 let chapterIndex = 0;
 let sceneIndex = 0;
+
         
 document.addEventListener('keydown', async (e) => {
   if (e.key === '7' && !transition ) {
     const titleButtons = document.getElementById("title-buttons");
+    const titleButtonsZ = window.getComputedStyle(titleButtons).display;
     const freePlay = document.getElementById("freeplay-menu");
     const curtain = document.getElementById("black-curtain");
       
-      if (titleButtons.style.display === "flex" || titleButtons.style.display === "block" ) {
-          inMenu = true;
-          }
+      if (titleButtonsZ === "flex" || titleButtonsZ === "block") {
+        inMenu = true;
+        }
       if (inMenu) {
         curtain.style.transform = "translateY(0%)";
         transition = true;
