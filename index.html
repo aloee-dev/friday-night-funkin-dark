@@ -458,6 +458,19 @@
   height: 50px;
   cursor: pointer;
 }
+    .scene-item {
+    height: 60px;
+    transition: margin-left 0.2s ease; 
+    margin-left: 0px; 
+    font-size: 40px;
+    list-style: none;
+}
+
+.selected {
+    margin-left: 30px;
+    font-weight: bold;
+}
+
     #song-loading-screen {
     position: absolute;
     inset: 0;
@@ -1126,6 +1139,7 @@ document.addEventListener('keydown', async (e) => {
           transition = false;
           inMenu = false;
           inFreeplay = true;
+          renderScenes();
       }
   }
 });
@@ -1146,7 +1160,27 @@ const freeplayData = [
 ];
 
     function renderScenes() {
-    }
+    const chapterHeader = document.getElementById("chapter-header");
+    const sceneList = document.getElementById("scene-list");
+
+    const currentChapter = freeplayData[chapterIndex];
+    chapterHeader.innerText = currentChapter.chapterName;
+    sceneList.innerHTML = "";
+
+    currentChapter.scenes.forEach((sceneName, index) => {
+        const scene = document.createElement("div");
+        scene.innerText = sceneName;
+        scene.className = "scene-item";
+        if (index === sceneIndex) {
+            scene.classList.add("selected");
+            
+            setTimeout(() => {
+                scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 0);
+        }
+        sceneList.appendChild(scene);
+    });
+}
 
     
 let inventory = new Map();
