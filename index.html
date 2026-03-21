@@ -1173,6 +1173,21 @@ document.addEventListener('keydown', async (e) => {
           inMenu = false;
           inFreeplay = true;
       }
+     else if (inFreeplay) {
+        curtain.style.transform = "translateY(100%)";
+        transition = true;
+
+        await new Promise(r => setTimeout(r, 300));
+
+        titleButtons.style.display = "block";
+        freePlay.style.display = "none";
+        await new Promise(r => setTimeout(r, 1500));
+
+          curtain.style.transform = "translateY(0%)";
+          transition = false;
+          inMenu = true;
+          inFreeplay = false;
+      }
   }
 });
 // probbably remove the json part as the load dialogue already adds json 
