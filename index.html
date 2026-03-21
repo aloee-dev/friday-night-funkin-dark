@@ -1362,7 +1362,7 @@ let _currentOnFinish = null;
       
       element.appendChild(span);
 
-      if (i % config.frequency === 0 && char !== " ") {
+      if (!muted && i % config.frequency === 0 && char !== " ") {
         const playClone = charSound.cloneNode();
         playClone.playbackRate = config.pitch;
         playClone.play().catch(e => {});
@@ -1468,7 +1468,7 @@ function applyDialogStyle(box, style) {
     box.style.fontSize = '18px';
   }
 }
-    // effects like shaky arent working, i think this is the reason but ill edit later nope i didnt have css it didnt carry over ig lol
+
     let _nextScene = null;
     let _isNewChapter = false;
 
@@ -1479,6 +1479,8 @@ function applyDialogStyle(box, style) {
     const bg = document.getElementById("dialog-background");
     const speakerTag = document.getElementById("speaker-tag");
     const speakerText = document.getElementById("dialog-speaker");
+        
+    const muted = line.triggers && line.triggers.some(t => t.type === "mute");
 
     applyDialogStyle(box, line.style);
 
@@ -1544,7 +1546,7 @@ if (line.speaker && line.mood) {
 
     document.getElementById("dialog-speaker").textContent = line.speaker || "";
     applyFontSetting();
-    startTypewriter(line.text, textDiv, line.speaker, line.effect);
+    startTypewriter(line.text, textDiv, line.speaker, line.effect, null, muted);
 }
 
     function handleTrigger(trig) {
