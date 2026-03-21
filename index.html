@@ -859,6 +859,8 @@ const assets = [
     "sprites/Pico-neutral.png",
     "sprites/Boyfriend-neutral.png",
     "sfx/scrollMenu.mp3",
+    "sfx/confirmMenu.mp3",
+    "sfx/textboxClick.mp3",
     "sfx/pixelText.mp3",
     "sfx/blip1.wav",
     "sfx/blip2.wav"
@@ -1724,7 +1726,7 @@ function closeDialog() {
   if (typeof draw === "function") draw();
 }
 
-
+const textBox = new Audio("sfx/textboxClick.mp3");
 
 document.addEventListener("keydown", async e => {
   if (e.key === "Enter") {
@@ -1736,7 +1738,10 @@ document.addEventListener("keydown", async e => {
       renderLine(_dialogQueue.shift());
       return;
     }
-
+      
+textBox.currentTime = 0;
+textBox.play();
+      
     if (_nextScene) {
         let sceneToLoad = _nextScene;
         _nextScene = null; 
