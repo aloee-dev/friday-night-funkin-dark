@@ -1217,6 +1217,9 @@ const freeplayData = [
         ]
     }
 ];
+    
+const hoverSfx = new Audio("sfx/scrollMenu.mp3");
+const playSdx = new Audio("sfx/confirmMenu.mp3");
 
     document.addEventListener('keydown', (e) => {
   if (!inFreeplay || transition) return;
@@ -1236,15 +1239,20 @@ const freeplayData = [
   else if (e.key === 'ArrowDown') {
     sceneIndex = (sceneIndex + 1) % currentChapter.scenes.length;
     renderScenes();
+    hoverSfx.currentTime = 0;
+    hoverSfx.play();
   } 
   else if (e.key === 'ArrowUp') {
     sceneIndex = (sceneIndex - 1 + currentChapter.scenes.length) % currentChapter.scenes.length;
     renderScenes();
+    hoverSfx.currentTime = 0;
+    hoverSfx.play();
   } 
   else if (e.key === 'Enter') {
       const currentChapter = freeplayData[chapterIndex];
     const selectedScene = currentChapter.scenes[sceneIndex];
     startFreeScene(selectedScene.file);
+    playSfx.play();
   }
 });
 
