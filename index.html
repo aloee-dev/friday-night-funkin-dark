@@ -1736,11 +1736,11 @@ document.addEventListener("keydown", async e => {
 
     if (_dialogQueue.length > 0) {
       renderLine(_dialogQueue.shift());
+    textBox.currentTime = 0;
+    textBox.play();
       return;
     }
       
-textBox.currentTime = 0;
-textBox.play();
       
     if (_nextScene) {
         let sceneToLoad = _nextScene;
