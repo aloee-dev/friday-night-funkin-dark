@@ -1327,7 +1327,7 @@ let _currentSpeaker = null;
 let _currentEffect = null;
 let _currentOnFinish = null;
 
-    function startTypewriter(text, element, speaker = null, effect = null, onFinish = null) {
+    function startTypewriter(text, element, speaker = null, effect = null, onFinish = null, muted = false) {
   clearTimeout(_typingTimeout); 
   _isTyping = true;
   _fullTextToDisplay = text;
@@ -1586,7 +1586,7 @@ case "requireItem":
     }
     break;
             case "song":
-            startSongSequence(trig.value);
+            startSong(trig.value);
             break;
         case "flag":
             if (inFreeplay) break;
@@ -1963,7 +1963,7 @@ async function loadSongData(songId) {
     return json;
 }
 
-async function startSongSequence(songId) {
+async function startSong(songId) {
     const data = await loadSongData(songId);
     if (!data) return;
 
