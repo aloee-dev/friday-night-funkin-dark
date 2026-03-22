@@ -132,25 +132,24 @@
     z-index: 9999;
     transition: transform 0.3s ease-in-out;
 }
-
 .menu-btn {
     font-family: "Funkin", sans-serif;
     text-align: center;
     font-size: 70px;
     width: 200px;
     padding: 14px 10px;
-    background: transparent;
-    color: black;
-    border: none;
     cursor: pointer;
-    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1),
-                color 0.15s ease,
+    background-color: white; 
+    color: transparent; 
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 3px black; 
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
 
 .menu-btn:hover {
     transform: scale(1.3);
-    background: transparent;
-    color: white;
+    background-color: white;
     animation: sketchy 0.12s infinite alternate;
 }
 
