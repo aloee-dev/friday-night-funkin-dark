@@ -1235,7 +1235,7 @@ const freeplayData = [
 const hoverSfx = new Audio("sfx/scrollMenu.mp3");
 const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
 
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', async (e) => {
   if (!inFreeplay || transition) return;
 
   const currentChapter = freeplayData[chapterIndex];
@@ -1265,8 +1265,10 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
   else if (e.key === 'Enter') {
       const currentChapter = freeplayData[chapterIndex];
     const selectedScene = currentChapter.scenes[sceneIndex];
+      playSfx.play();
+      
+      await new Promise(r => setTimeout(r, 1000));
     startFreeScene(selectedScene.file);
-    playSfx.play();
   }
 });
 
