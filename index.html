@@ -11,7 +11,7 @@
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    height: 100%;     
     overflow: hidden;
     background: black;
 }
@@ -744,6 +744,13 @@
     <button class="menu-btn" id="btn-credits">CREDITS</button>
 </div>
 
+    <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
+    <h1 style="color: white; font-family: 'Funkin'; font-size: 60px;">CONTINUE FROM...</h1>
+    <button class="menu-btn" id="load-scene-btn">CURRENT SCENE</button>
+    <button class="menu-btn" id="load-chapter-btn">CURRENT CHAPTER</button>
+    <button class="menu-btn" style="font-size: 40px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
+</div>
+
 <div id="settings-menu" style="display:none;">
     <div id="settings-box">
     
@@ -1053,19 +1060,45 @@ async function showDisclaimer() {
     fade.style.opacity = 0;
 };
 
-
+// check if play saves so that the player can still quit if they misclick instead of continue
+    
 document.getElementById("btn-play").onclick = () => {
     resetGame();
+    localStorage.removeItem(SCENE_SAVE_KEY);
+    localStorage.removeItem(CHAPTER_SAVE_KEY);
     transLoad("prologue");
 };
 
 document.getElementById("btn-continue").onclick = () => {
-    const savedScene = loadGameData();
-    if (savedScene) {
-        transLoad(savedScene);
-    } else {
+    const sceneSave = localStorage.getItem(SCENE_SAVE_KEY);
+    const chapterSave = localStorage.getItem(CHAPTER_SAVE_KEY);
+
+    if (!sceneSave && !chapterSave) {
         console.log("shit yourself"); 
+        return;
     }
+    document.getElementById("continue-menu").style.display = "flex";
+};
+
+    
+function doSave(data) {
+    if (!data) return;
+    gameFlags = data.flags;
+    meters = data.meters;
+    inventory = new Map(Object.entries(data.inventory));
+    
+    document.getElementById("continue-menu").style.display = "none";
+    transLoad(data.currentScene);
+}
+
+document.getElementById("load-scene-btn").onclick = () => {
+    const data = JSON.parse(localStorage.getItem(SCENE_SAVE_KEY));
+    doSave(data);
+};
+
+document.getElementById("load-chapter-btn").onclick = () => {
+    const data = JSON.parse(localStorage.getItem(CHAPTER_SAVE_KEY));
+    doSave(data);
 };
 
 async function transLoad(scene) {
@@ -1644,17 +1677,21 @@ function handleBranch(trig) {
         loadDialogue(goTo);
     }
 }
-    async function loadDialogue(sceneName) {
+    
+async function loadDialogue(sceneName) {
     try {
         const response = await fetch(`dialogue/${sceneName}.json`);
+        if (!response.ok) throw new Error("File not found");
+        
         const data = await response.json();
-
+        saveScene(sceneName);
+        
         showDialog(data);
     } catch (err) {
         console.error("Failed to load dialogue:", sceneName, err);
     }
 }
-
+    
 let _qteTimer = null;
 
 function triggerGameOver(sfxPath) {
@@ -1777,7 +1814,7 @@ document.addEventListener("keydown", async e => {
 
         if (_isNewChapter) {
             _isNewChapter = false;
-            await runChapterCompleteSequence(sceneToLoad);
+            await chapterComplete(sceneToLoad);
         } else {
             loadDialogue(sceneToLoad);
         }
@@ -1787,7 +1824,7 @@ document.addEventListener("keydown", async e => {
   }
 });
 
-async function runChapterCompleteSequence(nextScene) {
+async function chapterComplete(nextScene) {
     const fade = document.getElementById("fade-overlay");
     const bg = document.getElementById("dialog-background");
     const box = document.getElementById("dialog-box");
@@ -1798,7 +1835,9 @@ async function runChapterCompleteSequence(nextScene) {
     box.style.display = "none";
     bg.style.backgroundImage = "url('backgrounds/chaptercomplete.png')";
     bg.style.display = "block";
-    saveGame(nextScene);
+    
+    saveChapter(nextScene);
+    
     fade.style.opacity = 0;
     await new Promise(r => setTimeout(r, 3000));
     fade.style.opacity = 1;
@@ -1869,6 +1908,29 @@ function doCommand(input) {
     }
 }
 
+const CHAPTER_SAVE_KEY = 'fnf_dark_minds_chapter_save';
+const SCENE_SAVE_KEY = 'fnf_dark_minds_scene_save';
+
+function getGame(sceneName) {
+    return {
+        currentScene: sceneName,
+        flags: { ...gameFlags },
+        meters: { ...meters },
+        inventory: Object.fromEntries(inventory),
+        timestamp: new Date().toLocaleTimeString()
+    };
+}
+
+function saveScene(sceneName) {
+    localStorage.setItem(SCENE_SAVE_KEY, JSON.stringify(getGame(sceneName)));
+    console.log("Current Scene Saved:", sceneName);
+}
+
+function saveChapter(sceneName) {
+    localStorage.setItem(CHAPTER_SAVE_KEY, JSON.stringify(getGame(sceneName)));
+    console.log("Chapter Milestone Saved:", sceneName);
+}
+    
     function saveGame(sceneName) {
     const saveData = {
         currentScene: sceneName,
