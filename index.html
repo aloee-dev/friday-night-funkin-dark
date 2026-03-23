@@ -1534,9 +1534,20 @@ if (line.speaker && line.mood) {
         }
     }
 }
+        // caution
+    _nextScene = line.next || null;
 
-
-    if (line.next) _nextScene = line.next;
+    if (line.branches) {
+        for (let branch of line.branches) {
+            let meterValue = meters[branch.meter] || 0;
+        
+            if (meterValue >= branch.min && meterValue <= branch.max) {
+                _nextScene = branch.scene;
+                break;
+            }
+        }
+    }
+        
     if (line.newChapter !== undefined) _isNewChapter = line.newChapter;
 
 
