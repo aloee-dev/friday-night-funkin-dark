@@ -1321,10 +1321,11 @@ inventory.set("importantthings", 0); //idk i havent figured the plot yet
     };
 
     let meters = {
-    thing: 0,
-    stuff: 0,
-    doohickey: 0,
-    thingamagig: 0
+    toxic: 20,
+    stamina: 100, // health also might work as the name
+    sanity: 100,
+    picolove: 50,
+    keithlove: 50
 };
 
     
@@ -1892,7 +1893,7 @@ function loadGameData() {
 
 function resetGame() {
     gameFlags = { placeholder: false, place: false };
-    meters = { thing: 0, stuff: 0, doohickey: 0, thingamagig: 0 };
+    meters = { toxic: 0, stamina: 100, sanity: 100, picolove: 50, keithlove: 50 };
     inventory = new Map([["guns", 2], ["ammo", 1], ["importantthings", 0]]);
     localStorage.removeItem('fnf_dark_minds_save');
 }
