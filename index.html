@@ -531,7 +531,7 @@
     position: absolute;
     top: 50px;
     display: flex;
-    gap: 10px;
+    gap: 5px;
     height: 1099;
 }
 
@@ -2248,7 +2248,7 @@ function createNoteElement(n, isPlayer) {
     note.className = "note";
     note.dataset.time = time;
     note.dataset.length = length;
-    note.style.left = (lane * 160) + "px";
+    note.style.left = (lane * 155) + "px";
     note.style.backgroundImage = `url('assets/final/notes/arrow_${lane}.png')`;
     laneContainer.appendChild(note);
 
@@ -2258,14 +2258,14 @@ function createNoteElement(n, isPlayer) {
         body.className = "sustain-body";
         body.dataset.time = time;
         body.dataset.length = length;
-        body.style.left = (lane * 160) + "px";
+        body.style.left = (lane * 155) + "px";
         laneContainer.appendChild(body);
 
         const end = document.createElement("div");
         end.className = "sustain-end";
         end.dataset.time = time;
         end.dataset.length = length;
-        end.style.left = (lane * 160) + "px";
+        end.style.left = (lane * 155) + "px";
         laneContainer.appendChild(end);
     }
 }
