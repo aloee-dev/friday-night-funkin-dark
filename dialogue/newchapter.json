@@ -6,7 +6,7 @@
     "text": "Mmm.",
     "style": "bf",
     "triggers": [],
-    "next": "prologue.json",
+    "next": "prologue",
     "newChapter": true
  }
 ]
