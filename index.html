@@ -1483,6 +1483,9 @@ function normalizeDialogLines(input, defaultStyle) {
       effect: line.effect || null,
       background: line.background || null,
       triggers: line.triggers || [],
+        next: line.next || null,
+      branches: line.branches || null,
+      newChapter: line.newChapter || false,
       choices: line.choices || []
     };
   });
