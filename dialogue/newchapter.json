@@ -1,0 +1,12 @@
+[
+ {
+    "speaker": "Boyfriend",
+    "mood": "neutral",
+    "position": "right",
+    "text": "Mmm.",
+    "style": "bf",
+    "triggers": [],
+    "next": "prologue.json",
+    "newChapter": true
+ }
+]
