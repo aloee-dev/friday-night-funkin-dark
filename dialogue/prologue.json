@@ -123,8 +123,8 @@
     "triggers": []
   },
   {
-    "speaker": "Pico",
-    "mood": "neutral",
+    "speaker": "Sprite",
+    "mood": "test",
     "position": "left",
     "text": "Testing out the shaky",
     "effect": "shaky",
