@@ -839,11 +839,17 @@
       <div id="fade-overlay"></div>
     <div id="black-curtain"></div>
 
-    <svg style="display:none;">
+<svg style="visibility: hidden; position: absolute;" width="0" height="0">
   <defs>
     <filter id="edge">
-      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise" />
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" />
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" 
+        values="1 0 0 0 0  
+                0 1 0 0 0  
+                0 0 1 0 0  
+                0 0 0 18 -7" result="ink" />
     </filter>
   </defs>
 </svg>
