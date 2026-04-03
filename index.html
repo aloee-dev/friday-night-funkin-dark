@@ -375,10 +375,14 @@
   position: fixed;
   bottom: 10%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(-1deg);
   background: #0e2057;
   color: white;
-  border: 8px solid black;
+  border: 10px solid black; 
+  clip-path: polygon(
+    0% 2%, 5% 0%, 95% 1%, 100% 4%, 
+    98% 95%, 94% 100%, 4% 98%, 0% 94%
+  );
   padding: 16px 30px;
   box-sizing: border-box;
   padding-top: 30px;
