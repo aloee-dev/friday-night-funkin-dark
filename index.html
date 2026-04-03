@@ -1513,9 +1513,11 @@ function normalizeDialogLines(input, defaultStyle) {
 function applyDialogStyle(box, style) {
   box.style.maxWidth = '1200px';
   box.style.fontSize = '12px';
+  box.style.border = '11px solid black';
   if (style === 'pico') {
     box.style.backgroundColor = '#7fc159';
     box.style.fontSize = '18px';
+    box.style.border = '11px solid #0b3d3e';
   } else if (style === 'bf') {
     box.style.backgroundColor = '#416aaa';
     box.style.fontSize = '18px';
