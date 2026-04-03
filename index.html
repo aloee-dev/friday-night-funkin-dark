@@ -378,6 +378,7 @@
   transform: translateX(-50%);
   background: #0e2057;
   color: white;
+  filter: url(#edge);
   border: 8px solid black;
   padding: 16px 30px;
   box-sizing: border-box;
@@ -837,6 +838,15 @@
     
       <div id="fade-overlay"></div>
     <div id="black-curtain"></div>
+
+    <svg style="display:none;">
+  <defs>
+    <filter id="edge">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
+    </filter>
+  </defs>
+</svg>
 
     
 <div id="dialog-background"></div>
