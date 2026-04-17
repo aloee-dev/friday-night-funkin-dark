@@ -611,7 +611,8 @@
     top: 0;
     left: 0;
     pointer-events: none;
-    will-change: transform; 
+    will-change: transform;
+    transform-origin: 0 0; 
 }
 
 
@@ -2033,13 +2034,13 @@ let camera = {
     x: 0,
     y: 1000,
     targetX: 0,
-    targetY: 1000,
+    targetY: 0,
     zoom: 1,
     targetZoom: 1,
     lerpSpeed: 0.05,
-    overrideTimer: 0,
+    zoomSpeed: 0.05,
     bounds: { width: 2048, height: 1500 },
-    viewport: { width: 1095, height: 1099 }
+    viewport: { width: 1595, height: 1099 }
 };
 
 let _activeSong = null;
@@ -2227,7 +2228,6 @@ async function startSong(songId) {
 
     requestAnimationFrame(updateRhythmLoop);
 }
-// text
     
 function setupReceptors() {
     const opp = document.getElementById("opponent-lanes");
@@ -2265,27 +2265,40 @@ async function runCountdown() {
 function updateCamera() {
     camera.x += (camera.targetX - camera.x) * camera.lerpSpeed;
     camera.y += (camera.targetY - camera.y) * camera.lerpSpeed;
-    camera.zoom += (camera.targetZoom - camera.zoom) * camera.lerpSpeed;
+    
+    camera.zoom += (camera.targetZoom - camera.zoom) * camera.zoomSpeed;
 
     const maxX = camera.bounds.width - (camera.viewport.width / camera.zoom);
     const maxY = camera.bounds.height - (camera.viewport.height / camera.zoom);
-    
     camera.x = Math.max(0, Math.min(camera.x, maxX));
     camera.y = Math.max(0, Math.min(camera.y, maxY));
 
     const container = document.getElementById("camera-container");
     if (container) {
-        container.style.transformOrigin = "0 0";
-        container.style.transform = `scale(${camera.zoom}) translate(${-camera.x}px, ${-camera.y}px)`;
+        container.style.transform = `scale(${camera.zoom}) translate3d(${-camera.x}px, ${-camera.y}px, 0)`;
     }
 }
 
-
     function autoFocusCamera(currentTime) {
-    if (camera.overrideTimer > 0) {
-        camera.overrideTimer -= 16;
-        return;
+    const focus = 400;
+    
+    let opponentSinging = _activeSong.opponentNotes.some(n => n[0] > currentTime && n[0] < currentTime + focus);
+    let playerSinging = _activeSong.playerNotes.some(n => n[0] > currentTime && n[0] < currentTime + focus);
+
+    if (opponentSinging) {
+        camera.targetX = 100; 
+        camera.targetY = 200;
+        camera.targetZoom = 1.1;
+    } else if (playerSinging) {
+        camera.targetX = 500; 
+        camera.targetY = 200;
+        camera.targetZoom = 1.2;
+    } else {
+        camera.targetX = 300;
+        camera.targetY = 150;
+        camera.targetZoom = 1.0;
     }
+}
 
     let opponentActive = false;
     let playerActive = false;
