@@ -1492,6 +1492,8 @@ function normalizeDialogLines(input, defaultStyle) {
       style: line.style || defaultStyle || 'dialog',
       effect: line.effect || null,
       background: line.background || null,
+      ambience: line.ambience || null,
+      track: line.track || null,
       triggers: line.triggers || [],
         next: line.next || null,
       branches: line.branches || null,
@@ -1605,7 +1607,8 @@ if (line.speaker && line.mood) {
     }
         
     if (line.newChapter !== undefined) _isNewChapter = line.newChapter;
-
+    if (line.ambience) playBgMusic('ambience', line.ambience);
+    if (line.track) playBgMusic('track', line.track);
 
         if (line.ifFlag && !gameFlags[line.ifFlag]) {
         if (_dialogQueue.length > 0) renderLine(_dialogQueue.shift());
@@ -1649,6 +1652,16 @@ if (line.speaker && line.mood) {
                 fx.style.transition = "opacity 0.5s ease";
                 fx.style.opacity = 0;
             }, 50);
+            break;
+            case "silent":
+            if (_currentAmbience) {
+                _currentAmbience.pause();
+                _currentAmbience = null;
+            }
+            if (_currentTrack) {
+                _currentTrack.pause();
+                _currentTrack = null;
+            }
             break;
             case "branch":
         handleBranch(trig);
@@ -1712,6 +1725,34 @@ async function loadDialogue(sceneName) {
     } catch (err) {
         console.error("Failed to load dialogue:", sceneName, err);
     }
+}
+
+let _currentAmbience = null;
+let _currentTrack = null;
+
+function playBgMusic(type, data) {
+    if (!data) return;
+
+    let current = (type === 'ambience') ? _currentAmbience : _currentTrack;
+    
+    if (current && current.dataset.src === data.src) {
+        current.volume = data.volume || 1.0;
+        return;
+    }
+
+    if (current) {
+        current.pause();
+        current.remove();
+    }
+
+    const audio = new Audio(data.src);
+    audio.loop = true;
+    audio.volume = data.volume || 1.0;
+    audio.dataset.src = data.src;
+    audio.play().catch(e => console.error("play audio fuckass", e));
+
+    if (type === 'ambience') _currentAmbience = audio;
+    else _currentTrack = audio;
 }
     
 let _qteTimer = null;
