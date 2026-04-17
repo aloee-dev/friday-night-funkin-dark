@@ -2362,6 +2362,15 @@ function updateRhythmLoop() {
         if (diff < -length - 200) el.remove();
     });
 
+    if (diff < -HIT_WINDOW && el.dataset.isplayer === "true") {
+        hp = Math.max(0, hp - 10); 
+        el.style.opacity = "0.3";
+        el.dataset.isplayer = "false";
+        updateHPBar(currentTime);
+    }
+
+    if (diff < -500) el.remove(); // Final cleanup
+
     requestAnimationFrame(updateRhythmLoop);
 }
 
@@ -2377,8 +2386,9 @@ function createNoteElement(n, isPlayer) {
     const note = document.createElement("div");
     note.className = "note";
     note.dataset.time = time;
-    note.dataset.length = length;
-    note.style.left = (lane * 155) + "px";
+    note.dataset.lane = lane;
+    note.dataset.isplayer = isPlayer; 
+    note.style.left = (lane * 152) + "px";
     note.style.backgroundImage = `url('assets/final/notes/arrow_${lane}.png')`;
     laneContainer.appendChild(note);
 
@@ -2470,6 +2480,55 @@ function updateHPBar(currentTime) {
         pIcon.style.transform = `scale(${bounce})`;
         oIcon.style.transform = `scaleX(-${bounce}) scaleY(${bounce})`;
     }
+}
+
+    const KEY_MAP = {
+    'D': 0, 'ARROWLEFT': 0,
+    'F': 1, 'ARROWDOWN': 1,
+    'J': 2, 'ARROWUP': 2,
+    'K': 3, 'ARROWRIGHT': 3
+};
+
+let activeLanes = new Set();
+
+window.addEventListener("keydown", e => {
+    const key = e.key.toUpperCase();
+    if (KEY_MAP[key] !== undefined) {
+        const lane = KEY_MAP[key];
+        if (!e.repeat) {
+            activeLanes.add(lane);
+            checkNoteHit(lane);
+        }
+    }
+});
+
+window.addEventListener("keyup", e => {
+    const key = e.key.toUpperCase();
+    if (KEY_MAP[key] !== undefined) {
+        activeLanes.delete(KEY_MAP[key]);
+    }
+});
+
+    const HIT_WINDOW = 160;
+
+function checkNoteHit(lane) {
+    const currentTime = _inst.currentTime * 1000;
+    const notes = document.querySelectorAll(`.note[data-lane="${lane}"][data-isplayer="true"]`);
+    
+    let hitAny = false;
+
+    notes.forEach(note => {
+        const targetTime = parseFloat(note.dataset.time);
+        const diff = Math.abs(targetTime - currentTime);
+
+        if (diff < HIT_WINDOW) {
+            hp = Math.min(maxHP, hp + 5);
+            note.remove();
+            document.querySelectorAll(`[data-time="${targetTime}"][data-lane="${lane}"]`).forEach(el => el.remove());
+            hitAny = true;
+        }
+    });
+    updateHPBar(currentTime);
 }
 
 loadGameData();
