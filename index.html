@@ -2286,37 +2286,17 @@ function updateCamera() {
     let playerSinging = _activeSong.playerNotes.some(n => n[0] > currentTime && n[0] < currentTime + focus);
 
     if (opponentSinging) {
-        camera.targetX = 100; 
-        camera.targetY = 200;
-        camera.targetZoom = 1.1;
-    } else if (playerSinging) {
-        camera.targetX = 500; 
-        camera.targetY = 200;
-        camera.targetZoom = 1.2;
-    } else {
-        camera.targetX = 300;
-        camera.targetY = 150;
-        camera.targetZoom = 1.0;
-    }
-}
-
-    let opponentActive = false;
-    let playerActive = false;
-
-    const window = 100;
-    
-    opponentActive = _activeSong.opponentNotes.some(n => Math.abs(n[0] - currentTime) < window);
-    playerActive = _activeSong.playerNotes.some(n => Math.abs(n[0] - currentTime) < window);
-
-    if (opponentActive && playerActive) {
-        camera.targetX = 256; 
-        camera.targetY = 1000;
-    } else if (opponentActive) {
         camera.targetX = 0; 
         camera.targetY = 1000;
-    } else if (playerActive) {
-        camera.targetX = 600;
+        camera.targetZoom = 1.1;
+    } else if (playerSinging) {
+        camera.targetX = 600; 
         camera.targetY = 1000;
+        camera.targetZoom = 1.2;
+    } else {
+        camera.targetX = 256;
+        camera.targetY = 1000;
+        camera.targetZoom = 1.0;
     }
 }
 
