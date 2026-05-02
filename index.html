@@ -862,6 +862,7 @@
 <script>
 
     // to do list!!
+    // center the title buttons
     //  see how continue works
     // see how choices work
     // see how next works
@@ -875,6 +876,7 @@ const assets = [
     "backgrounds/disclaimer.png",
     "backgrounds/street.png",
     "backgrounds/gameover.png",
+    "assets/music/menu.m4a",
     "assets/checkbox_empty.png",
     "assets/checkbox_check.png",
     "assets/bg-box.png",
@@ -2370,7 +2372,7 @@ function updateRhythmLoop() {
         updateHPBar(currentTime);
     }
 
-    if (diff < -500) el.remove(); // Final cleanup
+    if (diff < -500) el.remove();
 
     requestAnimationFrame(updateRhythmLoop);
 }
