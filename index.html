@@ -1018,6 +1018,7 @@ async function showDisclaimer() {
         setTimeout(() => {
             document.getElementById("title-screen").style.opacity = 1;
             menuMusic.play();
+            menuMusic.volume = 0.3;
             menuMusic.loop = true;
             setTimeout(() => {
                 const buttons = document.getElementById("title-buttons");
