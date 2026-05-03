@@ -902,6 +902,8 @@ const assets = [
     "sfx/blip2.wav"
 ];
 
+    const menuMusic = new Audio('assets/music/menu.m4a');
+
     let loaded = 0;
 
     function preloadAsset(src) {
@@ -1015,6 +1017,7 @@ async function showDisclaimer() {
         
         setTimeout(() => {
             document.getElementById("title-screen").style.opacity = 1;
+            menuMusic.play();
             setTimeout(() => {
                 const buttons = document.getElementById("title-buttons");
                 buttons.style.opacity = 1;
@@ -1135,6 +1138,9 @@ async function transLoad(scene) {
     titleButtons.style.display = "none";
     titleScreen.style.display = "none";
     fade.style.opacity = 0;
+    
+    menuMusic.pause();
+    menuMusic.currentTime = 0;
     
     loadDialogue(scene);
 }
@@ -1333,6 +1339,8 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
     fade.style.opacity = 1;
     await new Promise(r => setTimeout(r, 1500));
     fade.style.opacity = 0;
+    menuMusic.pause();
+    menuMusic.currentTime = 0;
     
     loadDialogue(scene);
 }
