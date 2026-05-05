@@ -745,11 +745,27 @@
 
 <div id="title-screen" style="background-image: url('backgrounds/title2.png');"></div>
 <div id="title-buttons">
-    <button class="menu-btn" id="btn-play">PLAY</button>
-    <button class="menu-btn" id="btn-continue">CONTINUE</button>
-    <button class="menu-btn" id="btn-settings">SETTINGS</button>
-    <button class="menu-btn" id="btn-credits">CREDITS</button>
+    <button class="menu-btn" id="btn-play" 
+        style="background-image: url('assets/play.png');"
+        onmouseover="this.style.backgroundImage='url(\'assets/play-hover.png\')'"
+        onmouseout="this.style.backgroundImage='url(\'assets/play.png\')'"></button>
+        
+    <button class="menu-btn" id="btn-continue" 
+        style="background-image: url('assets/continue.png');"
+        onmouseover="this.style.backgroundImage='url(\'assets/continue-hover.png\')'"
+        onmouseout="this.style.backgroundImage='url(\'assets/continue.png\')'"></button>
+        
+    <button class="menu-btn" id="btn-settings" 
+        style="background-image: url('assets/settings.png');"
+        onmouseover="this.style.backgroundImage='url(\'assets/settings-hover.png\')'"
+        onmouseout="this.style.backgroundImage='url(\'assets/settings.png\')'"></button>
+        
+    <button class="menu-btn" id="btn-credits" 
+        style="background-image: url('assets/credits.png');"
+        onmouseover="this.style.backgroundImage='url(\'assets/credits-hover.png\')'"
+        onmouseout="this.style.backgroundImage='url(\'assets/credits.png\')'"></button>
 </div>
+
 
     <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
     <h1 style="color: white; font-family: 'Funkin'; font-size: 60px;">CONTINUE FROM...</h1>
