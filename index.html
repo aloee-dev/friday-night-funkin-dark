@@ -138,25 +138,19 @@
     transition: transform 0.3s ease-in-out;
 }
 
-.menu-btn {
-    font-family: "Funkin", sans-serif;
-    text-align: center;
-    font-size: 100px;
-    width: 200px;
-    padding: 14px 10px;
+    .menu-btn {
+    width: 900px; 
+    height: 250px;
+    display: block;
+    margin: 10px auto;
     background: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     border: none;
     cursor: pointer;
-    color: black; 
-    text-shadow: 
-        5px  5px 0 white, -5px -5px 0 white, 
-        5px -5px 0 white, -5px  5px 0 white,
-        5px  0px 0 white, -5px  0px 0 white,
-        0px  5px 0 white,  0px -5px 0 white;
-
-    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1),
-                color 0.15s ease,
-                text-shadow 0.15s ease;
+    color: transparent;
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
 
 .menu-btn:hover {
