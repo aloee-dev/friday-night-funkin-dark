@@ -928,6 +928,16 @@ const assets = [
         return new Promise((resolve) => {
             let element;
 
+            if (src.includes("btn") || src.includes("-hover")) {
+            const menu = new Image();
+            menu.src = src;
+            menu.style.position = "absolute";
+            menu.style.visibility = "hidden";
+            menu.style.width = "1px";
+            menu.style.height = "1px";
+            document.body.appendChild(menu);
+        }
+
             if (src.endsWith(".png") || src.endsWith(".jpg")) {
                 element = new Image();
                 element.onload = resolve;
