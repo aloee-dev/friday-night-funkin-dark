@@ -1622,9 +1622,16 @@ const oldSprite = document.querySelector(".char.visible");
 if (oldSprite) {
     oldSprite.classList.remove("visible");
 }
-
 if (line.speaker && line.mood) {
-    const nextId = line.speaker + "-" + line.mood;
+    let spriteFile = line.speaker;
+    if (spriteFile === "Keith") {
+        spriteFile = "Boyfriend";
+    }
+    if (spriteFile === "Lilith") { // unconventional name i believe i think everyone calls her cherry
+        spriteFile = "Girlfriend";
+    }
+    
+    const nextId = spriteFile + "-" + line.mood;
     const nextSprite = document.getElementById(nextId);
 
     if (nextSprite) {
