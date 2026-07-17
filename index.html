@@ -694,6 +694,36 @@
 
 #icon-opponent { transform: scaleX(-1); }
 
+    .rating-popup {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    pointer-events: none;
+    
+    animation: ratingPopAnim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+}
+
+@keyframes ratingPopAnim {
+    0% {
+        transform: translate(-50%, -50%) scale(0.7);
+        opacity: 0;
+    }
+    15% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
+    60% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -60%) scale(0.9);
+        opacity: 0;
+    }
+}
+
     #dev-console {
   display: none;
   position: fixed;
@@ -2103,6 +2133,14 @@ let _currentPlayerChar = "bf";
 let _currentOpponentChar = "gf";
 let _playerSprite = null;
 let _opponentSprite = null;
+let combo = 0;
+
+let timing = { 
+    sick: 45,
+    good: 90,
+    bad: 135,
+    shit: 166
+};
 
 let _playerCanvas = document.getElementById("playerCanvas");
 let _playerCtx = _playerCanvas.getContext("2d");
@@ -2147,6 +2185,17 @@ const PLAYER_KEY_FRAMES = {
     "ARROWRIGHT": 7,
     "ARROWDOWN": 8
 };
+
+    function spawnRating(ratingType) {
+    const ratingImg = document.createElement("img");
+    ratingImg.src = `assets/final/${ratingType}.png`;
+    ratingImg.className = "rating-popup";
+
+    document.getElementById("rhythm-stage").appendChild(ratingImg);
+
+    setTimeout(() => ratingImg.remove(), 400);
+}
+
 
 async function loadSongData(songId) {
     const base = `assets/final/songs/${songId}/`;
