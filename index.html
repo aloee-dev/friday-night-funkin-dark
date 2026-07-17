@@ -2142,6 +2142,74 @@ let timing = {
     shit: 166
 };
 
+window.addEventListener("keydown", (e) => {
+    if (!_rhythmStarted || !_inst) return;
+
+    const keyToLane = {
+        "ARROWLEFT": 0, "D": 0,
+        "ARROWDOWN": 1, "F": 1,
+        "ARROWUP": 2,   "J": 2,
+        "ARROWRIGHT": 3, "K": 3
+    };
+
+    const cleanKey = e.key.toUpperCase();
+    const targetLane = keyToLane[cleanKey];
+    if (targetLane === undefined) return;
+
+    e.preventDefault();
+
+    _playerKey = cleanKey;
+
+    const currentTime = _inst.currentTime * 1000;
+    const notes = document.querySelectorAll("#player-lanes .note");
+    
+    let closestNote = null;
+    let minDistance = Infinity;
+
+    notes.forEach(el => {
+        const targetTime = parseFloat(el.dataset.time);
+        const lane = Math.round(parseFloat(el.style.left) / 155);
+        const diff = Math.abs(targetTime - currentTime);
+
+        if (lane === targetLane && diff < minDistance) {
+            minDistance = diff;
+            closestNote = el;
+        }
+    });
+
+    if (closestNote && minDistance <= timing.bad) {
+        const hitTime = closestNote.dataset.time;
+
+        document.querySelectorAll(`#player-lanes [data-time="${hitTime}"]`).forEach(sus => {
+            const lane = Math.round(parseFloat(sus.style.left) / 155);
+            if (lane === targetLane) sus.remove();
+        });
+
+        closestNote.remove();
+
+        if (minDistance <= timing.sick) {
+            hp = Math.min(maxHP, hp + 5); 
+            spawnRating("sick");
+        } else if (minDistance <= timing.good) {
+            hp = Math.min(maxHP, hp + 2); 
+            spawnRating("good");
+        } else if (minDistance <= timing.bad) {
+            hp = Math.min(maxHP, hp + 0); 
+            spawnRating("bad");
+        } else {
+            hp = Math.min(maxHP, hp + 0); 
+            spawnRating("shit");
+        }
+
+        updateHPBar(currentTime);
+    }
+});
+
+window.addEventListener("keyup", (e) => {
+    _playerKey = null;
+});
+
+
 let _playerCanvas = document.getElementById("playerCanvas");
 let _playerCtx = _playerCanvas.getContext("2d");
 
