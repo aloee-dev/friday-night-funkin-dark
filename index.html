@@ -2234,6 +2234,7 @@ window.addEventListener("keydown", (e) => {
         if (minDistance <= timing.sick) {
             hp = Math.min(maxHP, hp + 5); 
             spawnRating("sick");
+            sicks++;
             score += 350;
             combo++;
             splashes.push({
@@ -2244,16 +2245,19 @@ window.addEventListener("keydown", (e) => {
         } else if (minDistance <= timing.good) {
             hp = Math.min(maxHP, hp + 2); 
             spawnRating("good");
+            goods++;
             score += 200;
             combo++;
         } else if (minDistance <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
+            bads++;
             score += 100;
             combo++;
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
+            shits++;
             score += 50;
             combo = 0;
         }
@@ -2374,6 +2378,14 @@ async function startSong(songId) {
     };
     
     _rhythmStarted = true;
+    
+    sicks = 0;
+    goods = 0;
+    bads = 0;
+    shits = 0;
+    misses = 0;
+    score: 0;
+    combo = 0;
     
     const fade = document.getElementById("fade-overlay");
     const songLoading = document.getElementById("song-loading-screen");
