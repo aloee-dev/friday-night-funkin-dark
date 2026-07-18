@@ -2159,6 +2159,11 @@ let _playerSprite = null;
 let _opponentSprite = null;
 let combo = 0;
 let score = 0;
+let sicks = 0;
+let goods = 0;
+let bads = 0;
+let shits = 0;
+let misses = 0;
 let splashes = []; 
 
 let timing = { 
@@ -2230,6 +2235,7 @@ window.addEventListener("keydown", (e) => {
             hp = Math.min(maxHP, hp + 5); 
             spawnRating("sick");
             score += 350;
+            combo++;
             splashes.push({
                 lane: targetLane,
                 startTime: currentTime,
@@ -2239,14 +2245,17 @@ window.addEventListener("keydown", (e) => {
             hp = Math.min(maxHP, hp + 2); 
             spawnRating("good");
             score += 200;
+            combo++;
         } else if (minDistance <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
             score += 100;
+            combo++;
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
             score += 50;
+            combo = 0;
         }
 
         updateHPBar(currentTime);
