@@ -2524,21 +2524,31 @@ function updateRhythmLoop() {
         createNoteElement(_activeSong.playerNotes.shift(), true);
     }
 
-    const noteElements = document.querySelectorAll(".note");
+        const noteElements = document.querySelectorAll(".note");
     noteElements.forEach(el => {
         const targetTime = parseFloat(el.dataset.time);
         const diff = targetTime - currentTime;
+        const speed = _activeSong.scrollSpeed;
+       
         const y = 50 + (diff * speed);
         el.style.top = y + "px";
+        const isPlayerLane = el.parentElement.id === "player-lanes";
 
-        if (diff < -350) {
-            if (!el.dataset.hit) {
-    hp = Math.max(0, hp - 10);
-    combo = 0;
-        }
-            el.remove();
+        if (isPlayerLane) {
+            if (diff < -350) {
+                if (!el.dataset.hit) {
+                    hp = Math.max(0, hp - 10);
+                    combo = 0;
+                }
+                el.remove();
+            }
+        } else {
+            if (diff <= 0) {
+                el.remove();
+            }
         }
     });
+
 
     const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
