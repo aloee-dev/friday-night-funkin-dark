@@ -2142,6 +2142,8 @@ let timing = {
     shit: 166
 };
 
+const _heldKeys = new Set();
+
 window.addEventListener("keydown", (e) => {
     if (!_rhythmStarted || !_inst) return;
 
@@ -2158,7 +2160,16 @@ window.addEventListener("keydown", (e) => {
 
     e.preventDefault();
 
+    if (_heldKeys.has(cleanKey)) return;
+    _heldKeys.add(cleanKey);
+
     _playerKey = cleanKey;
+
+    const pla = document.getElementById("player-lanes");
+    const receptor = pla.children[targetLane];
+    if (receptor) {
+        receptor.style.backgroundImage = `url('assets/final/arrowhold_${targetLane}.png')`;
+    }
 
     const currentTime = _inst.currentTime * 1000;
     const notes = document.querySelectorAll("#player-lanes .note");
@@ -2206,8 +2217,28 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
+    const keyToLane = {
+        "ARROWLEFT": 0, "D": 0,
+        "ARROWDOWN": 1, "F": 1,
+        "ARROWUP": 2,   "J": 2,
+        "ARROWRIGHT": 3, "K": 3
+    };
+
+    const cleanKey = e.key.toUpperCase();
+    _heldKeys.delete(cleanKey);
+
+    const targetLane = keyToLane[cleanKey];
+    if (targetLane !== undefined) {
+        const pla = document.getElementById("player-lanes");
+        const receptor = pla.children[targetLane];
+        if (receptor) {
+            receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
+        }
+    }
+
     _playerKey = null;
 });
+
 
 
 let _playerCanvas = document.getElementById("playerCanvas");
