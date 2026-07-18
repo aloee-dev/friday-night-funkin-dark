@@ -2535,7 +2535,10 @@ function updateRhythmLoop() {
         const y = 50 + (diff * speed);
         el.style.top = y + "px";
 
-        if (diff < -200) el.remove();
+        if (diff < -200) {
+    el.remove();
+    hp = Math.max(0, hp - 10);
+    combo = 0;
     });
 
     const bodies = document.querySelectorAll(".sustain-body");
