@@ -2186,7 +2186,7 @@ window.addEventListener("keydown", (e) => {
         const timeDiff = targetTime - currentTime;
         const speed = _activeSong.scrollSpeed;
         const centerTimeOffset = 75 / speed;
-        const adjustedDiff = Math.abs(timeDiff - centerTimeOffset);
+        const adjustedDiff = Math.abs(timeDiff + centerTimeOffset);
 
         if (lane === targetLane && adjustedDiff < minDistance) {
             minDistance = adjustedDiff;
@@ -2539,7 +2539,7 @@ function updateRhythmLoop() {
 
          if (isPlayerLane) {
             const centerTimeOffset = 75 / speed;
-            if (diff < -350 + centerTimeOffset) {
+            if (diff < -350 - centerTimeOffset) {
                 if (!el.dataset.hit) {
                     hp = Math.max(0, hp - 10);
                     combo = 0;
@@ -2548,7 +2548,7 @@ function updateRhythmLoop() {
             }
         } else {
             const centerTimeOffset = 75 / speed;
-            if (diff <= centerTimeOffset) {
+            if (diff >= centerTimeOffset) {
                 el.remove();
             }
         }
