@@ -2164,6 +2164,8 @@ let goods = 0;
 let bads = 0;
 let shits = 0;
 let misses = 0;
+let accuracy = "100.00";
+let grade = "??";
 let splashes = []; 
 
 let timing = { 
@@ -2172,6 +2174,39 @@ let timing = {
     bad: 135,
     shit: 166
 };
+    
+function calculateAccuracy(sicks, goods, bads, shits, misses) {
+  const totalNotes = sicks + goods + bads + shits + misses;
+  
+  if (totalNotes === 0) return 0;
+  
+  const earnedPoints = (sicks * 1.0) + (goods * 0.75) + (bads * 0.5) + (shits * 0.25) + (misses * 0.0);
+  
+  const maxPoints = totalNotes * 1.0;
+  const accuracy = (earnedPoints / maxPoints) * 100;
+  
+  return Number(accuracy.toFixed(2));
+}
+
+    function calculateGrade(accuracy) {
+  const acc = Number(accuracy);
+
+  if (acc >= 99.00) {
+    return "SSS";
+  } else if (acc >= 97.00) {
+    return "SS";
+  } else if (acc >= 95.00) {
+    return "S";
+  } else if (acc >= 90.00) {
+    return "A";
+  } else if (acc >= 80.00) {
+    return "B";
+  } else if (acc >= 70.00) {
+    return "C";
+  } else {
+    return "D";
+  }
+}
 
 const _heldKeys = new Set();
 
@@ -2237,6 +2272,8 @@ window.addEventListener("keydown", (e) => {
             sicks++;
             score += 350;
             combo++;
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
             splashes.push({
                 lane: targetLane,
                 startTime: currentTime,
@@ -2247,18 +2284,24 @@ window.addEventListener("keydown", (e) => {
             spawnRating("good");
             goods++;
             score += 200;
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
             combo++;
         } else if (minDistance <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
             bads++;
             score += 100;
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
             combo++;
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
             shits++;
             score += 50;
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
             combo = 0;
         }
 
