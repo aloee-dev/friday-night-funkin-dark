@@ -2195,6 +2195,7 @@ window.addEventListener("keydown", (e) => {
 
     if (closestNote && minDistance <= timing.bad) {
         const hitTime = closestNote.dataset.time;
+        closestNote.dataset.hit = "true";
 
         document.querySelectorAll(`#player-lanes [data-time="${hitTime}"]`).forEach(sus => {
             const lane = Math.round(parseFloat(sus.style.left) / 155);
@@ -2536,9 +2537,11 @@ function updateRhythmLoop() {
         el.style.top = y + "px";
 
         if (diff < -350) {
-    el.remove();
+            if (el.classList.contains("note") && !el.data.hit) {
     hp = Math.max(0, hp - 10);
     combo = 0;
+        }
+            el.remove();
         }
     });
 
