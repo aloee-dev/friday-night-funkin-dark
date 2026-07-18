@@ -2138,6 +2138,7 @@ let _currentOpponentChar = "gf";
 let _playerSprite = null;
 let _opponentSprite = null;
 let combo = 0;
+let score = 0;
 
 let timing = { 
     sick: 45,
@@ -2205,15 +2206,19 @@ window.addEventListener("keydown", (e) => {
         if (minDistance <= timing.sick) {
             hp = Math.min(maxHP, hp + 5); 
             spawnRating("sick");
+            score += 350;
         } else if (minDistance <= timing.good) {
             hp = Math.min(maxHP, hp + 2); 
             spawnRating("good");
+            score += 200;
         } else if (minDistance <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
+            score += 100;
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
+            score += 50;
         }
 
         updateHPBar(currentTime);
