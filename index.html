@@ -2535,7 +2535,7 @@ function updateRhythmLoop() {
         const y = 50 + (diff * speed);
         el.style.top = y + "px";
 
-        if (diff < -200) {
+        if (diff < -350) {
     el.remove();
     hp = Math.max(0, hp - 10);
     combo = 0;
@@ -2554,7 +2554,7 @@ function updateRhythmLoop() {
         el.style.top = headY + "px";
         el.style.height = height + "px";
 
-        if (diff < -length - 200) el.remove();
+        if (diff < -length - 350) el.remove();
     });
 
     const ends = document.querySelectorAll(".sustain-end");
