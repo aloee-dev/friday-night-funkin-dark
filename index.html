@@ -2167,7 +2167,6 @@ window.addEventListener("keydown", (e) => {
 
     if (_heldKeys.has(cleanKey)) return;
     _heldKeys.add(cleanKey);
-
     _playerKey = cleanKey;
 
     const pla = document.getElementById("player-lanes");
@@ -2178,13 +2177,12 @@ window.addEventListener("keydown", (e) => {
 
     const currentTime = _inst.currentTime * 1000;
     const notes = document.querySelectorAll("#player-lanes .note");
-    
     let closestNote = null;
     let minDistance = Infinity;
 
     notes.forEach(el => {
+        const lane = parseInt(el.dataset.lane);
         const targetTime = parseFloat(el.dataset.time);
-        const lane = Math.round(parseFloat(el.style.left) / 155);
         const diff = Math.abs(targetTime - currentTime);
 
         if (lane === targetLane && diff < minDistance) {
@@ -2195,15 +2193,15 @@ window.addEventListener("keydown", (e) => {
 
     if (closestNote && minDistance <= timing.bad) {
         const hitTime = closestNote.dataset.time;
-        closestNote.dataset.hit = "true";
-
-        document.querySelectorAll(`#player-lanes [data-time="${hitTime}"]`).forEach(sus => {
-            const lane = Math.round(parseFloat(sus.style.left) / 155);
-            if (lane === targetLane) sus.remove();
+       
+        document.querySelectorAll(`#player-lanes [data-time="${hitTime}"][data-lane="${targetLane}"]`).forEach(sus => {
+            sus.dataset.hit = "true";
+            sus.remove();
         });
-
+       
+        closestNote.dataset.hit = "true";
         closestNote.remove();
-
+        
         if (minDistance <= timing.sick) {
             hp = Math.min(maxHP, hp + 5); 
             spawnRating("sick");
@@ -2518,16 +2516,13 @@ function updateRhythmLoop() {
     updateCamera();
     autoFocusCamera(currentTime);
 
-    [_activeSong.opponentNotes, _activeSong.playerNotes].forEach((list, index) => {
-        const isPlayer = index === 1;
-        for (let i = list.length - 1; i >= 0; i--) {
-            const n = list[i];
-            if (n[0] < currentTime + 2000) {
-                createNoteElement(n, isPlayer);
-                list.splice(i, 1);
-            }
-        }
-    });
+    while (_activeSong.opponentNotes.length > 0 && _activeSong.opponentNotes[0][0] < currentTime + 2000) {
+        createNoteElement(_activeSong.opponentNotes.shift(), false);
+    }
+    
+    while (_activeSong.playerNotes.length > 0 && _activeSong.playerNotes[0][0] < currentTime + 2000) {
+        createNoteElement(_activeSong.playerNotes.shift(), true);
+    }
 
     const noteElements = document.querySelectorAll(".note");
     noteElements.forEach(el => {
@@ -2537,7 +2532,7 @@ function updateRhythmLoop() {
         el.style.top = y + "px";
 
         if (diff < -350) {
-            if (el.classList.contains("note") && !el.dataset.hit) {
+            if (!el.dataset.hit) {
     hp = Math.max(0, hp - 10);
     combo = 0;
         }
@@ -2591,6 +2586,7 @@ function createNoteElement(n, isPlayer) {
     note.className = "note";
     note.dataset.time = time;
     note.dataset.length = length;
+    note.dataset.lane = lane;
     note.style.left = (lane * 155) + "px";
     note.style.backgroundImage = `url('assets/final/notes/arrow_${lane}.png')`;
     laneContainer.appendChild(note);
