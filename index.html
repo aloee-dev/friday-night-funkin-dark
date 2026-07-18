@@ -2548,7 +2548,7 @@ function updateRhythmLoop() {
             }
         } else {
             const centerTimeOffset = 75 / speed;
-            if (diff >= centerTimeOffset) {
+            if (diff <= centerTimeOffset) {
                 el.remove();
             }
         }
