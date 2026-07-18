@@ -2186,7 +2186,7 @@ window.addEventListener("keydown", (e) => {
         const timeDiff = targetTime - currentTime;
         const speed = _activeSong.scrollSpeed;
         const centerTimeOffset = 75 / speed;
-        const adjustedDiff = Math.abs(timeDiff + centerTimeOffset);
+        const adjustedDiff = Math.abs(timeDiff - centerTimeOffset);
 
         if (lane === targetLane && adjustedDiff < minDistance) {
             minDistance = adjustedDiff;
