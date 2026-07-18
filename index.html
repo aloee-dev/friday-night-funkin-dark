@@ -552,6 +552,23 @@
     from { opacity: 0; }
     to { opacity: 1; }
 }
+    /* Hit Splash Frame System */
+.note-splash-container {
+    position: absolute;
+    top: 50px;
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 99;
+}
+.note-splash-container img {
+    position: absolute;
+    top: 0;
+    width: 450px;
+    height: 150px;
+}
+
     
 .r-0 { background-image: url('assets/final/arrow_0.png'); }
 .r-1 { background-image: url('assets/final/arrow_1.png'); }
@@ -2139,6 +2156,7 @@ let _playerSprite = null;
 let _opponentSprite = null;
 let combo = 0;
 let score = 0;
+let splashes = []; 
 
 let timing = { 
     sick: 45,
@@ -2209,6 +2227,11 @@ window.addEventListener("keydown", (e) => {
             hp = Math.min(maxHP, hp + 5); 
             spawnRating("sick");
             score += 350;
+            splashes.push({
+                lane: targetLane,
+                startTime: currentTime,
+                el: null
+            });
         } else if (minDistance <= timing.good) {
             hp = Math.min(maxHP, hp + 2); 
             spawnRating("good");
@@ -2584,6 +2607,47 @@ function updateRhythmLoop() {
 
         if (diff < -length - 200) el.remove();
     });
+
+    const playerLanes = document.getElementById("player-lanes");
+    const frameDuration = 40;
+
+
+    for (let i = splashes.length - 1; i >= 0; i--) {
+        const splash = splashes[i];
+        const elapsed = currentTime - splash.startTime;
+        const currentFrame = Math.floor(elapsed / frameDuration);
+
+
+        if (currentFrame >= 3) {
+            if (splash.el) splash.el.remove();
+            splashes.splice(i, 1);
+            continue;
+        }
+
+
+        if (!splash.el && playerLanes) {
+            const div = document.createElement("div");
+            div.className = "note-splash-container";
+            div.style.left = (splash.lane * 155) + "px";
+
+
+            const img = document.createElement("img");
+            img.src = `assets/final/splash_${splash.lane}.png`;
+           
+            div.appendChild(img);
+            playerLanes.appendChild(div);
+            splash.el = div;
+        }
+
+
+        if (splash.el) {
+            const innerImg = splash.el.querySelector("img");
+            if (innerImg) {
+                innerImg.style.left = -(currentFrame * 150) + "px";
+            }
+        }
+    }
+
 
     requestAnimationFrame(updateRhythmLoop);
 }
