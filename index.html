@@ -555,8 +555,8 @@
     
 .note-splash-container {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     overflow: hidden;
     pointer-events: none;
     z-index: 99;
@@ -564,8 +564,8 @@
 .note-splash-container img {
     position: absolute;
     top: 0;
-    width: 450px;
-    height: 150px;
+    width: 600px;
+    height: 200px;
 }
 
     
@@ -2646,7 +2646,7 @@ function updateRhythmLoop() {
         if (splash.el) {
             const innerImg = splash.el.querySelector("img");
             if (innerImg) {
-                innerImg.style.left = -(currentFrame * 150) + "px";
+                innerImg.style.left = -(currentFrame * 200) + "px";
             }
         }
     }
