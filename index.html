@@ -2537,7 +2537,7 @@ function updateRhythmLoop() {
         el.style.top = y + "px";
 
         if (diff < -350) {
-            if (el.classList.contains("note") && !el.data.hit) {
+            if (el.classList.contains("note") && !el.dataset.hit) {
     hp = Math.max(0, hp - 10);
     combo = 0;
         }
