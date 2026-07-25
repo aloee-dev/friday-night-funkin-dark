@@ -926,6 +926,7 @@
 
     <div id="rhythm-stats" style="display:none;">
     Score: <span id="stats-score">0</span> |
+    Misses: <span id="stats-misses">0</span> |
     Accuracy:<span id="stats-accuracy">100.00</span> |
     <span id="stats-grade">??</span>
 </div>
@@ -2851,6 +2852,7 @@ function updateHPBar(currentTime) {
     oIcon.style.left = (splitX - 125 - 100) + "px";
 
     document.getElementById("stats-score").textContent = score;
+    document.getElementById("stats-misses").textContent = misses;
     document.getElementById("stats-accuracy").textContent = accuracy;
     document.getElementById("stats-grade").textContent = grade;
 
