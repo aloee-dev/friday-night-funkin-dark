@@ -2678,6 +2678,7 @@ function updateRhythmLoop() {
             if (diff < -350 + centerTimeOffset) {
                 if (!el.dataset.hit) {
                     hp = Math.max(0, hp - 10);
+                    misses++;
                     combo = 0;
                 }
                 el.remove();
