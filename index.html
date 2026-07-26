@@ -2314,10 +2314,10 @@ window.addEventListener("keydown", (e) => {
     if (closestNote && minDistance <= timing.bad) {
         const hitTime = closestNote.dataset.time;
        
-        document.querySelectorAll(`#player-lanes [data-time="${hitTime}"][data-lane="${targetLane}"]`).forEach(sus => {
-            sus.dataset.hit = "true";
-            sus.remove();
-        });
+        document.querySelectorAll(`#player-lanes [data-time="${hitTime}"][data-lane="${targetLane}"]:not(.sustain-body):not(.sustain-end)`).forEach(sus => {
+    sus.dataset.hit = "true";
+    sus.remove();
+});
        
         closestNote.dataset.hit = "true";
         closestNote.remove();
