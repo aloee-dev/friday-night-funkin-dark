@@ -2861,7 +2861,7 @@ function updateHPBar(currentTime) {
 
     document.getElementById("hp-green-wrapper").style.width = (hpPercent * 100) + "%";
 
-    const splitX = totalWidth * (1 - hpPercent);
+    const splitX = 332.5 + (totalWidth * (1 - hpPercent));
 
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
