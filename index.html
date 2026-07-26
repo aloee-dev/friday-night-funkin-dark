@@ -2785,6 +2785,7 @@ function createNoteElement(n, isPlayer) {
     const time = n[0];
     const lane = n[1];
     const length = n[2];
+    const type = n[3] || 0;
 
     const note = document.createElement("div");
     note.className = "note";
@@ -2794,6 +2795,9 @@ function createNoteElement(n, isPlayer) {
     note.style.left = (lane * 155) + "px";
     note.style.backgroundImage = `url('assets/final/notes/arrow_${lane}.png')`;
     laneContainer.appendChild(note);
+
+    //if (type === 1) {
+    //}
 
     if (length > 0) {
 
