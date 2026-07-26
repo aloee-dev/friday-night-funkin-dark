@@ -479,6 +479,7 @@
 }
 .settings-exit {
   font-size: 50px;
+  top: 20px;
   font-family: 'Funkin';
   color: white;
   background: transparent;
@@ -488,7 +489,7 @@
     transition: transform 0.2s ease-out;
 }
 .settings-exit:hover {
-    transform: scale(1.15); 
+    transform: scale(1.5); 
 }
     
 .arrow {
@@ -857,9 +858,9 @@
 
     <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
     <h1 style="color: white; font-family: 'Funkin'; font-size: 60px;">CONTINUE FROM...</h1>
-    <button class="menu-btn" id="load-scene-btn">CURRENT SCENE</button>
-    <button class="menu-btn" id="load-chapter-btn">CURRENT CHAPTER</button>
-    <button class="menu-btn" style="font-size: 40px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
+    <button class="settings-exit" id="load-scene-btn">CURRENT SCENE</button>
+    <button class="settings-exit" id="load-chapter-btn">CURRENT CHAPTER</button>
+    <button class="settings-exit" style="font-size: 40px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
 </div>
 
 <div id="settings-menu" style="display:none;">
