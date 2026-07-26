@@ -2866,8 +2866,8 @@ function updateHPBar(currentTime) {
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
 
-    pIcon.style.left = (splitX - 125 + 40) + "px";
-    oIcon.style.left = (splitX - 125 - 40) + "px";
+    pIcon.style.left = (splitX - 125 + 100) + "px"; 
+    oIcon.style.left = (splitX - 125 - 100) + "px";
 
     document.getElementById("stats-score").textContent = score;
     document.getElementById("stats-misses").textContent = misses;
