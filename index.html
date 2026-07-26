@@ -700,6 +700,7 @@
     right: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     z-index: 20;
 }
 
@@ -2865,8 +2866,8 @@ function updateHPBar(currentTime) {
     const pIcon = document.getElementById("icon-player");
     const oIcon = document.getElementById("icon-opponent");
 
-    pIcon.style.left = (splitX - 125 + 100) + "px"; 
-    oIcon.style.left = (splitX - 125 - 100) + "px";
+    pIcon.style.left = (splitX - 125 + 40) + "px";
+    oIcon.style.left = (splitX - 125 - 40) + "px";
 
     document.getElementById("stats-score").textContent = score;
     document.getElementById("stats-misses").textContent = misses;
