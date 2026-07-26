@@ -2473,8 +2473,8 @@ async function startSong(songId) {
         scrollSpeed: data.scrollSpeed,
         player: data.player,
         opponent: data.opponent,
-        opponentNotes: [...data.opponentNotes],
-        playerNotes: [...data.playerNotes]
+        opponentNotes: structuredClone(data.opponentNotes),
+        playerNotes: structuredClone(data.playerNotes)
     };
     
     _rhythmStarted = true;
