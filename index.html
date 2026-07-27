@@ -2806,11 +2806,14 @@ function createNoteElement(n, isPlayer) {
     if (length > 0) {
 
         const body = document.createElement("div");
+
+        const offset = 75;
         body.className = "sustain-body";
         body.dataset.time = time;
         body.dataset.length = length;
         body.dataset.lane = lane;
         body.style.left = (lane * 155) + "px";
+        body.style.transform = `translateY(${offset}px)`;
         body.style.backgroundImage = `url('assets/final/notes/sustain_body${lane}.png')`;
         laneContainer.appendChild(body);
 
