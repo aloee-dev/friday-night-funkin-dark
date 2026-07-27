@@ -1034,63 +1034,62 @@ const assets = [
     "sfx/blip2.wav"
 ];
 
-    const menuMusic = new Audio('assets/music/menu.m4a');
 
-    let loaded = 0;
+const menuMusic = new Audio('assets/music/menu.m4a');
+let loaded = 0;
 
-    function preloadAsset(src) {
-        return new Promise((resolve) => {
-            let element;
-
-            if (src.includes("btn") || src.includes("-hover")) {
-            const menu = new Image();
-            menu.src = src;
-            menu.style.position = "absolute";
-            menu.style.visibility = "hidden";
-            menu.style.width = "1px";
-            menu.style.height = "1px";
-            document.body.appendChild(menu);
+function preloadAsset(src) {
+    return new Promise((resolve) => {
+        if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
+            const audio = new Audio();
+            audio.oncanplaythrough = () => resolve(audio);
+            audio.src = src;
+            audio.load();
+            return;
         }
 
-            if (src.endsWith(".png") || src.endsWith(".jpg")) {
-                element = new Image();
-                element.onload = resolve;
-                element.src = src;
-            } else {
-                element = new Audio();
-                element.oncanplaythrough = resolve;
-                element.src = src;
-                element.load();
-            }
-        });
-    }
+        const img = new Image();
+        img.src = src;
 
-    async function preloadAll() {
-    for (const src of assets) {
-        await preloadAsset(src);
-
-if (src.includes("sprites/")) {
-    const id = src.split('/').pop().split('.')[0]; 
-    
-    const img = new Image();
-    img.id = id; 
-    img.src = src;
-    img.className = "char"; 
-    document.getElementById("game-viewport").appendChild(img);
+        img.onload = () => {
+            img.decode()
+                .then(() => {
+                    resolve(img);
+                })
+                .catch(() => {
+                    resolve(img);
+                });
+        };
+    });
 }
 
+async function preloadAll() {
+    const progressBar = document.getElementById("progress-bar");
+    const gameViewport = document.getElementById("game-viewport");
+
+    const promises = assets.map(async (src) => {
+        const element = await preloadAsset(src);
         
         loaded++;
-
         const percent = Math.floor((loaded / assets.length) * 100);
-        document.getElementById("progress-bar").style.width = percent + "%";
-    }
+        progressBar.style.width = percent + "%";
+
+        if (src.includes("sprites/")) {
+            const id = src.split('/').pop().split('.')[0]; 
+            element.id = id; 
+            element.className = "char"; 
+            gameViewport.appendChild(element);
+        }
+
+        return element;
+    });
+
+    await Promise.all(promises);
 
     document.getElementById("loading-text").textContent = "LOADED!";
     await new Promise(r => setTimeout(r, 1000));
 
     document.getElementById("loading-screen").style.opacity = 0;
-
     setTimeout(showDisclaimer, 1000);
 }
 
