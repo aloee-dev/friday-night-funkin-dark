@@ -2814,7 +2814,6 @@ function createNoteElement(n, isPlayer) {
         body.dataset.lane = lane;
         body.style.left = (lane * 155) + "px";
         body.style.transform = `translateY(${offset}px)`;
-        body.style.height = `calc(100% - ${offset}px)`; 
         body.style.backgroundImage = `url('assets/final/notes/sustain_body${lane}.png')`;
         laneContainer.appendChild(body);
 
