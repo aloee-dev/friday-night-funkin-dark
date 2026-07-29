@@ -1,5 +1,9 @@
 {
   "text": "Something happens",
+  "speaker": "Pico",
+  "style": "pico",
+  "mood": "neutral",
+  "position": "left",
   "choices": [
     { 
       "text": "go go go", 
