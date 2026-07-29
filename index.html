@@ -333,22 +333,28 @@
 }
 
 .choice-btn {
-    font-family: 'Blue Winter', sans-serif;
-    background: rgba(14, 32, 87, 0.95);
-    color: white;
-    border: 3px solid white;
-    padding: 15px 30px;
-    font-size: 24px;
-    cursor: pointer;
-    min-width: 300px;
-    transition: all 0.2s;
+  font-family: 'Blue Winter';
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  min-width: 300px;
+  padding: 15px 30px;
+  transition: all 0.2s;
+  border-radius: 40px; 
+  border: 6px solid #000000;
+  background-image: 
+    url('assets/checker.png'), 
+    linear-gradient(135deg, #53f9de 0%, #689afa 50%, #a55cff 100%);
+  background-repeat: repeat, no-repeat;
+  background-size: 350px 350px, auto;
 }
 
 .choice-btn:hover {
-    background: white;
-    color: #0e2057;
-    transform: scale(1.05);
+    border-color: #ffd700;
+    color: white;
+    transform: scale(1.10);
 }
+
 
 .char {
   position: absolute;
