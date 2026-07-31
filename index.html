@@ -792,16 +792,26 @@ a,
     
     animation: ratingPopAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
+
     .combo-popup {
     position: absolute;
     left: 50%;
-    top: 35%;
+    top: 55%;
     transform: translate(-50%, -50%);
     z-index: 100;
     pointer-events: none;
-    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 170px; 
     animation: ratingPopAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
+
+.combo-digit {
+    width: 120px;
+    height: 170px;
+}
+
 
 @keyframes ratingPopAnim {
     0% {
@@ -2360,6 +2370,7 @@ window.addEventListener("keydown", (e) => {
             sicks++;
             score += 350;
             combo++;
+            spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
             splashes.push({
@@ -2375,6 +2386,7 @@ window.addEventListener("keydown", (e) => {
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
             combo++;
+            spawnCombo(combo);
         } else if (minDistance <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
@@ -2383,6 +2395,7 @@ window.addEventListener("keydown", (e) => {
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
             combo++;
+            spawnCombo(combo);
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
@@ -2391,6 +2404,7 @@ window.addEventListener("keydown", (e) => {
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
             combo = 0;
+            spawnCombo(combo);
         }
 
         updateHPBar(currentTime);
@@ -2460,10 +2474,10 @@ const CHARACTER_DATA = {
 
 const IDLE_FRAMES = [0, 1, 2, 3, 4];
 const PLAYER_KEY_FRAMES = {
-    "ARROWLEFT": 5,
-    "ARROWUP": 6,
-    "ARROWRIGHT": 7,
-    "ARROWDOWN": 8
+        "ARROWLEFT": 5, "D": 5,
+        "ARROWDOWN": 6, "F": 6,
+        "ARROWUP": 7,   "J": 7,
+        "ARROWRIGHT": 8, "K": 8
 };
 
     function spawnRating(ratingType) {
@@ -2474,6 +2488,24 @@ const PLAYER_KEY_FRAMES = {
     document.getElementById("rhythm-stage").appendChild(ratingImg);
 
     setTimeout(() => ratingImg.remove(), 600);
+}
+
+    function spawnCombo(combo) {
+        if (combo < 10) return;
+
+    const comboContainer = document.createElement("div");
+    comboContainer.className = "combo-popup";
+    const digits = String(combo).split("");
+    digits.forEach(digit => {
+        const digitImg = document.createElement("img");
+        digitImg.src = `assets/final/combo/${digit}.png`;
+        digitImg.className = "combo-digit";
+        comboContainer.appendChild(digitImg);
+    });
+        
+    document.getElementById("rhythm-stage").appendChild(comboContainer);
+        
+    setTimeout(() => comboContainer.remove(), 600);
 }
 
 
