@@ -804,7 +804,7 @@ a,
     justify-content: center;
     align-items: center;
     height: 128px; 
-    animation: ratingPopAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+    animation: comboPopAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
 
 .combo-digit {
@@ -825,6 +825,21 @@ a,
     }
     100% {
         transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+}
+
+    @keyframes comboPopAnim {
+    0% {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+    33% {
+        transform: translate(-50%, -55%);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -47%);
         opacity: 0;
     }
 }
@@ -2506,7 +2521,7 @@ const PLAYER_KEY_FRAMES = {
         
     document.getElementById("rhythm-stage").appendChild(comboContainer);
         
-    setTimeout(() => comboContainer.remove(), 600);
+    setTimeout(() => comboContainer.remove(), 900);
 }
 
 
