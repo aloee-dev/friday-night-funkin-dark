@@ -2819,18 +2819,18 @@ function updateCamera() {
 }
 
 function updateRhythmLoop() {
-
     if (!_rhythmStarted || !_inst) return;
     
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
-        if (_activeSong.events) {
+
+    if (_activeSong.events) {
         const holdTicks = 4;
         for (let i = 0; i < _activeSong.events.length; i++) {
             const ev = _activeSong.events[i];
 
             if (currentTime >= ev.time && !ev.hasFired) {
-                triggerSpecial(ev.target, ev.animation, holdTicks);
+                triggerSpecialByFrames(ev.target, ev.animation, holdTicks);
                 ev.hasFired = true; 
             }
         }
@@ -2849,50 +2849,48 @@ function updateRhythmLoop() {
         createNoteElement(_activeSong.playerNotes.shift(), true);
     }
 
-        const noteElements = document.querySelectorAll(".note");
+    const noteElements = document.querySelectorAll(".note");
     noteElements.forEach(el => {
         const targetTime = parseFloat(el.dataset.time);
         const diff = targetTime - currentTime;
-        const speed = _activeSong.scrollSpeed;
        
         const y = 50 + (diff * speed);
         el.style.top = y + "px";
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
-if (isPlayerLane) {
-    const centerTimeOffset = 75 / speed;
-    if (diff < -350 + centerTimeOffset) {
-        if (!el.dataset.hit) {
-            hp = Math.max(0, hp - 10);
-            misses++;
-            combo = 0;
+        if (isPlayerLane) {
+            const centerTimeOffset = 75 / speed;
+            if (diff < -350 + centerTimeOffset) {
+                if (!el.dataset.hit) {
+                    hp = Math.max(0, hp - 10);
+                    misses++;
+                    combo = 0;
 
-            const lane = parseInt(el.dataset.lane);
-            const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-            
-            if (directionMap[lane]) {
-                _playerMissAnimState = directionMap[lane];
-                _playerAnimationTimer = 350; 
+                    const lane = parseInt(el.dataset.lane);
+                    const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+                    
+                    if (directionMap[lane]) {
+                        _playerMissAnimState = directionMap[lane];
+                        _playerAnimationTimer = 350; 
+                    }
+                }
+                el.remove();
             }
         }
-        el.remove();
-    }
-}
-else { 
-    const centerTimeOffset = 75 / speed;
-    if (diff <= -centerTimeOffset) {
-        const lane = parseInt(el.dataset.lane);
-        const directionMap = ["left", "down", "up", "right"];
-        
-        if (directionMap[lane]) {
-            _opponentAnimState = directionMap[lane];
-            _opponentAnimTimer = 250;
+        else { 
+            const centerTimeOffset = 75 / speed;
+            if (diff <= -centerTimeOffset) {
+                const lane = parseInt(el.dataset.lane);
+                const directionMap = ["left", "down", "up", "right"];
+                
+                if (directionMap[lane]) {
+                    _opponentAnimState = directionMap[lane];
+                    _opponentAnimTimer = 250;
+                }
+                el.remove(); 
+            }
         }
-        el.remove(); 
-    }
-}
-
-
+    });
 
     const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
@@ -2927,12 +2925,10 @@ else {
     const playerLanes = document.getElementById("player-lanes");
     const frameDuration = 60;
 
-
     for (let i = splashes.length - 1; i >= 0; i--) {
         const splash = splashes[i];
         const elapsed = currentTime - splash.startTime;
         const currentFrame = Math.floor(elapsed / frameDuration);
-
 
         if (currentFrame >= 3) {
             if (splash.el) splash.el.remove();
@@ -2940,12 +2936,10 @@ else {
             continue;
         }
 
-
         if (!splash.el && playerLanes) {
             const div = document.createElement("div");
             div.className = "note-splash-container";
             div.style.left = (splash.lane * 155) + "px";
-
 
             const img = document.createElement("img");
             img.src = `assets/final/splash_${splash.lane}.png`;
@@ -2955,7 +2949,6 @@ else {
             splash.el = div;
         }
 
-
         if (splash.el) {
             const innerImg = splash.el.querySelector("img");
             if (innerImg) {
@@ -2963,7 +2956,6 @@ else {
             }
         }
     }
-
 
     requestAnimationFrame(updateRhythmLoop);
 }
