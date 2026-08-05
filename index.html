@@ -2342,8 +2342,11 @@ window.addEventListener("keydown", (e) => {
 
     if (_heldKeys.has(cleanKey)) return;
     _heldKeys.add(cleanKey);
-    _playerKey = cleanKey;
 
+    _playerKey = cleanKey;
+    _lastPressedPlayerKey = cleanKey;
+    _playerAnimationTimer = 250;
+    
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
@@ -2462,39 +2465,123 @@ let _playerKey = null;
 window.addEventListener("keydown", e => _playerKey = e.key.toUpperCase());
 window.addEventListener("keyup", () => _playerKey = null);
 
+const INPUT_MAP = {
+    "ARROWLEFT": "left",  "D": "left",
+    "ARROWDOWN": "down",  "F": "down",
+    "ARROWUP":   "up",    "J": "up",
+    "ARROWRIGHT":"right", "K": "right"
+};
+
 const CHARACTER_DATA = {
     bf: {
         src: "assets/final/bf-sprit.png",
-        frameWidth: 500,
-        frameHeight: 500,
-        columns: 4,
-        playable: true
+        xml: "assets/final/bf-sprit.xml",
+        playable: true,
+        imageObj: new Image(),
+        animations: {}
     },
-
     pico: {
         src: "assets/final/pico-sprite.png",
-        frameWidth: 500,
-        frameHeight: 500,
-        columns: 4,
-        playable: true
+        xml: "assets/final/pico-sprite.xml",
+        playable: true,
+        imageObj: new Image(),
+        animations: {}
     },
-
     gf: {
         src: "assets/final/gf-sprite.png",
-        frameWidth: 800,
-        frameHeight: 800,
-        columns: 4,
-        playable: false
+        xml: "assets/final/gf-sprite.xml",
+        playable: false,
+        imageObj: new Image(),
+        animations: {}
     }
 };
 
-const IDLE_FRAMES = [0, 1, 2, 3, 4];
-const PLAYER_KEY_FRAMES = {
-        "ARROWLEFT": 5, "D": 5,
-        "ARROWDOWN": 6, "F": 6,
-        "ARROWUP": 7,   "J": 7,
-        "ARROWRIGHT": 8, "K": 8
-};
+        async function startA(songJson) {
+    _activeSong = songJson;
+    _playerChar = CHARACTER_DATA[songJson.player];
+    _opponentChar = CHARACTER_DATA[songJson.opponent];
+
+    if (!_playerChar || !_opponentChar) {
+        return;
+    }
+
+    await Promise.all([
+        startB(_playerChar),
+        startB(_opponentChar)
+    ]);
+}
+
+    async function startB(charData) {
+    try {
+        const response = await fetch(charData.xml);
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+        const subTextures = xmlDoc.getElementsByTagName("SubTexture");
+
+        charData.animations = {};
+
+        for (let i = 0; i < subTextures.length; i++) {
+            const node = subTextures[i];
+            const nameAttr = node.getAttribute("name").toLowerCase();
+
+            const frameMetrics = {
+                x: parseInt(node.getAttribute("x")),
+                y: parseInt(node.getAttribute("y")),
+                w: parseInt(node.getAttribute("width")),
+                h: parseInt(node.getAttribute("height"))
+            };
+
+            let targetGroup = "";
+            if (nameAttr.includes("miss")) {
+                if (nameAttr.includes("left")) targetGroup = "miss-left";
+                else if (nameAttr.includes("down")) targetGroup = "miss-down";
+                else if (nameAttr.includes("up")) targetGroup = "miss-up";
+                else if (nameAttr.includes("right")) targetGroup = "miss-right";
+                else targetGroup = "miss";
+            } 
+            else if (nameAttr.includes("left")) targetGroup = "left";
+            else if (nameAttr.includes("down")) targetGroup = "down";
+            else if (nameAttr.includes("up")) targetGroup = "up";
+            else if (nameAttr.includes("right")) targetGroup = "right";
+            else if (nameAttr.includes("idle")) targetGroup = "idle";
+            else {
+                targetGroup = nameAttr.replace(/[\s_\d]+$/, "");
+            }
+
+            if (!charData.animations[targetGroup]) {
+                charData.animations[targetGroup] = [];
+            }
+
+            charData.animations[targetGroup].push(frameMetrics);
+        }
+
+        await new Promise((resolve, reject) => {
+            charData.imageObj.src = charData.src;
+            charData.imageObj.onload = resolve;
+            charData.imageObj.onerror = reject;
+        });
+
+    } catch (err) {
+    }
+}
+
+    let _specialAnimation = null;     
+let _specialTarget = null;        
+let _specialDurationTicks = 0;    
+
+function triggerSpecial(target, animName, holdTicks) {
+    const charData = (target === "player") ? _playerChar : _opponentChar;
+    if (!charData || !charData.animations || !charData.animations[animName]) return;
+
+    const totalFrames = charData.animations[animName].length;
+
+    _specialTarget = target;
+    _specialAnimation = animName;
+    
+    _specialDurationTicks = totalFrames * holdTicks; 
+}
+
 
     function spawnRating(ratingType) {
     const ratingImg = document.createElement("img");
@@ -2552,10 +2639,12 @@ async function startSong(songId) {
         scrollSpeed: data.scrollSpeed,
         player: data.player,
         opponent: data.opponent,
-        opponent: data.opponent,
         opponentNotes: [...data.opponentNotes],
-        playerNotes: [...data.playerNotes]
+        playerNotes: [...data.playerNotes],
+        events: data.events ? [...data.events] : []
     };
+
+    await startA(_activeSong);
     
     _rhythmStarted = true;
     
@@ -2564,7 +2653,7 @@ async function startSong(songId) {
     bads = 0;
     shits = 0;
     misses = 0;
-    score: 0;
+    score = 0; 
     combo = 0;
     
     const fade = document.getElementById("fade-overlay");
@@ -2576,15 +2665,8 @@ async function startSong(songId) {
 
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
-
     _playerChar = CHARACTER_DATA[data.player];
     _opponentChar = CHARACTER_DATA[data.opponent];
-
-    _playerSprite = new Image();
-    _playerSprite.src = _playerChar.src;
-
-    _opponentSprite = new Image();
-    _opponentSprite.src = _opponentChar.src;
 
     fade.style.transition = "opacity 0.5s ease";
     fade.style.opacity = 1;
@@ -2598,7 +2680,8 @@ async function startSong(songId) {
 
     _inst = new Audio(data.instSrc);
     _voicePlayer = new Audio(data.voicePlayer);
-    _voiceOpponent = new Audio(data.voiceOpponent)
+    _voiceOpponent = new Audio(data.voiceOpponent);
+    
     const waitForAudio = audio =>
         new Promise((resolve, reject) => {
             const onReady = () => resolve();
@@ -2617,7 +2700,6 @@ async function startSong(songId) {
             waitForAudio(_voiceOpponent)
         ]);
     } catch (err) {
-        console.error(err);
         return;
     }
 
@@ -2655,8 +2737,7 @@ async function startSong(songId) {
     _voicePlayer.currentTime = 0;
     _voiceOpponent.currentTime = 0;
 
-    const tryPlay = audio => audio.play().catch(() => {
-    });
+    const tryPlay = audio => audio.play().catch(() => {});
 
     tryPlay(_inst);
     tryPlay(_voicePlayer);
@@ -2664,6 +2745,7 @@ async function startSong(songId) {
 
     requestAnimationFrame(updateRhythmLoop);
 }
+
     
 function setupReceptors() {
     const opp = document.getElementById("opponent-lanes");
@@ -2742,6 +2824,18 @@ function updateRhythmLoop() {
     
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
+        if (_activeSong.events) {
+        const holdTicks = 4;
+        for (let i = 0; i < _activeSong.events.length; i++) {
+            const ev = _activeSong.events[i];
+
+            if (currentTime >= ev.time && !ev.hasFired) {
+                triggerSpecial(ev.target, ev.animation, holdTicks);
+                ev.hasFired = true; 
+            }
+        }
+    }
+
     animateCharacters(currentTime);
     updateHPBar(currentTime);
     updateCamera();
@@ -2765,23 +2859,39 @@ function updateRhythmLoop() {
         el.style.top = y + "px";
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
-         if (isPlayerLane) {
-            const centerTimeOffset = 75 / speed;
-            if (diff < -350 + centerTimeOffset) {
-                if (!el.dataset.hit) {
-                    hp = Math.max(0, hp - 10);
-                    misses++;
-                    combo = 0;
-                }
-                el.remove();
-            }
-        } else {
-            const centerTimeOffset = 75 / speed;
-            if (diff <= -centerTimeOffset) {
-                el.remove();
+if (isPlayerLane) {
+    const centerTimeOffset = 75 / speed;
+    if (diff < -350 + centerTimeOffset) {
+        if (!el.dataset.hit) {
+            hp = Math.max(0, hp - 10);
+            misses++;
+            combo = 0;
+
+            const lane = parseInt(el.dataset.lane);
+            const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+            
+            if (directionMap[lane]) {
+                _playerMissAnimState = directionMap[lane];
+                _playerAnimationTimer = 350; 
             }
         }
-    });
+        el.remove();
+    }
+}
+else { 
+    const centerTimeOffset = 75 / speed;
+    if (diff <= -centerTimeOffset) {
+        const lane = parseInt(el.dataset.lane);
+        const directionMap = ["left", "down", "up", "right"];
+        
+        if (directionMap[lane]) {
+            _opponentAnimState = directionMap[lane];
+            _opponentAnimTimer = 250;
+        }
+        el.remove(); 
+    }
+}
+
 
 
     const bodies = document.querySelectorAll(".sustain-body");
@@ -2904,18 +3014,36 @@ function createNoteElement(n, isPlayer) {
         laneContainer.appendChild(end);
     }
 }
-    function drawCharacterFrame(ctx, img, charData, frameIndex) {
-    const fw = charData.frameWidth;
-    const fh = charData.frameHeight;
-    const cols = charData.columns;
 
-    const sx = (frameIndex % cols) * fw;
-    const sy = Math.floor(frameIndex / cols) * fh;
 
-    ctx.drawImage(img, sx, sy, fw, fh, 0, 0, fw, fh);
+    function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
+    const animFrames = charData.animations[actionState];
+    const activeFrames = (animFrames && animFrames.length > 0) ? animFrames : charData.animations["idle"];
+    
+    if (!activeFrames || activeFrames.length === 0) return;
+
+    const currentFrameIndex = Math.floor(timeTick / holdTicks) % activeFrames.length;
+    const frame = activeFrames[currentFrameIndex];
+
+    ctx.drawImage(
+        charData.imageObj,
+        frame.x, frame.y, frame.w, frame.h, 
+        0, 0, frame.w, frame.h              
+    );
 }
 
-    function animateCharacters(currentTime) {
+let _opponentAnimState = "idle";
+let _opponentAnimTimer = 0;
+let _playerAnimationTimer = 0;
+let _lastPressedPlayerKey = null;
+let _playerMissAnimState = null; 
+
+
+
+
+function animateCharacters(currentTime) {
+    if (!_activeSong || !_playerChar || !_opponentChar) return;
+
     const bpm = _activeSong.bpm;
     const ticksPerBeat = 10;
     const tickRate = (bpm / 60) * ticksPerBeat;
@@ -2923,19 +3051,62 @@ function createNoteElement(n, isPlayer) {
 
     const t = currentTime / 1000;
     const tick = Math.floor(t * tickRate);
-    const idleFrame = Math.floor(tick / holdTicks) % IDLE_FRAMES.length;
 
-    _playerCtx.clearRect(0, 0, _playerChar.frameWidth, _playerChar.frameHeight);
+    _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
+    _opponentCtx.clearRect(0, 0, _opponentCtx.canvas.width, _opponentCtx.canvas.height);
 
-    if (_playerKey && PLAYER_KEY_FRAMES[_playerKey] !== undefined) {
-        drawCharacterFrame(_playerCtx, _playerSprite, _playerChar, PLAYER_KEY_FRAMES[_playerKey]);
+    if (_specialDurationTicks > 0) {
+        _specialDurationTicks--;
     } else {
-        drawCharacterFrame(_playerCtx, _playerSprite, _playerChar, IDLE_FRAMES[idleFrame]);
+        _specialTarget = null;
+        _specialAnimation = null;
     }
 
-    _opponentCtx.clearRect(0, 0, _opponentChar.frameWidth, _opponentChar.frameHeight);
-    drawCharacterFrame(_opponentCtx, _opponentSprite, _opponentChar, IDLE_FRAMES[idleFrame]);
+    let playerState = "idle";
+    
+    if (_specialTarget === "player" && _specialAnimation) {
+        playerState = _specialAnimation;
+    } 
+    else if (_playerAnimationTimer > 0 && _playerMissAnimState) {
+        playerState = _playerMissAnimState;
+        
+        _playerAnimationTimer -= 16.6;
+        if (_playerAnimationTimer <= 0) {
+            _playerMissAnimState = null;
+        }
+    }
+    else if (_playerAnimationTimer > 0 || _playerKey) {
+        const activeKey = _playerKey || _lastPressedPlayerKey; 
+        if (activeKey) {
+            playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
+        }
+
+        if (_playerAnimationTimer > 0) {
+            _playerAnimationTimer -= 16.6; 
+        }
+    }
+
+    drawCharacterFrame(_playerCtx, _playerChar, playerState, tick, holdTicks);
+
+
+    let opponentState = "idle";
+
+    if (_specialTarget === "opponent" && _specialAnimation) {
+        opponentState = _specialAnimation;
+    } 
+    else if (_opponentAnimTimer > 0) {
+        opponentState = _opponentAnimState;
+        
+        _opponentAnimTimer -= 16.6;
+        
+        if (_opponentAnimTimer <= 0) {
+            _opponentAnimState = "idle";
+        }
+    }
+
+    drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, tick, holdTicks);
 }
+
 
     
 function updateHPBar(currentTime) {
