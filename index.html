@@ -2322,6 +2322,23 @@ function calculateAccuracy(sicks, goods, bads, shits, misses) {
   }
 }
 
+    const MISS_SOUNDS = [
+    "sfx/miss-1.mp3",
+    "sfx/miss-2.mp3",
+    "sfx/miss-3.mp3"
+];
+
+    function playMiss() {
+    const randomIndex = Math.floor(Math.random() * MISS_SOUNDS.length);
+    
+    const missSfx = new Audio(MISS_SOUNDS[randomIndex]);
+    
+    missSfx.play().catch(() => {
+    });
+}
+
+
+
 const _heldKeys = new Set();
 
 window.addEventListener("keydown", (e) => {
@@ -2865,6 +2882,7 @@ function updateRhythmLoop() {
                     hp = Math.max(0, hp - 10);
                     misses++;
                     combo = 0;
+                    playMiss();
 
                     const lane = parseInt(el.dataset.lane);
                     const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
