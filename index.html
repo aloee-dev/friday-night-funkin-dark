@@ -2849,7 +2849,7 @@ function updateRhythmLoop() {
             const ev = _activeSong.events[i];
 
             if (currentTime >= ev.time && !ev.hasFired) {
-                triggerSpecialByFrames(ev.target, ev.animation, holdTicks);
+                triggerSpecial(ev.target, ev.animation, holdTicks);
                 ev.hasFired = true; 
             }
         }
