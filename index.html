@@ -2844,7 +2844,7 @@ function updateRhythmLoop() {
     const speed = _activeSong.scrollSpeed;
 
     if (_activeSong.events) {
-        const holdTicks = 4;
+        const holdTicks = 5;
         for (let i = 0; i < _activeSong.events.length; i++) {
             const ev = _activeSong.events[i];
 
@@ -3059,7 +3059,7 @@ function animateCharacters(currentTime) {
     const bpm = _activeSong.bpm;
     const ticksPerBeat = 10;
     const tickRate = (bpm / 60) * ticksPerBeat;
-    const holdTicks = 4;
+    const holdTicks = 5;
 
     const t = currentTime / 1000;
     const tick = Math.floor(t * tickRate);
