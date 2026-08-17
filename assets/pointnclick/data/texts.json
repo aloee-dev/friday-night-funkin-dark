@@ -1,0 +1,12 @@
+{
+  "door_locked_redkey": { 
+    "text": "I need a key", 
+    "color": "green", 
+    "icon": "something.png" 
+  },
+  "inv_full_warning": { 
+    "text": "My inventory is full!", 
+    "color": "red", 
+    "icon": "something.png" 
+  }
+}
