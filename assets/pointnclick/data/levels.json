@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "alley": [
+      {
+        "name": "alley1",
+        "bg": "assets/alley1.png",
+        "elements": [
+          {
+            "name": "a1arrow",
+            "x": 100,
+            "y": 100,
+            "width": 50,
+            "height": 50,
+            "image": "leftarrow.png",
+            "action": "door",
+            "tp": "alley3"
+          },
+          {
+            "name": "a2arrow",
+            "x": 200,
+            "y": 500,
+            "width": 50,
+            "height": 50,
+            "image": "rightarrow.png",
+            "action": "door",
+            "tp": "alley2"
+          },
+          {
+            "name": "key1",
+            "x": 500,
+            "y": 500,
+            "width": 40,
+            "height": 20,
+            "image": "redkey.png",
+            "action": "pickup",
+            "item": "redkey"
+          }
+        ]
+      },
+      {
+        "name": "alley2",
+        "bg": "assets/alley2.png",
+        "elements": []
+      },
+      {
+        "name": "alley3",
+        "bg": "assets/alley3.png",
+        "elements": []
+      }
+    ],
+    "city": [
+      {
+        "name": "city1",
+        "bg": "assets/city1.png",
+        "elements": []
+      }
+    ]
+  }
+}
