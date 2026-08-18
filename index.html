@@ -601,6 +601,89 @@ a,
     object-fit: contain;
 }
 
+    #inventory-ui-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+
+#item-popup {
+    background-color: #404040;
+    border: 5px solid #282828;
+    padding: 15px;
+    width: 250px;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-family: sans-serif;
+}
+
+#item-popup.hidden-popup {
+    display: none;
+}
+
+#popup-item-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+#popup-item-desc {
+    font-size: 14px;
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+#popup-use-btn {
+    background-color: #202020;
+    color: white;
+    border: none;
+    padding: 8px 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#popup-use-btn.hidden-btn {
+    display: none;
+}
+
+    #inventory-slots-row {
+    width: 800px;
+    height: 140px; 
+    background-image: url('assets/pointandclick/inv-bar.png');
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.inv-box-slot {
+    width: 100px;
+    height: 100px;
+    background-image: url('assets/pointandclick/inv-box.png');
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inv-item-image {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+
 
     #song-loading-screen {
     position: absolute;
@@ -1004,6 +1087,18 @@ a,
 
     <div id="room-content" style="width: 100%; height: 100%; position: relative;"></div>
     <div id="point-click-text-overlay"></div>
+
+    <div id="inventory-ui-container">
+    <div id="item-popup" class="hidden-popup">
+        <span id="popup-item-name">NAME</span>
+        <p id="popup-item-desc">"flavor text"</p>
+        <button id="popup-use-btn">USE</button>
+    </div>
+
+    <div id="inventory-slots-row">
+    </div>
+</div>
+
 
 
 <div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
@@ -2337,6 +2432,111 @@ function loadRoom(room) {
 
         roomContent.appendChild(imgElement);
     });
+}
+
+const slotsRow = document.getElementById("inventory-slots-row");
+const itemPopup = document.getElementById("item-popup");
+const popupName = document.getElementById("popup-item-name");
+const popupDesc = document.getElementById("popup-item-desc");
+const popupUseBtn = document.getElementById("popup-use-btn");
+
+let activePopupItemId = null;
+
+function doInvUI() {
+    slotsRow.innerHTML = "";
+    
+    for (let i = 0; i < 5; i++) {
+        const slot = document.createElement("div");
+        slot.className = "inv-box-slot";
+        slot.id = `inv-slot-${i}`;
+        slotsRow.appendChild(slot);
+    }
+}
+function renderInvItems() {
+    for (let i = 0; i < 5; i++) {
+        document.getElementById(`inv-slot-${i}`).innerHTML = "";
+    }
+
+    let currentSlotIndex = 0;
+    inventory.forEach((quantity, itemId) => {
+    for (let q = 0; q < quantity; q++) {
+        if (currentSlotIndex < 5) {
+            const targetSlot = document.getElementById(`inv-slot-${currentSlotIndex}`);
+            
+            const itemData = itemDatabase[itemId];
+            
+            const img = document.createElement("img");
+            
+            if (itemData && itemData.icon) {
+                img.src = `assets/pointandclick/icons${itemData.icon}`; 
+            } else {
+                img.src = `assets/default_item.png`;
+            }
+            
+            img.className = "inv-item-image clickable";
+
+            img.addEventListener("click", () => {
+                toggleItemPopup(itemId);
+            });
+
+            targetSlot.appendChild(img);
+            currentSlotIndex++;
+        }
+    }
+});
+}
+
+function toggleItemPopup(itemId) {
+
+    if (activePopupItemId === itemId) {
+        closePopup();
+        return;
+    }
+
+    const itemData = itemDatabase[itemId];
+    if (!itemData) return;
+
+    activePopupItemId = itemId;
+    popupName.innerText = itemData.name;
+    popupDesc.innerText = `"${itemData.flavortext}"`;
+
+    const newBtn = popupUseBtn.cloneNode(true);
+    popupUseBtn.parentNode.replaceChild(newBtn, popupUseBtn);
+
+    if (itemData.usable) {
+        newBtn.classList.remove("hidden-btn");
+        newBtn.addEventListener("click", () => {
+            useItem(itemId);
+            closePopup();
+            renderInvItems();
+        });
+    } else {
+        newBtn.classList.add("hidden-btn");
+    }
+
+    itemPopup.classList.remove("hidden-popup");
+}
+
+function closePopup() {
+    itemPopup.classList.add("hidden-popup");
+    activePopupItemId = null;
+}
+
+function useItem(item) {
+    
+    if (item === 'thing') {
+    }
+
+    const currentCount = inventory.get(item) || 0;
+    const newCount = Math.max(0, currentCount - 1);
+
+    if (newCount > 0) {
+        inventory.set(item, newCount);
+    } else {
+        inventory.delete(item);
+    }
+
+    renderInvItems();
 }
 
     
