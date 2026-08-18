@@ -565,6 +565,43 @@ a,
     font-weight: bold;
 }
 
+    #point-click-text-overlay {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.pc-message-line {
+    font-family: 'Blue Winter', sans-serif;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.pc-message-line.fading {
+    opacity: 0;
+}
+
+.pc-message-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+
     #song-loading-screen {
     position: absolute;
     inset: 0;
@@ -964,6 +1001,9 @@ a,
     <div id="scene-list">
     </div>
 </div>
+
+    <div id="room-content" style="width: 100%; height: 100%; position: relative;"></div>
+    <div id="point-click-text-overlay"></div>
 
 
 <div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
