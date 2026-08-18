@@ -2389,21 +2389,25 @@ function draw() {
 let currentLevelRooms = []; 
 let currentRoom = null;
 let gameDialogue = {};
+let itemDatabase = {};
 
 async function startPointNClick(levelName) {
     try {
         document.getElementById("dialog-box").style.display = "none";
 
-        const [levelsResponse, dialogueResponse] = await Promise.all([
-            fetch('assets/pointnclick/levels.json'),
-            fetch('assets/pointnclick/data/dialogue.json')
+        const [levelsResponse, dialogueResponse, itemsResponse] = await Promise.all([
+            fetch('assets/pointnclick/data/levels.json'),
+            fetch('assets/pointnclick/data/dialogue.json'),
+            fetch('assets/pointnclick/data/items.json')
         ]);
 
-        if (!levelsResponse.ok || !dialogueResponse.ok) {
-            throw new Error(`Failed to load puzzle engine configuration assets`);
+        if (!levelsResponse.ok || !dialogueResponse.ok || !itemsResponse.ok) {
+            throw new Error(`Failed to load files`);
         }
+
         const levelsData = await levelsResponse.json();
         gameDialogue = await dialogueResponse.json();
+        itemDatabase = await itemsResponse.json();
 
         currentLevelRooms = levelsData[levelName]; 
 
@@ -2411,11 +2415,11 @@ async function startPointNClick(levelName) {
         loadRoom(firstRoom);
         doInvUI();
 
-
     } catch (error) {
         console.error("error:", error);
     }
 }
+
 
 
     // probably add some sort of transition too
