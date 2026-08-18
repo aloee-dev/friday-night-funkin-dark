@@ -2313,12 +2313,17 @@ function doCommand(input) {
 
     switch (cmd) {
         case '/help':
-            console.log("Commands: /show [scene], /give [item] [qty], /flag [key] [true/false], /meter [key] [val]");
+            console.log("Commands: /show [scene], /pnc,  /give [item] [qty], /flag [key] [true/false], /meter [key] [val]");
             break;
 
         case '/show':
             console.log("Forcing dialogue:", args[0]);
             loadDialogue(args[0]);
+            break;
+
+            case '/pnc':
+            console.log("Showing section:", args[0]);
+            startPointNClick(args[0]);
             break;
 
         case '/give':
