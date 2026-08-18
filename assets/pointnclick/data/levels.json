@@ -4,6 +4,7 @@
       {
         "name": "alley1",
         "bg": "assets/alley1.png",
+        "bgm": "music.mp3",
         "elements": [
           {
             "name": "a1arrow",
