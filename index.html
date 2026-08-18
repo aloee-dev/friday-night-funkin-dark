@@ -2528,6 +2528,20 @@ function useItem(item) {
     if (item === 'thing') {
     }
 
+    if (item === 'microphone') {
+        const textData = gameDialogue["mic_use"];
+            if (textData) {
+                showText(textData);
+            }
+        
+        setTimeout(() => {
+        startSong(name);
+    }, 40500);
+        
+    }
+
+
+
     const currentCount = inventory.get(item) || 0;
     const newCount = Math.max(0, currentCount - 1);
 
@@ -2567,6 +2581,13 @@ function useItem(item) {
         }
     }
 
+    if (element.action === "inspect") {
+    const textData = gameDialogue[element.dialogue_id];
+    if (textData) {
+        showText(textData);
+    }
+}
+
     if (element.action === "pickup") {
         if (getInvTotal() >= 5) {
             const textData = gameDialogue["inv_full_warning"];
@@ -2594,7 +2615,33 @@ function applyColor(colorName) {
     return '#ffffff';
 }
 
+let pcMessageQueue = [];
+let pcMessageInterval = null;
+
 function showText(ptext) {
+    if (Array.isArray(ptext)) {
+        pcMessageQueue = pcMessageQueue.concat(ptext);
+    } else {
+        pcMessageQueue.push(ptext);
+    }
+    if (!pcMessageInterval) {
+        processNextQueueLine();
+        
+        pcMessageInterval = setInterval(() => {
+            if (pcMessageQueue.length > 0) {
+                processNextQueueLine();
+            } else {
+                clearInterval(pcMessageInterval);
+                pcMessageInterval = null;
+            }
+        }, 3000);
+    }
+}
+
+function processNextQueueLine() {
+    const ptext = pcMessageQueue.shift();
+    if (!ptext) return;
+
     const textStr = ptext.text != null ? String(ptext.text) : '';
     const iconSrc = ptext.icon || null;
     const textColor = applyColor(ptext.color || 'green');
@@ -2619,14 +2666,11 @@ function showText(ptext) {
     const currentLines = textOverlay.getElementsByClassName("pc-message-line");
     if (currentLines.length > maxLines) {
         const oldestLine = currentLines[0];
-        
         oldestLine.classList.add("fading");
-        
         setTimeout(() => {
             oldestLine.remove();
         }, 500);
     }
-    
     setTimeout(() => {
         if (lineElement.parentNode) {
             lineElement.classList.add("fading");
@@ -2636,6 +2680,7 @@ function showText(ptext) {
         }
     }, 4000);
 }
+
 
 
 
