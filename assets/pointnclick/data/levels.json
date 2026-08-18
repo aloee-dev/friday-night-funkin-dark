@@ -3,7 +3,7 @@
     "alley": [
       {
         "name": "alley1",
-        "bg": "assets/alley1.png",
+        "bg": "alley1.png",
         "bgm": "music.mp3",
         "elements": [
           {
@@ -40,19 +40,19 @@
       },
       {
         "name": "alley2",
-        "bg": "assets/alley2.png",
+        "bg": "alley2.png",
         "elements": []
       },
       {
         "name": "alley3",
-        "bg": "assets/alley3.png",
+        "bg": "alley3.png",
         "elements": []
       }
     ],
     "city": [
       {
         "name": "city1",
-        "bg": "assets/city1.png",
+        "bg": "city1.png",
         "elements": []
       }
     ]
