@@ -2400,7 +2400,7 @@ async function startPointNClick(levelName) {
 
         const [levelsResponse, dialogueResponse, itemsResponse] = await Promise.all([
             fetch('assets/pointnclick/data/levels.json'),
-            fetch('assets/pointnclick/data/dialogue.json'),
+            fetch('assets/pointnclick/data/texts.json'),
             fetch('assets/pointnclick/data/items.json')
         ]);
 
