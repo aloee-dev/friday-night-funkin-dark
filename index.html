@@ -2390,6 +2390,9 @@ let currentLevelRooms = [];
 let currentRoom = null;
 let gameDialogue = {};
 let itemDatabase = {};
+let currentBgmAudio = null; 
+let currentBgmFile = "";
+
 
 async function startPointNClick(levelName) {
     try {
@@ -2429,8 +2432,19 @@ function loadRoom(room) {
     const roomContent = document.getElementById("room-content");
     
     roomContent.innerHTML = ""; 
-    roomContent.style.backgroundImage = `url('${room.bg}')`;
+    roomContent.style.backgroundImage = `url('assets/pointnclick/rooms/${room.bg}')`;
     roomContent.style.backgroundSize = "cover";
+
+
+    if (room.bgm && room.bgm !== currentBgmFile) {
+        if (currentBgmAudio) {
+            currentBgmAudio.pause();
+        }
+
+        currentBgmFile = room.bgm;
+        currentBgmAudio = new Audio(`assets/pointnclick/bgm/${room.bgm}`);
+        currentBgmAudio.loop = true;
+    }
 
     room.elements.forEach(element => {
         const imgElement = document.createElement("img");
@@ -2449,6 +2463,8 @@ function loadRoom(room) {
         roomContent.appendChild(imgElement);
     });
 }
+
+    
 
 const slotsRow = document.getElementById("inventory-slots-row");
 const itemPopup = document.getElementById("item-popup");
