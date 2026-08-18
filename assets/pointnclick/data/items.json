@@ -11,7 +11,7 @@
   },
   "weed": {
     "name": "Joint",
-    "flavortext": "Nice for relaxing after a long day.",
+    "flavortext": "Nice for relaxing after a long day. Heals you.",
     "usable": true
   }
   "microphone": {
