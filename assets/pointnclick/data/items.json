@@ -1,1 +1,17 @@
-stuff ig
+{
+  "ammo": {
+    "name": "Bullets",
+    "flavortext": "For shooting a gun.",
+    "usable": false
+  },
+  "guns": {
+    "name": "Gun",
+    "flavortext": "Your very trusty MAC-10s.",
+    "usable": false
+  },
+  "thirditem": {
+    "name": "living shit",
+    "flavortext": "idk man.",
+    "usable": true
+  }
+}
