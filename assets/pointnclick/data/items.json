@@ -2,21 +2,25 @@
   "ammo": {
     "name": "Bullets",
     "flavortext": "For shooting a gun.",
-    "usable": false
+    "usable": false,
+    "icon": "icon.png"
   },
   "guns": {
     "name": "Gun",
     "flavortext": "Your very trusty MAC-10s.",
-    "usable": false
+    "usable": false,
+    "icon": "icon.png"
   },
   "weed": {
     "name": "Joint",
     "flavortext": "Nice for relaxing after a long day. Heals you.",
-    "usable": true
+    "usable": true,
+    "icon": "icon.png"
   }
   "microphone": {
     "name": "Microphone",
     "flavortext": "beep boop skide bap",
-    "usable": true
+    "usable": true,
+    "icon": "icon.png"
   }
 }
