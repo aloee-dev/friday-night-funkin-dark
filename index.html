@@ -2249,6 +2249,57 @@ function resetGame() {
 function draw() {
     //nothing
 }
+
+
+let currentLevelRooms = []; 
+let currentRoom = null;
+
+async function startPointNClick(levelName) {
+    try {
+        document.getElementById("dialog-box").style.display = "none";
+        const response = await fetch('assets/pointnclick/data/levels.json');
+        if (!response.ok) throw new Error(`Failed to load data`);
+        const data = await response.json();
+        
+        currentLevelRooms = data[levelName]; 
+
+        const firstRoom = currentLevelRooms;
+        loadRoom(firstRoom);
+
+    } catch (error) {
+        console.error("error:", error);
+    }
+}
+
+    // probably add some sort of transition too
+
+function loadRoom(room) {
+    currentRoom = room;
+    const roomContent = document.getElementById("room-content");
+    
+    roomContent.innerHTML = ""; 
+    roomContent.style.backgroundImage = `url('${room.bg}')`;
+    roomContent.style.backgroundSize = "cover";
+
+    room.elements.forEach(element => {
+        const imgElement = document.createElement("img");
+        imgElement.src = `assets/pointnclick/elements/${element.image}`;
+        imgElement.style.position = "absolute";
+        imgElement.style.left = `${element.x}px`;
+        imgElement.style.top = `${element.y}px`;
+        imgElement.style.width = `${element.width}px`; 
+        imgElement.style.height = `${element.height}px`;
+        imgElement.style.cursor = "pointer";
+
+        imgElement.addEventListener("click", () => {
+            handleElement(element);
+        });
+
+        roomContent.appendChild(imgElement);
+    });
+}
+
+    
 let hp = 100;
 const maxHP = 200;
 
