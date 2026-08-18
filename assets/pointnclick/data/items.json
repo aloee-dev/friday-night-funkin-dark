@@ -9,9 +9,14 @@
     "flavortext": "Your very trusty MAC-10s.",
     "usable": false
   },
-  "thirditem": {
-    "name": "living shit",
-    "flavortext": "idk man.",
+  "weed": {
+    "name": "Joint",
+    "flavortext": "Nice for relaxing after a long day.",
+    "usable": true
+  }
+  "microphone": {
+    "name": "Microphone",
+    "flavortext": "beep boop skide bap",
     "usable": true
   }
 }
