@@ -2400,6 +2400,7 @@ async function startPointNClick(levelName) {
 
         const firstRoom = currentLevelRooms;
         loadRoom(firstRoom);
+        doInvUI();
 
     } catch (error) {
         console.error("error:", error);
@@ -2538,6 +2539,105 @@ function useItem(item) {
 
     renderInvItems();
 }
+
+    function getInvTotal() {
+    let total = 0;
+    inventory.forEach(quantity => {
+        total += quantity;
+    });
+    return total;
+}
+
+    function handleElement(element) {
+
+    if (element.action === "door") {
+        if (element.name === "door1") {
+            if ((inventory.get("redkey") || 0) > 0) {
+                const destinationRoom = currentLevelRooms.find(r => r.name === element.tp);
+                if (destinationRoom) loadRoom(destinationRoom);
+            } else {
+                const textData = gameDialogue[element.dialogue_id];
+                if (textData) {
+                    showText(textData);
+                }
+            }
+        } else {
+            const destinationRoom = currentLevelRooms.find(r => r.name === element.tp);
+            if (destinationRoom) loadRoom(destinationRoom);
+        }
+    }
+
+    if (element.action === "pickup") {
+        if (getInvTotal() >= 5) {
+            const textData = gameDialogue["inv_full_warning"];
+            if (textData) {
+                showText(textData);
+            }
+            return; 
+        }
+
+        const currentCount = inventory.get(element.item) || 0;
+        inventory.set(element.item, currentCount + 1);
+
+        currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
+        loadRoom(currentRoom);
+    }
+}
+
+const textOverlay = document.getElementById("point-click-text-overlay");
+const maxLines = 5;
+
+function applyColor(colorName) {
+    if (colorName === 'green') return '#223344';
+    if (colorName === 'red') return '#ff3333';
+    if (colorName === 'white') return '#ffffff';
+    return '#ffffff';
+}
+
+function showText(ptext) {
+    const textStr = ptext.text != null ? String(ptext.text) : '';
+    const iconSrc = ptext.icon || null;
+    const textColor = applyColor(ptext.color || 'green');
+
+    const lineElement = document.createElement("div");
+    lineElement.className = "pc-message-line";
+    lineElement.style.color = textColor;
+
+    if (iconSrc) {
+        const iconElement = document.createElement("img");
+        iconElement.src = `assets/pointnclick/icons/${iconSrc}`;
+        iconElement.className = "pc-message-icon";
+        lineElement.appendChild(iconElement);
+    }
+
+    const textSpan = document.createElement("span");
+    textSpan.innerText = textStr;
+    lineElement.appendChild(textSpan);
+
+    textOverlay.appendChild(lineElement);
+
+    const currentLines = textOverlay.getElementsByClassName("pc-message-line");
+    if (currentLines.length > maxLines) {
+        const oldestLine = currentLines[0];
+        
+        oldestLine.classList.add("fading");
+        
+        setTimeout(() => {
+            oldestLine.remove();
+        }, 500);
+    }
+    
+    setTimeout(() => {
+        if (lineElement.parentNode) {
+            lineElement.classList.add("fading");
+            setTimeout(() => {
+                lineElement.remove();
+            }, 500);
+        }
+    }, 4000);
+}
+
+
 
     
 let hp = 100;
