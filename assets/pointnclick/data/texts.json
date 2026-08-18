@@ -4,6 +4,33 @@
     "color": "green", 
     "icon": "something.png" 
   },
+  {
+  "mic_use": [
+    { "text": "Hey look, a microphone!", "color": "blue", "icon": "k-neutral.png" },
+    { "text": "So?", "color": "green", "icon": "p-neutral.png" },
+    { "text": "We can sing together! Just like the good old days.", "color": "blue", "icon": "k-happy.png" },
+    { "text": "You know this is gonna catch some people's attention, right?", "color": "green", "icon": "p-neutral.png" },
+    { "text": "Yeah, regular people's attention.", "color": "blue", "icon": "k-neutral.png" },
+    { "text": "I don't really like this...", "color": "green", "icon": "p-neutral.png" },
+    { "text": "Come on, Pico! Show me what you've got!", "color": "blue", "icon": "k-happy.png" },
+    { "text": "Or are you scared of losing?", "color": "blue", "icon": "k-neutral.png" },
+    { "text": "You're really pushing it...", "color": "green", "icon": "p-angry.png" },
+    { "text": "We'll do just one rap battle, and it'll be over.", "color": "blue", "icon": "k-neutral.png" },
+    { "text": "Keith, I hate that you know how to get me to do things.", "color": "green", "icon": "p-angry.png" },
+    { "text": "And for that, I'm gonna kick your ass.", "color": "green", "icon": "p-neutral.png" },
+    { "text": "Let's do it.", "color": "green", "icon": "p-happy.png" }
+  ]
+},
+{
+  "post_song1": [
+    { "text": "You did great!", "color": "blue", "icon": "k-happy.png" },
+    { "text": "You did well too.", "color": "green", "icon": "p-neutral.png" },
+    { "text": "How about we call it a draw?", "color": "blue", "icon": "k-neutral.png" },
+    { "text": "Fine by me.", "color": "green", "icon": "p-neutral.png" },
+    { "text": "I still hate you though.", "color": "green", "icon": "p-angry.png" },
+    { "text": "Yeah, I'm sure you do.", "color": "blue", "icon": "k-neutral.png" }
+  ]
+},
   "inv_full_warning": { 
     "text": "My inventory is full!", 
     "color": "red", 
