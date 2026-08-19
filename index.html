@@ -160,6 +160,11 @@ a,
     transition: opacity 1.5s ease;
     z-index: 2;
 }
+    #fade-overlay.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
     
 #black-curtain {
     position: fixed;
@@ -2447,12 +2452,39 @@ async function startPointNClick(levelName) {
     }
 }
 
+    window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && currentRoom !== null) {
+        exitPointNClick();
+    }
+});
+
     function exitPointNClick() {
+            
+    fadeOverlay.classList.add("is-active");
+
+
+    setTimeout(() => {
+        
+        document.getElementById("room-content").innerHTML = "";
+        currentRoom = null;
+        currentLevelRooms = [];
+        
+        document.getElementById("dialog-box").style.display = "block";
+        
+        if (currentBgmAudio) {
+            currentBgmAudio.pause();
+            currentBgmFile = "";
+        }
+
+        setTimeout(() => {
+            fadeOverlay.classList.remove("is-active");
+        }, 50);
+
+    }, 2000);
+
     }
 
 
-
-    // probably add some sort of transition too
 
 function loadRoom(room) {
     currentRoom = room;
