@@ -2443,7 +2443,7 @@ async function startPointNClick(levelName) {
         gameDialogue = await dialogueResponse.json();
         itemDatabase = await itemsResponse.json();
 
-        currentLevelRooms = levelsData[levelName]; 
+        currentLevelRooms = levelsData.sections ? levelsData.sections[levelName] : levelsData[levelName];
 
         const firstRoom = currentLevelRooms[0];
         loadRoom(firstRoom);
