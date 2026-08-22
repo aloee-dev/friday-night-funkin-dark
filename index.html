@@ -1905,7 +1905,7 @@ function normalizeDialogLines(input, defaultStyle) {
       ambience: line.ambience || null,
       track: line.track || null,
       triggers: line.triggers || [],
-        next: line.next || null,
+      next: line.next || null,
       branches: line.branches || null,
       newChapter: line.newChapter || false,
       choices: line.choices || []
@@ -1994,7 +1994,7 @@ if (line.speaker && line.mood) {
     if (spriteFile === "Keith") {
         spriteFile = "Boyfriend";
     }
-    if (spriteFile === "Lilith") { // unconventional name i believe i think everyone calls her cherry
+    if (spriteFile === "Lilith") {
         spriteFile = "Girlfriend";
     }
     
@@ -2745,6 +2745,7 @@ if (element.action === "pickup") {
 
     currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
     loadRoom(currentRoom);
+    renderInvItems(); 
 
     const textData = gameDialogue[element.dialogue_id];
     if (textData) {
