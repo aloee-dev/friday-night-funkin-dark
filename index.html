@@ -2750,16 +2750,16 @@ if (element.action === "pickup") {
     const currentCount = inventory.get(element.item) || 0;
     inventory.set(element.item, currentCount + 1);
 
+    const textData = gameDialogue[element.dialogue_id];
+    if (textData) {
+        showText(textData);
+    }
+
     lastPickedUpItemId = element.item;
 
     currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
     loadRoom(currentRoom);
     renderInvItems(); 
-
-    const textData = gameDialogue[element.dialogue_id];
-    if (textData) {
-        showText(textData);
-    }
   }
 }
 
