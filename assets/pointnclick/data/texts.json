@@ -28,8 +28,8 @@
     { "text": "Yeah, I'm sure you do.", "color": "blue", "icon": "k-neutral.png" }
   ],
   "inv_full_warning": {
-    "text": "My inventory is full!",
-    "color": "red",
-    "icon": "something.png"
+    "text": "My inventory is full. Get rid of something.",
+    "color": "green",
+    "icon": "p-neutral.png"
   }
 }
