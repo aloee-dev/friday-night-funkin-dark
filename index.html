@@ -2454,6 +2454,7 @@ function draw() {
 let currentLevelRooms = []; 
 let currentRoom = null;
 let gameDialogue = {};
+let pcMessageFadeTimeout = null;
 let itemDatabase = {};
 let lastPickedUpItemId = null;
 let currentBgmAudio = null; 
@@ -2782,6 +2783,12 @@ function showText(ptext) {
     } else {
         pcMessageQueue.push(ptext);
     }
+
+    if (pcMessageFadeTimeout) {
+        clearTimeout(pcMessageFadeTimeout);
+        pcMessageFadeTimeout = null;
+    }
+
     if (!pcMessageInterval) {
         processNextQueueLine();
         
@@ -2791,6 +2798,15 @@ function showText(ptext) {
             } else {
                 clearInterval(pcMessageInterval);
                 pcMessageInterval = null;
+                pcMessageFadeTimeout = setTimeout(() => {
+                    const allActiveLines = textOverlay.getElementsByClassName("pc-message-line");
+                    Array.from(allActiveLines).forEach(line => {
+                        line.classList.add("fading");
+                        setTimeout(() => { line.remove(); }, 500);
+                    });
+                    
+                    pcMessageFadeTimeout = null;
+                }, 4000);
             }
         }, 3000);
     }
@@ -2825,19 +2841,10 @@ function processNextQueueLine() {
     if (currentLines.length > maxLines) {
         const oldestLine = currentLines[0];
         oldestLine.classList.add("fading");
-        setTimeout(() => {
-            oldestLine.remove();
-        }, 500);
+        setTimeout(() => { oldestLine.remove(); }, 500);
     }
-    setTimeout(() => {
-        if (lineElement.parentNode) {
-            lineElement.classList.add("fading");
-            setTimeout(() => {
-                lineElement.remove();
-            }, 500);
-        }
-    }, 4000);
 }
+
 
 
 
