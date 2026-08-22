@@ -2448,6 +2448,8 @@ async function startPointNClick(levelName) {
         const firstRoom = currentLevelRooms[0];
         loadRoom(firstRoom);
         doInvUI();
+        const inv = document.getElementById("inventory-slots-row");
+        inv.style.display = "flex";
 
     } catch (error) {
         console.error("error:", error);
