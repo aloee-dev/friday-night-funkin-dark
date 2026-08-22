@@ -2597,6 +2597,7 @@ function toggleItemPopup(itemId) {
 
     const newBtn = popupUseBtn.cloneNode(true);
     popupUseBtn.parentNode.replaceChild(newBtn, popupUseBtn);
+    popupUseBtn = newBtn; 
 
     if (itemData.usable) {
         newBtn.classList.remove("hidden-btn");
