@@ -52,8 +52,19 @@
     "city": [
       {
         "name": "city1",
-        "bg": "city1.png",
-        "elements": []
+        "bg": "room.png",
+        "elements": [
+          {
+            "name": "key1",
+            "x": 500,
+            "y": 500,
+            "width": 40,
+            "height": 20,
+            "image": "icon.png",
+            "action": "pickup",
+            "item": "weed"
+          }
+        ]
       }
     ]
   }
