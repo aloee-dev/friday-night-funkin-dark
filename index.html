@@ -722,6 +722,22 @@ a,
     pointer-events: none; 
 }
 
+    .pickup-animate {
+    animation: itemFloatDrop 0.6s ease-out forwards;
+    z-index: 10;
+}
+
+@keyframes itemFloatDrop {
+    0% {
+        transform: translateY(-120px);
+    }
+    50% {
+        transform: translateY(-120px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
 
 
 
@@ -2438,6 +2454,7 @@ let currentLevelRooms = [];
 let currentRoom = null;
 let gameDialogue = {};
 let itemDatabase = {};
+let lastPickedUpItemId = null;
 let currentBgmAudio = null; 
 let currentBgmFile = "";
 
@@ -2583,7 +2600,13 @@ function renderInvItems() {
             } else {
                 img.src = `assets/pointnclick/icons/default.png`;
             }
-            img.className = "inv-item-image clickable";
+
+if (itemId === lastPickedUpItemId) {
+    img.className = "inv-item-image clickable pickup-animate";
+    lastPickedUpItemId = null;
+} else {
+    img.className = "inv-item-image clickable";
+}
 
             img.addEventListener("click", () => {
                 toggleItemPopup(itemId);
@@ -2704,21 +2727,28 @@ function useItem(item) {
     }
 }
 
-    if (element.action === "pickup") {
-        if (getInvTotal() >= 5) {
-            const textData = gameDialogue["inv_full_warning"];
-            if (textData) {
-                showText(textData);
-            }
-            return; 
+if (element.action === "pickup") {
+    if (getInvTotal() >= 5) {
+        const textData = gameDialogue["inv_full_warning"];
+        if (textData) {
+            showText(textData);
         }
-
-        const currentCount = inventory.get(element.item) || 0;
-        inventory.set(element.item, currentCount + 1);
-
-        currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
-        loadRoom(currentRoom);
+        return; 
     }
+
+    const currentCount = inventory.get(element.item) || 0;
+    inventory.set(element.item, currentCount + 1);
+
+    lastPickedUpItemId = element.item;
+
+    currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
+    loadRoom(currentRoom);
+
+    const textData = gameDialogue[element.dialogue_id];
+    if (textData) {
+        showText(textData);
+    }
+  }
 }
 
 const textOverlay = document.getElementById("point-click-text-overlay");
