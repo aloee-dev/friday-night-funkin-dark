@@ -2529,6 +2529,7 @@ function loadRoom(room) {
     const roomContent = document.getElementById("room-content");
     
     roomContent.innerHTML = ""; 
+    roomContent.style.display = "block"; 
     roomContent.style.backgroundImage = `url('assets/pointnclick/rooms/${room.bg}')`;
     roomContent.style.backgroundSize = "cover";
 
