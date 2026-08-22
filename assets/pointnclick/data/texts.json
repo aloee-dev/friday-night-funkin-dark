@@ -1,10 +1,9 @@
 {
-  "door_locked_redkey": { 
-    "text": "I need a key", 
-    "color": "green", 
-    "icon": "something.png" 
+  "door_locked_redkey": {
+    "text": "I need a key",
+    "color": "green",
+    "icon": "something.png"
   },
-  {
   "mic_use": [
     { "text": "Hey look, a microphone!", "color": "blue", "icon": "k-neutral.png" },
     { "text": "So?", "color": "green", "icon": "p-neutral.png" },
@@ -19,9 +18,7 @@
     { "text": "Keith, I hate that you know how to get me to do things.", "color": "green", "icon": "p-angry.png" },
     { "text": "And for that, I'm gonna kick your ass.", "color": "green", "icon": "p-neutral.png" },
     { "text": "Let's do it.", "color": "green", "icon": "p-happy.png" }
-  ]
-},
-{
+  ],
   "post_song1": [
     { "text": "You did great!", "color": "blue", "icon": "k-happy.png" },
     { "text": "You did well too.", "color": "green", "icon": "p-neutral.png" },
@@ -29,11 +26,10 @@
     { "text": "Fine by me.", "color": "green", "icon": "p-neutral.png" },
     { "text": "I still hate you though.", "color": "green", "icon": "p-angry.png" },
     { "text": "Yeah, I'm sure you do.", "color": "blue", "icon": "k-neutral.png" }
-  ]
-},
-  "inv_full_warning": { 
-    "text": "My inventory is full!", 
-    "color": "red", 
-    "icon": "something.png" 
+  ],
+  "inv_full_warning": {
+    "text": "My inventory is full!",
+    "color": "red",
+    "icon": "something.png"
   }
 }
