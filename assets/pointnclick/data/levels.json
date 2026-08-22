@@ -55,7 +55,7 @@
         "bg": "room.png",
         "elements": [
           {
-            "name": "key1",
+            "name": "key2",
             "x": 500,
             "y": 500,
             "width": 40,
