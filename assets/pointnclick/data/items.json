@@ -16,7 +16,7 @@
     "flavortext": "Nice for relaxing after a long day. Heals you.",
     "usable": true,
     "icon": "icon.png"
-  }
+  },
   "microphone": {
     "name": "Microphone",
     "flavortext": "beep boop skide bap",
