@@ -697,6 +697,7 @@ a,
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .inv-item-image {
@@ -704,6 +705,20 @@ a,
     height: 80%;
     object-fit: contain;
 }
+
+.inv-item-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: white;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 4px;
+    pointer-events: none; 
+}
+
 
 
 
@@ -2553,21 +2568,18 @@ function renderInvItems() {
     }
 
     let currentSlotIndex = 0;
+
     inventory.forEach((quantity, itemId) => {
-    for (let q = 0; q < quantity; q++) {
-        if (currentSlotIndex < 5) {
+        if (currentSlotIndex < 5 && quantity > 0) {
             const targetSlot = document.getElementById(`inv-slot-${currentSlotIndex}`);
-            
             const itemData = itemDatabase[itemId];
             
             const img = document.createElement("img");
-            
             if (itemData && itemData.icon) {
                 img.src = `assets/pointnclick/icons/${itemData.icon}`; 
             } else {
                 img.src = `assets/pointnclick/icons/default.png`;
             }
-            
             img.className = "inv-item-image clickable";
 
             img.addEventListener("click", () => {
@@ -2575,10 +2587,17 @@ function renderInvItems() {
             });
 
             targetSlot.appendChild(img);
+
+            if (quantity > 1) {
+                const countBadge = document.createElement("span");
+                countBadge.innerText = quantity;
+                countBadge.className = "inv-item-count";
+                targetSlot.appendChild(countBadge);
+            }
+            
             currentSlotIndex++;
         }
-    }
-});
+    });
 }
 
 function toggleItemPopup(itemId) {
