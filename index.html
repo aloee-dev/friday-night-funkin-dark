@@ -2595,23 +2595,22 @@ function toggleItemPopup(itemId) {
     popupName.innerText = itemData.name;
     popupDesc.innerText = `"${itemData.flavortext}"`;
 
-    const newBtn = popupUseBtn.cloneNode(true);
-    popupUseBtn.parentNode.replaceChild(newBtn, popupUseBtn);
-    popupUseBtn = newBtn; 
-
     if (itemData.usable) {
-        newBtn.classList.remove("hidden-btn");
-        newBtn.addEventListener("click", () => {
+        popupUseBtn.classList.remove("hidden-btn");
+
+        popupUseBtn.onclick = () => {
             useItem(itemId);
             closePopup();
             renderInvItems();
-        });
+        };
     } else {
-        newBtn.classList.add("hidden-btn");
+        popupUseBtn.classList.add("hidden-btn");
+        popupUseBtn.onclick = null;
     }
 
     itemPopup.classList.remove("hidden-popup");
 }
+
 
 function closePopup() {
     itemPopup.classList.add("hidden-popup");
