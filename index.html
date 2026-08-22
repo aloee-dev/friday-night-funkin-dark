@@ -720,6 +720,7 @@ a,
     padding: 2px 5px;
     border-radius: 4px;
     pointer-events: none; 
+    z-index: 20;
 }
 
     .pickup-animate {
@@ -2730,7 +2731,14 @@ function useItem(item) {
 }
 
 if (element.action === "pickup") {
-    if (getInvTotal() >= 5) {
+    let uniqueItems = 0;
+    inventory.forEach((quantity) => {
+        if (quantity > 0) uniqueItems++;
+    });
+
+    const alreadyHasThisItem = (inventory.get(element.item) || 0) > 0;
+    
+    if (uniqueItems >= 5 && !alreadyHasThisItem) {
         const textData = gameDialogue["inv_full_warning"];
         if (textData) {
             showText(textData);
