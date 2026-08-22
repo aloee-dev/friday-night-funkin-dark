@@ -2563,9 +2563,9 @@ function renderInvItems() {
             const img = document.createElement("img");
             
             if (itemData && itemData.icon) {
-                img.src = `assets/pointnclick/icons${itemData.icon}`; 
+                img.src = `assets/pointnclick/icons/${itemData.icon}`; 
             } else {
-                img.src = `assets/default_item.png`;
+                img.src = `assets/pointnclick/icons/default.png`;
             }
             
             img.className = "inv-item-image clickable";
