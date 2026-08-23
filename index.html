@@ -3269,13 +3269,62 @@ async function loadSongData(songId) {
     }
     const json = await res.json();
 
-    json.background = base + json.background;
+    if (json.stageLayers) {
+        for (let layer of json.stageLayers) {
+            layer.src = base + layer.src;
+            
+            if (layer.type === "animated" && layer.xml) {
+                try {
+                    const xmlRes = await fetch(base + layer.xml);
+                    if (xmlRes.ok) {
+                        const xmlText = await xmlRes.text();
+                        
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                        const subTextures = xmlDoc.getElementsByTagName("SubTexture");
+                        
+                        layer.animationAtlas = {};
+
+                        for (let i = 0; i < subTextures.length; i++) {
+                            const node = subTextures[i];
+                            const fullName = node.getAttribute("name");
+                            if (!fullName) continue;
+
+                            const match = fullName.match(/^(.*?)([\d]+)$/);
+                            if (!match) continue;
+
+                            const animName = match[1];
+
+                            if (!layer.animationAtlas[animName]) {
+                                layer.animationAtlas[animName] = [];
+                            }
+
+                            layer.animationAtlas[animName].push({
+                                x: parseInt(node.getAttribute("x") || 0),
+                                y: parseInt(node.getAttribute("y") || 0),
+                                w: parseInt(node.getAttribute("width") || 0),
+                                h: parseInt(node.getAttribute("height") || 0),
+                                frameX: parseInt(node.getAttribute("frameX") || 0),
+                                frameY: parseInt(node.getAttribute("frameY") || 0)
+                            });
+                        }
+                    }
+                } catch (xmlError) {
+                    console.error("Failed to process layer XML inline:", xmlError);
+                }
+            }
+        }
+    } else {
+        json.stageLayers = [{ id: "bg", type: "static", src: base + (json.background || "white.png"), zIndex: 1 }];
+    }
+
     json.instSrc = base + json.instSrc;
     json.voicePlayer = base + json.voicePlayer;
     json.voiceOpponent = base + json.voiceOpponent;
 
     return json;
 }
+
 
 async function startSong(songId) {
     const data = await loadSongData(songId);
@@ -3356,7 +3405,30 @@ async function startSong(songId) {
 
     dialogBg.style.display = "none";
     
-    stage.style.backgroundImage = `url("${data.background}")`;
+    stage.innerHTML = '';
+    stage.style.backgroundImage = 'none';
+
+    if (_activeSong.stageLayers) {
+        _activeSong.stageLayers.forEach(layer => {
+            const layerEl = document.createElement("div");
+            layerEl.id = `layer-${layer.id}`;
+            layerEl.className = "stage-layer";
+            
+            layerEl.style.zIndex = layer.zIndex;
+
+            if (layer.type === "static") {
+                layerEl.style.backgroundImage = `url("${layer.src}")`;
+            } else if (layer.type === "animated") {
+                layerEl.style.backgroundImage = `url("${layer.src}")`;
+                layerEl.classList.add("animated-sprite");
+                
+                layer.activeAnimation = layer.activeAnimation || "idle";
+            }
+
+            stage.appendChild(layerEl);
+        });
+    }
+
     cam.style.display = "block"; 
     stage.style.display = "block";
 
@@ -3680,9 +3752,7 @@ let _lastPressedPlayerKey = null;
 let _playerMissAnimState = null; 
 
 
-
-
-function animateCharacters(currentTime) {
+    function animateCharacters(currentTime) {
     if (!_activeSong || !_playerChar || !_opponentChar) return;
 
     const bpm = _activeSong.bpm;
@@ -3746,7 +3816,32 @@ function animateCharacters(currentTime) {
     }
 
     drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, tick, holdTicks);
+
+    if (_activeSong.stageLayers) {
+        _activeSong.stageLayers.forEach(layer => {
+
+            if (layer.type === "animated" && layer.animationAtlas) {
+                const layerEl = document.getElementById(`layer-${layer.id}`);
+                if (!layerEl) return;
+
+                const animName = layer.activeAnimation || "idle";
+                const frames = layer.animationAtlas[animName];
+                
+                if (frames && frames.length > 0) {
+                    const currentFrameIndex = Math.floor(tick / holdTicks) % frames.length;
+                    const frame = frames[currentFrameIndex];
+                    
+                    layerEl.style.width = `${frame.w}px`;
+                    layerEl.style.height = `${frame.h}px`;
+                    layerEl.style.backgroundPosition = `-${frame.x}px -${frame.y}px`;
+                    
+                    layerEl.style.transform = `translate(${frame.frameX}px, ${frame.frameY}px)`;
+                }
+            }
+        });
+    }
 }
+
 
 
     
