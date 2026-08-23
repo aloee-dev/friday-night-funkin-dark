@@ -1,7 +1,9 @@
 {
-  "background": "white.png",
   "bpm": 170,
   "scrollSpeed": 1.7,
+    "stageLayers": [
+    { "id": "white", "type": "static", "src": "white.png", "zIndex": 1 }
+  ],
   "player": "bf",
   "opponent": "gf",
   "instSrc": "Inst.mp3",
