@@ -3594,7 +3594,21 @@ function updateRhythmLoop() {
             const ev = _activeSong.events[i];
 
             if (currentTime >= ev.time && !ev.hasFired) {
-                triggerSpecial(ev.target, ev.animation, holdTicks);
+                if (ev.animation) {
+                    triggerSpecial(ev.target, ev.animation, holdTicks);
+                } 
+                else if (ev.cameraCommand) {
+                    if (ev.cameraCommand === "MANUAL_PAN") {
+                        camera.manualCamera = true;
+                        camera.targetX = ev.x || 0;
+                        camera.targetY = ev.y || 1000;
+                        camera.targetZoom = ev.zoom || 1.0;
+                    } 
+                    else if (ev.cameraCommand === "RELEASE_CAMERA") {
+                        camera.manualCamera = false;
+                    }
+                }
+
                 ev.hasFired = true; 
             }
         }
