@@ -3269,6 +3269,9 @@ async function loadSongData(songId) {
     }
     const json = await res.json();
 
+    json.opponentPosition = json.opponentPosition || { x: 200, y: 1000 };
+    json.playerPosition = json.playerPosition || { x: 1600, y: 1000 };
+
     if (json.stageLayers) {
         for (let layer of json.stageLayers) {
             layer.src = base + layer.src;
@@ -3334,8 +3337,11 @@ async function startSong(songId) {
         background: data.background,
         bpm: data.bpm,
         scrollSpeed: data.scrollSpeed,
+        stageLayers: data.stageLayers ? [...data.stageLayers] : [],
         player: data.player,
         opponent: data.opponent,
+        opponentPosition: { ...data.opponentPosition },
+        playerPosition: { ...data.playerPosition },
         opponentNotes: [...data.opponentNotes],
         playerNotes: [...data.playerNotes],
         events: data.events ? [...data.events] : []
@@ -3427,6 +3433,21 @@ async function startSong(songId) {
 
             stage.appendChild(layerEl);
         });
+    }
+
+    const opponentCanvas = document.getElementById("opponentCanvas");
+    const playerCanvas = document.getElementById("playerCanvas");
+
+    if (opponentCanvas) {
+        opponentCanvas.style.left = `${_activeSong.opponentPosition.x}px`;
+        opponentCanvas.style.right = "auto";
+        opponentCanvas.style.top = `${_activeSong.opponentPosition.y}px`;
+    }
+
+    if (playerCanvas) {
+        playerCanvas.style.left = `${_activeSong.playerPosition.x}px`;
+        playerCanvas.style.right = "auto";
+        playerCanvas.style.top = `${_activeSong.playerPosition.y}px`;
     }
 
     cam.style.display = "block"; 
