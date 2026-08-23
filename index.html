@@ -3778,7 +3778,7 @@ function updateRhythmLoop() {
         }
         
         setTimeout(() => {
-            //load results
+            showResults();
         }, 800);
         
         return;
@@ -3984,6 +3984,24 @@ function createNoteElement(n, isPlayer) {
         laneContainer.appendChild(end);
     }
 }
+
+    function convertNumber(variableValue, targetHtmlId, folderPrefix) {
+  const container = document.getElementById(targetHtmlId);
+  container.innerHTML = ''; 
+  
+  const digitString = variableValue.toString();
+  
+  for (let i = 0; i < digitString.length; i++) {
+    const digit = digitString[i];
+    const imgNode = document.createElement('img');
+      
+    imgNode.src = `assets/final/results/numbers/${folderPrefix}-${digit}.png`;
+    imgNode.alt = digit;
+    
+    container.appendChild(imgNode);
+  }
+}
+
 
 
     function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
