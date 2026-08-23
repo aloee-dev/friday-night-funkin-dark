@@ -3584,6 +3584,29 @@ function updateCamera() {
 
 function updateRhythmLoop() {
     if (!_rhythmStarted || !_inst) return;
+
+    if (_inst && _inst.ended && _rhythmStarted) {
+        
+        camera.manualOverride = true;
+        camera.targetX = camera.x; 
+        camera.targetY = 0;        
+        camera.targetZoom = 1.1;   
+        camera.lerpSpeed = 0.05;
+        camera.zoomSpeed = 0.05;
+
+        const fade = document.getElementById("fade-overlay");
+        if (fade) {
+            fade.style.transition = "opacity 0.8s ease, background-color 0s linear";
+            fade.style.backgroundColor = "black";
+            fade.style.opacity = 1;
+        }
+        
+        setTimeout(() => {
+            //load results
+        }, 800);
+        
+        return;
+    }
     
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
