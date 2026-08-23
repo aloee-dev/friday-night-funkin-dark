@@ -1053,7 +1053,7 @@ a,
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  background-image: url('results-bg.png');
+  background-image: url('assets/final/results/results-bg.png');
   background-size: cover;
   background-position: center;
 }
@@ -1068,7 +1068,7 @@ a,
   position: absolute;
   width: 1595px;
   height: 1099px;
-  background-image: url('results-display.png');
+  background-image: url('assets/final/results/results-display.png');
   background-size: contain;
   background-repeat: no-repeat;
   transform: translateX(100vw); 
@@ -1125,7 +1125,7 @@ a,
   left: 0;
   width: 1595px;
   height: 1099px;
-  background-image: url('results-score-container.png');
+  background-image: url('assets/final/results/results-score-container.png');
   background-size: contain;
   background-repeat: no-repeat;
   display: flex;
@@ -1350,31 +1350,31 @@ a,
   <div class="results-display">
 
     <div class="title-banner">
-      <img src="results-bar.png" class="results-title-img">
+      <img src="assets/final/results/results-bar.png" class="results-title-img">
     </div>
 
     <div class="ranking-row sicks-container">
-      <img src="results-sicks.png" class="stat-label">
+      <img src="assets/final/results/results-sicks.png" class="stat-label">
       <div class="num-wrapper" id="count-sicks"></div>
     </div>
 
     <div class="ranking-row goods-container">
-      <img src="results-goods.png" class="stat-label">
+      <img src="assets/final/results/results-goods.png" class="stat-label">
       <div class="num-wrapper" id="count-goods"></div>
     </div>
 
     <div class="ranking-row bads-container">
-      <img src="results-bads.png" class="stat-label">
+      <img src="assets/final/results/results-bads.png" class="stat-label">
       <div class="num-wrapper" id="count-bads"></div>
     </div>
 
     <div class="ranking-row shits-container">
-      <img src="results-shits.png" class="stat-label">
+      <img src="assets/final/results/results-shits.png" class="stat-label">
       <div class="num-wrapper" id="count-shits"></div>
     </div>
 
     <div class="ranking-row misses-container">
-      <img src="results-misses.png" class="stat-label">
+      <img src="assets/final/results/results-misses.png" class="stat-label">
       <div class="num-wrapper" id="count-misses"></div>
     </div>
 
@@ -1383,7 +1383,7 @@ a,
     </div>
 
     <div class="rank-container">
-      <img src="results-rank.png" class="rank-graphic">
+      <img src="assets/final/results/results-rank.png" class="rank-graphic">
     </div>
 
   </div>
@@ -3767,11 +3767,12 @@ function updateRhythmLoop() {
         camera.targetX = camera.x; 
         camera.targetY = 0;        
         camera.targetZoom = 1.1;   
-        camera.lerpSpeed = 0.05;
+        camera.lerpSpeed = 0.08;
         camera.zoomSpeed = 0.05;
 
         const fade = document.getElementById("fade-overlay");
         if (fade) {
+            fade.style.zIndex = "999";
             fade.style.transition = "opacity 0.8s ease, background-color 0s linear";
             fade.style.backgroundColor = "black";
             fade.style.opacity = 1;
