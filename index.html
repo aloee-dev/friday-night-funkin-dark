@@ -3780,6 +3780,7 @@ function updateRhythmLoop() {
         
         setTimeout(() => {
             showResults();
+            fade.style.opacity = 0;
         }, 800);
         
         return;
@@ -4015,9 +4016,6 @@ function createNoteElement(n, isPlayer) {
   const badsRow = document.querySelector('.bads-container');
   const shitsRow = document.querySelector('.shits-container');
   const missesRow = document.querySelector('.misses-container');
-
- const fade = document.querySelector('fade-overlay');
- fade.style.display = "none";
 
   screen.classList.remove('active');
   displayBoard.classList.remove('slide-right');
