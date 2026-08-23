@@ -2888,7 +2888,8 @@ let camera = {
     lerpSpeed: 0.05,
     zoomSpeed: 0.05,
     bounds: { width: 2048, height: 1500 },
-    viewport: { width: 1595, height: 1099 }
+    viewport: { width: 1595, height: 1099 },
+    manualCamera: false
 };
 
 let _activeSong = null;
@@ -3539,25 +3540,47 @@ function updateCamera() {
 }
 
     function autoFocusCamera(currentTime) {
-    const focus = 400;
-    
-    let opponentSinging = _activeSong.opponentNotes.some(n => n[0] > currentTime && n[0] < currentTime + focus);
-    let playerSinging = _activeSong.playerNotes.some(n => n[0] > currentTime && n[0] < currentTime + focus);
+    if (camera.manualCamera) return;
 
-    if (opponentSinging) {
-        camera.targetX = 0; 
-        camera.targetY = 1000;
-        camera.targetZoom = 1.1;
-    } else if (playerSinging) {
-        camera.targetX = 600; 
-        camera.targetY = 1000;
-        camera.targetZoom = 1.2;
-    } else {
+    const upcomingOpponentNotes = _activeSong.opponentNotes.filter(n => n[0] >= currentTime);
+    const upcomingPlayerNotes = _activeSong.playerNotes.filter(n => n[0] >= currentTime);
+
+    const nextOpponentTime = upcomingOpponentNotes.length > 0 ? upcomingOpponentNotes[0][0] : Infinity;
+    const nextPlayerTime = upcomingPlayerNotes.length > 0 ? upcomingPlayerNotes[0][0] : Infinity;
+
+    if (nextOpponentTime === Infinity && nextPlayerTime === Infinity) {
         camera.targetX = 256;
         camera.targetY = 1000;
         camera.targetZoom = 1.0;
+        return;
+    }
+
+    if (nextOpponentTime <= nextPlayerTime) {
+        camera.targetX = 0; 
+        camera.targetY = 1000;
+        camera.targetZoom = 1.1;
+    } else {
+        camera.targetX = 600; 
+        camera.targetY = 1000;
+        camera.targetZoom = 1.2;
     }
 }
+
+        function triggerCameraEvent(type, targetX, targetY, zoom, lerp = 0.05) {
+    if (type === "MANUAL_PAN") {
+        camera.manualCamera = true;
+        camera.targetX = targetX;
+        camera.targetY = targetY;
+        camera.targetZoom = zoom;
+        camera.lerpSpeed = lerp; 
+    } 
+    else if (type === "RELEASE_CAMERA") {
+        camera.manualCamera = false;
+        camera.lerpSpeed = 0.05;
+    }
+}
+
+
 
 function updateRhythmLoop() {
     if (!_rhythmStarted || !_inst) return;
