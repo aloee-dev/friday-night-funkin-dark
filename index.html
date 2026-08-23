@@ -864,10 +864,30 @@ a,
     height: 1500px;
     top: 0;
     left: 0;
-    background-size: 100% 100%;
     z-index: 1;
+    overflow: hidden;
 }
 
+.stage-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.stage-layer:not(.animated-sprite) {
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+}
+
+.stage-layer.animated-sprite {
+    background-position: 0px 0px;
+    background-size: auto;
+}
+    
 #opponentCanvas {
     position: absolute;
     top: 800px; 
