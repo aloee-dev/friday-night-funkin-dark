@@ -3655,11 +3655,13 @@ async function startSong(songId) {
     _voicePlayer.currentTime = 0;
     _voiceOpponent.currentTime = 0;
 
-    const tryPlay = audio => audio.play().catch(() => {});
+    _inst.play().catch(() => {});
+    _voicePlayer.play().catch(() => {});
+    _voiceOpponent.play().catch(() => {});
 
-    tryPlay(_inst);
-    tryPlay(_voicePlayer);
-    tryPlay(_voiceOpponent);
+    const masterTime = _inst.currentTime;
+    _voicePlayer.currentTime = masterTime;
+    _voiceOpponent.currentTime = masterTime;
 
     requestAnimationFrame(updateRhythmLoop);
 }
