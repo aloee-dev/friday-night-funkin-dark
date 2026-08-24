@@ -2746,6 +2746,11 @@ function loadRoom(room) {
     }
 
     room.elements.forEach(element => {
+
+        if (element.show_condition && !gameFlags[element.show_condition]) {
+            return;
+        }
+        
         const imgElement = document.createElement("img");
         imgElement.src = `assets/pointnclick/elements/${element.image}`;
         imgElement.style.position = "absolute";
@@ -2927,6 +2932,14 @@ function useItem(item) {
     }
 
     if (element.action === "inspect") {
+        if (element.name === "drawer1") {
+            element.image = "drawer1_open.png";
+            gameFlags.drawer1_open = true;
+            element.action = "none"; 
+
+            loadRoom(currentRoom);
+            return;
+        }
     const textData = gameDialogue[element.dialogue_id];
     if (textData) {
         showText(textData);
