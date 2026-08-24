@@ -55,6 +55,16 @@
         "bg": "room.png",
         "elements": [
           {
+    "name": "drawer1_key",
+    "x": 10,
+    "y": 520,
+    "width": 30,
+    "height": 15,
+    "action": "pickup",
+    "item": "silver_key",
+    "show_condition": "drawer1_open"
+},
+          {
             "name": "key2",
             "x": 500,
             "y": 500,
