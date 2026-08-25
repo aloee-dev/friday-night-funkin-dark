@@ -1045,6 +1045,7 @@ a,
     }
 }
 
+    
 .results-screen {
   display: none;
   position: fixed;
@@ -1053,6 +1054,7 @@ a,
   width: 100vw;
   height: 100vh;
   z-index: 9999;
+  overflow: hidden; 
   background-image: url('assets/final/results/results-bg.png');
   background-size: cover;
   background-position: center;
@@ -1062,6 +1064,20 @@ a,
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.results-display,
+.score-panel,
+.title-banner,
+.rank-container {
+  position: absolute;
+  width: 1595px;
+  height: 1099px;
+  top: 0;
+  left: 0; 
+  
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .results-display {
@@ -1165,13 +1181,17 @@ a,
   animation: slideFromRight 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
 }
 
+    
 @keyframes slideFromLeft {
+  from { transform: translateX(-1595px); }
   to { transform: translateX(0); }
 }
 
 @keyframes slideFromRight {
+  from { transform: translateX(1595px); }
   to { transform: translateX(0); }
 }
+
 
 
 
