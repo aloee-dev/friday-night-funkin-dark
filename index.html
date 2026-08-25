@@ -3183,22 +3183,28 @@ function calculateAccuracy(sicks, goods, bads, shits, misses) {
   }
 }
 
-    const MISS_SOUNDS = [
-    "sfx/miss-1.mp3",
-    "sfx/miss-2.mp3",
-    "sfx/miss-3.mp3"
-];
+const miss1 = new Audio('sfx/miss-1.mp3');
+const miss2 = new Audio('sfx/miss-2.mp3');
+const miss3 = new Audio('sfx/miss-3.mp3');
 
-    function playMiss() {
-    const randomIndex = Math.floor(Math.random() * MISS_SOUNDS.length);
-    
-    const missSfx = new Audio(MISS_SOUNDS[randomIndex]);
-    
-    missSfx.play().catch(() => {
-    });
+function playMiss() {
+  const number = Math.floor(Math.random() * 3) + 1;
+        
+  switch (number) {
+    case 1:
+      miss1.currentTime = 0;
+      miss1.play().catch(() => {});
+      break;
+    case 2:
+      miss2.currentTime = 0; 
+      miss2.play().catch(() => {});
+      break;
+    case 3:
+      miss3.currentTime = 0; 
+      miss3.play().catch(() => {});
+      break;
+  }
 }
-
-
 
 const _heldKeys = new Set();
 
