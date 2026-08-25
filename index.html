@@ -1570,6 +1570,7 @@ async function preloadAll() {
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
     hoverSfx.preload = "auto";
+    hoverSfx.volume = 0.8;
 
     document.querySelectorAll('.menu-btn').forEach(btn => {
         btn.addEventListener('mouseenter', () => {
