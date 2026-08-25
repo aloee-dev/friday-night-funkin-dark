@@ -1087,7 +1087,7 @@ a,
   background-image: url('assets/final/results/results-display.png');
   background-size: contain;
   background-repeat: no-repeat;
-  transform: translateX(100vw); 
+  transform: translateX(-1595px); 
 }
 
 .title-banner {
@@ -1096,7 +1096,7 @@ a,
   left: 0;
   width: 1595px;
   height: 1099px;
-  transform: translateX(-100vw);
+  transform: translateX(-1595px);
 }
 
 .results-title-img {
@@ -1112,14 +1112,19 @@ a,
   left: 0;
   width: 1595px;
   height: 1099px;
-  transform: translateX(-100vw);
+  transform: translateX(-1595px);
 }
 
-.sicks-container  { top: 0; left: 0; }
-.goods-container  { top: 0; left: 0; }
-.bads-container   { top: 0; left: 0; }
-.shits-container  { top: 0; left: 0; }
-.misses-container { top: 0; left: 0; }
+.sicks-container,
+.goods-container,
+.bads-container,
+.shits-container,
+.misses-container { 
+  top: 0; 
+  left: 0; 
+  transform: translateX(-1595px);
+}
+
     
 .stat-label {
   width: 100%;
@@ -1147,7 +1152,7 @@ a,
   display: flex;
   justify-content: center;
   align-items: center;
-  transform: translateX(-100vw);
+  transform: translateX(-1595px);
 }
 
 .score-images-wrapper {
@@ -1165,7 +1170,7 @@ a,
   left: 0;
   width: 1595px;
   height: 1099px;
-  transform: translateX(100vw);
+  transform: translateX(1595px);
 }
 
 .rank-graphic {
@@ -4057,13 +4062,13 @@ function showResults() {
   const titleBanner = document.querySelector('.title-banner');
   const scorePanel = document.querySelector('.score-panel');
   const rankContainer = document.querySelector('.rank-container');
-  
+
   const sicksRow = document.querySelector('.sicks-container');
   const goodsRow = document.querySelector('.goods-container');
   const badsRow = document.querySelector('.bads-container');
   const shitsRow = document.querySelector('.shits-container');
   const missesRow = document.querySelector('.misses-container');
-  
+
   screen.classList.remove('active');
   displayBoard.classList.remove('slide-right');
   titleBanner.classList.remove('slide-left');
@@ -4074,19 +4079,20 @@ function showResults() {
   badsRow.classList.remove('slide-left');
   shitsRow.classList.remove('slide-left');
   missesRow.classList.remove('slide-left');
-  
-  void screen.offsetWidth;
-  
+
   convertNumber(sicks, 'count-sicks', 'sicks');
   convertNumber(goods, 'count-goods', 'goods');
   convertNumber(bads, 'count-bads', 'bads');
   convertNumber(shits, 'count-shits', 'shits');
   convertNumber(misses, 'count-misses', 'misses');
   convertNumber(score, 'master-score-container', 'score');
-  
+
   document.querySelector('.rank-graphic').src = `rank-${grade}.png`;
-  
+
+  void screen.offsetWidth; 
+
   screen.classList.add('active');
+
   setTimeout(() => { titleBanner.classList.add('slide-left'); }, 100);
   setTimeout(() => { displayBoard.classList.add('slide-right'); }, 200);
   setTimeout(() => { sicksRow.classList.add('slide-left'); }, 600);
