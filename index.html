@@ -3842,6 +3842,9 @@ function updateRhythmLoop() {
         setTimeout(() => {
             showResults();
             fade.style.opacity = 0;
+            const stage = document.getElementById("rhythm-stage");
+            stage.style.display = "none";
+
         }, 800);
         
         return;
