@@ -4005,22 +4005,19 @@ function createNoteElement(n, isPlayer) {
 
     function convertNumber(variableValue, targetHtmlId, folderPrefix) {
   const container = document.getElementById(targetHtmlId);
-  container.innerHTML = ''; 
-  
+  container.innerHTML = "";
   const digitString = variableValue.toString();
   
   for (let i = 0; i < digitString.length; i++) {
     const digit = digitString[i];
     const imgNode = document.createElement('img');
-      
     imgNode.src = `assets/final/results/numbers/${folderPrefix}-${digit}.png`;
     imgNode.alt = digit;
-    
     container.appendChild(imgNode);
   }
 }
 
-    function showNewResults() {
+function showResults() {
   const screen = document.querySelector('.results-screen');
   const displayBoard = document.querySelector('.results-display');
   const titleBanner = document.querySelector('.title-banner');
@@ -4032,42 +4029,37 @@ function createNoteElement(n, isPlayer) {
   const badsRow = document.querySelector('.bads-container');
   const shitsRow = document.querySelector('.shits-container');
   const missesRow = document.querySelector('.misses-container');
-
+  
   screen.classList.remove('active');
   displayBoard.classList.remove('slide-right');
   titleBanner.classList.remove('slide-left');
   scorePanel.classList.remove('slide-left');
   rankContainer.classList.remove('slide-right');
-  
   sicksRow.classList.remove('slide-left');
   goodsRow.classList.remove('slide-left');
   badsRow.classList.remove('slide-left');
   shitsRow.classList.remove('slide-left');
   missesRow.classList.remove('slide-left');
-
+  
   void screen.offsetWidth;
-
+  
   convertNumber(sicks, 'count-sicks', 'sicks');
   convertNumber(goods, 'count-goods', 'goods');
   convertNumber(bads, 'count-bads', 'bads');
   convertNumber(shits, 'count-shits', 'shits');
-  convertNumber(misses, 'count-misses', 'misses'); 
-  
+  convertNumber(misses, 'count-misses', 'misses');
   convertNumber(score, 'master-score-container', 'score');
   
   document.querySelector('.rank-graphic').src = `rank-${grade}.png`;
-
+  
   screen.classList.add('active');
-
   setTimeout(() => { titleBanner.classList.add('slide-left'); }, 100);
   setTimeout(() => { displayBoard.classList.add('slide-right'); }, 200);
-
   setTimeout(() => { sicksRow.classList.add('slide-left'); }, 600);
   setTimeout(() => { goodsRow.classList.add('slide-left'); }, 750);
   setTimeout(() => { badsRow.classList.add('slide-left'); }, 900);
   setTimeout(() => { shitsRow.classList.add('slide-left'); }, 1050);
   setTimeout(() => { missesRow.classList.add('slide-left'); }, 1200);
-
   setTimeout(() => { scorePanel.classList.add('slide-left'); }, 1450);
   setTimeout(() => { rankContainer.classList.add('slide-right'); }, 1700);
 }
