@@ -1800,17 +1800,22 @@ async function transLoad(scene) {
     loadDialogue(scene);
 }
     
-    // below i will yoink things from my previous game
+    // below i will yoink things from my previous game well i added a lot in between what i was referring to, i did not mean the settings, i meant the dialogue
 
-    let settings = {
+let settings = {
   fontSize: 1,
   speed: 1,
   skipPrologue: false,
   showFPS: false
 };
+    
 const fontOptions = ["SMALL", "NORMAL", "LARGE"];
 const speedOptions = ["SLOW", "NORMAL", "FAST", "INSTANT"];
 
+const fpsDisplay = document.getElementById('fps-counter');
+let lastTime = performance.now();
+let frameCount = 0;
+let fps = 0;
 
 document.getElementById("btn-settings").onclick = () => {
   document.getElementById("settings-menu").style.display = "flex";
@@ -1823,18 +1828,21 @@ document.getElementById("menu-back").onclick = () => {
   document.getElementById("title-buttons").style.display = "flex";
 };
 
-
-
 function updateSettingsUI() {
   document.getElementById("font-value").textContent = fontOptions[settings.fontSize];
   document.getElementById("speed-value").textContent = speedOptions[settings.speed];
 
   document.getElementById("skip-box").src =
     settings.skipPrologue ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
-}
 
-    document.getElementById("fps-box").src =
+  document.getElementById("fps-box").src =
     settings.showFPS ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
+
+  if (settings.showFPS) {
+    fpsDisplay.style.display = "block";
+  } else {
+    fpsDisplay.style.display = "none";
+  }
 }
 
 document.getElementById("font-left").onclick = () => {
@@ -1864,45 +1872,40 @@ document.getElementById("speed-right").onclick = () => {
     updateSettingsUI();
   }
 };
-    document.getElementById("skip-box").onclick = () => {
+
+document.getElementById("skip-box").onclick = () => {
   settings.skipPrologue = !settings.skipPrologue;
   updateSettingsUI();
 };
-    document.getElementById("fps-box").onclick = () => {
+
+document.getElementById("fps-box").onclick = () => {
   settings.showFPS = !settings.showFPS;
   updateSettingsUI();
 };
 
-    document.getElementById("settings-back").onclick = () => {
+document.getElementById("settings-back").onclick = () => {
   document.getElementById("settings-menu").style.display = "none";
 };
 
-        const fpsDisplay = document.getElementById('fps-counter');
-        
-        let lastTime = performance.now();
-        let frameCount = 0;
-        let fps = 0;
+function updateFPS(currentTime) {
+  frameCount++;
+  const delta = currentTime - lastTime;
 
-        function updateFPS(currentTime) {
-
-            if (settings.showFPS) {
-    fpsDisplay.style.display = "block";
-  } else {
-    fpsDisplay.style.display = "none";
+  if (delta >= 1000) {
+    fps = Math.round((frameCount * 1000) / delta);
+    
+    if (settings.showFPS) {
+      fpsDisplay.textContent = `FPS: ${fps}`;
+    }
+    
+    frameCount = 0;
+    lastTime = currentTime;
   }
-            frameCount++;
-            const delta = currentTime - lastTime;
+  requestAnimationFrame(updateFPS);
+}
 
-            if (delta >= 1000) {
-                fps = Math.round((frameCount * 1000) / delta);
-                fpsDisplay.textContent = `FPS: ${fps}`;
-                frameCount = 0;
-                lastTime = currentTime;
-            }
-            requestAnimationFrame(updateFPS);
-        }
+requestAnimationFrame(updateFPS);
 
-        requestAnimationFrame(updateFPS);
 
 
 let inMenu = false;
