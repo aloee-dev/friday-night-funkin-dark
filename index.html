@@ -741,6 +741,18 @@ a,
     }
 }
 
+#fps-counter {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 9999;
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 16px;
+    display: none; 
+}
 
 
     #song-loading-screen {
@@ -1297,6 +1309,11 @@ a,
     <img id="skip-box" class="checkbox" src="assets/checkbox_empty.png">
   </div>
 
+        <div class="settings-row">
+    <span class="settings-label">SHOW FPS</span>
+    <img id="fps-box" class="checkbox" src="assets/checkbox_empty.png">
+  </div>
+
   <div id="settings-back">
     <button class="settings-exit" id="menu-back">BACK</button>
   </div>
@@ -1423,6 +1440,8 @@ a,
 </div>
 
     <div id="choice-container" style="display:none;"></div>
+
+    <div id="fps-counter">FPS: 0</div>
     
       <div id="fade-overlay"></div>
     <div id="black-curtain"></div>
@@ -1786,7 +1805,8 @@ async function transLoad(scene) {
     let settings = {
   fontSize: 1,
   speed: 1,
-  skipPrologue: false
+  skipPrologue: false,
+  showFPS: false
 };
 const fontOptions = ["SMALL", "NORMAL", "LARGE"];
 const speedOptions = ["SLOW", "NORMAL", "FAST", "INSTANT"];
@@ -1811,6 +1831,10 @@ function updateSettingsUI() {
 
   document.getElementById("skip-box").src =
     settings.skipPrologue ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
+}
+
+    document.getElementById("fps-box").src =
+    settings.showFPS ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
 }
 
 document.getElementById("font-left").onclick = () => {
@@ -1844,10 +1868,42 @@ document.getElementById("speed-right").onclick = () => {
   settings.skipPrologue = !settings.skipPrologue;
   updateSettingsUI();
 };
+    document.getElementById("fps-box").onclick = () => {
+  settings.showFPS = !settings.showFPS;
+  updateSettingsUI();
+};
 
     document.getElementById("settings-back").onclick = () => {
   document.getElementById("settings-menu").style.display = "none";
 };
+
+        const fpsDisplay = document.getElementById('fps-counter');
+        
+        let lastTime = performance.now();
+        let frameCount = 0;
+        let fps = 0;
+
+        function updateFPS(currentTime) {
+
+            if (settings.showFPS) {
+    fpsDisplay.style.display = "block";
+  } else {
+    fpsDisplay.style.display = "none";
+  }
+            frameCount++;
+            const delta = currentTime - lastTime;
+
+            if (delta >= 1000) {
+                fps = Math.round((frameCount * 1000) / delta);
+                fpsDisplay.textContent = `FPS: ${fps}`;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            requestAnimationFrame(updateFPS);
+        }
+
+        requestAnimationFrame(updateFPS);
+
 
 let inMenu = false;
 let inFreeplay = false;
