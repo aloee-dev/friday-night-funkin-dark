@@ -1649,6 +1649,7 @@ document.getElementById("disclaimer-text").classList.add("flash");
 let disclaimerActive = false;
 
 async function showDisclaimer() {
+    loadSettings();
     const d = document.getElementById("disclaimer-screen");
     d.style.opacity = 1;
     d.style.pointerEvents = "auto";
@@ -1838,6 +1839,8 @@ function updateSettingsUI() {
 
   document.getElementById("fps-box").src =
     settings.showFPS ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
+
+    saveSettings();
 
   if (settings.showFPS) {
     fpsDisplay.style.display = "block";
@@ -2739,7 +2742,8 @@ function doCommand(input) {
             console.log("Unknown command. Type /help");
     }
 }
-
+    
+const SETTINGS_KEY = 'fnf_dark_minds_settings';
 const CHAPTER_SAVE_KEY = 'fnf_dark_minds_chapter_save';
 const SCENE_SAVE_KEY = 'fnf_dark_minds_scene_save';
 
@@ -2762,6 +2766,19 @@ function saveChapter(sceneName) {
     localStorage.setItem(CHAPTER_SAVE_KEY, JSON.stringify(getGame(sceneName)));
     console.log("Chapter Milestone Saved:", sceneName);
 }
+
+function saveSettings() {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function loadSettings() {
+    const rawSettings = localStorage.getItem(SETTINGS_KEY);
+    if (rawSettings) {
+        settings = JSON.parse(rawSettings);
+    }
+    updateSettingsUI();
+}
+
     
     function saveGame(sceneName) {
     const saveData = {
