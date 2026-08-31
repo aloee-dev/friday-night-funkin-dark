@@ -66,7 +66,7 @@ a,
     src: url("fonts/VCR_OSD_MONO_1_001.ttf") format("truetype");
 }
     @font-face {
-    font-family: "Fredoka";
+    font-family: "Fredoka";style.transition = "none"
     src: url("fonts/Fredoka-VariableFont_wdth,wght.ttf") format("truetype");
 }
     @font-face {
@@ -1698,6 +1698,7 @@ async function showDisclaimer() {
             menuMusic.loop = true;
             setTimeout(() => {
                 const buttons = document.getElementById("title-buttons");
+                buttons.style.transition = "none";
                 buttons.style.opacity = 1;
                 buttons.style.pointerEvents = "auto";
             }, 300);
@@ -1757,6 +1758,7 @@ async function showDisclaimer() {
     await new Promise(r => setTimeout(r, 1000));
 
     creditsScreen.style.display = "none";
+    titleButtons.style.transition = "none";
     titleButtons.style.display = "flex";
     fade.style.opacity = 0;
 };
@@ -1861,6 +1863,7 @@ document.getElementById("btn-settings").onclick = () => {
         
 document.getElementById("menu-back").onclick = () => {
   document.getElementById("settings-menu").style.display = "none";
+  document.getElementById("title-buttons").style.transition = "none";
   document.getElementById("title-buttons").style.display = "flex";
 };
 
@@ -1985,6 +1988,7 @@ document.addEventListener('keydown', async (e) => {
 
         await new Promise(r => setTimeout(r, 300));
 
+        titleButtons.style.transition = "none";
         titleButtons.style.display = "flex";
         freePlay.style.display = "none";
         await new Promise(r => setTimeout(r, 1500));
