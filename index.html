@@ -1269,7 +1269,7 @@ a,
 </div>
 
 <div id="title-screen" style="background-image: url('backgrounds/title.png');"></div>
-<div id="title-buttons" style="opacity: 0;">
+<div id="title-buttons">
     <button class="menu-btn" id="btn-play" 
         style="background-image: url('assets/play.png');"
         onmouseover="this.style.backgroundImage='url(\'assets/play-hover.png\')'"
@@ -2757,6 +2757,22 @@ function doCommand(input) {
             console.log("Showing section:", args[0]);
             startPointNClick(args[0]);
             break;
+                        
+        case "/shake":
+            document.body.style.animation = "none";
+            setTimeout(() => { document.body.style.animation = "shake 0.5s"; }, 10);
+            break;
+                        
+        case "/flash":
+            const fx = document.getElementById("fade-overlay");
+            fx.style.transition = "none";
+            fx.style.background = "white";
+            fx.style.opacity = 1;
+            setTimeout(() => {
+                fx.style.transition = "opacity 0.5s ease";
+                fx.style.opacity = 0;
+            }, 50);
+        break;
 
         case '/give':
             const item = args[0];
@@ -2850,10 +2866,6 @@ function resetGame() {
     gameFlags = { placeholder: false, place: false };
     meters = { stamina: 100, sanity: 100, picolove: 50, keithlove: 50 };
     inventory = new Map([["guns", 2], ["ammo", 1], ["importantthings", 0]]);
-}
-    
-function draw() {
-    //nothing
 }
 
 
