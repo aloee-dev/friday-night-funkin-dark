@@ -267,11 +267,14 @@ a,
     to { opacity: 0.8; }
 }
 
-@keyframes menuFade {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    .menu-fade-in {
+    animation: menuFade 1s forwards ease;
 }
 
+@keyframes menuFade {
+    from { opacity: 0; }
+    to { opacity: 0.1; }
+}
 
     #disclaimer-screen {
     position: absolute;
@@ -1698,9 +1701,6 @@ async function showDisclaimer() {
             menuMusic.loop = true;
             setTimeout(() => {
                 const buttons = document.getElementById("title-buttons");
-                buttons.style.transition = "none";
-                title.style.transition = "opacity 1s ease";
-                buttons.style.transition = "opacity 0.8s ease";
                 buttons.style.opacity = 1;
                 buttons.style.pointerEvents = "auto";
             }, 300);
@@ -1760,8 +1760,6 @@ async function showDisclaimer() {
     await new Promise(r => setTimeout(r, 1000));
 
     creditsScreen.style.display = "none";
-    titleButtons.style.transition = "none";
-    titleButtons.style.transition = "opacity 0.8s ease";    
     titleButtons.style.display = "flex";
     fade.style.opacity = 0;
 };
@@ -1866,8 +1864,6 @@ document.getElementById("btn-settings").onclick = () => {
         
 document.getElementById("menu-back").onclick = () => {
   document.getElementById("settings-menu").style.display = "none";
-  document.getElementById("title-buttons").style.transition = "none";
-  document.getElementById("title-buttons").style.transition = "opacity 0.8s ease";
   document.getElementById("title-buttons").style.display = "flex";
 };
 
@@ -1992,8 +1988,6 @@ document.addEventListener('keydown', async (e) => {
 
         await new Promise(r => setTimeout(r, 300));
 
-        titleButtons.style.transition = "none";
-        titleButtons.style.transition = "opacity 0.8s ease";
         titleButtons.style.display = "flex";
         freePlay.style.display = "none";
         await new Promise(r => setTimeout(r, 1500));
@@ -2662,14 +2656,7 @@ function closeDialog() {
   _isTyping = false;
   clearInterval(_typingTimeout);
 
-  const title = document.getElementById("title-screen");
-  const buttons = document.getElementById("title-buttons");
-
-  title.style.display = 'flex';
-  buttons.style.display = 'flex';
-    
-  title.style.animation = "menuFade 8s ease forwards";
-  buttons.style.animation = "menuFade 8s ease forwards";
+  if (typeof draw === "function") draw();
 }
 
 const textBox = new Audio("sfx/textboxClick.mp3");
@@ -2766,22 +2753,6 @@ function doCommand(input) {
             console.log("Showing section:", args[0]);
             startPointNClick(args[0]);
             break;
-                        
-        case "/shake":
-            document.body.style.animation = "none";
-            setTimeout(() => { document.body.style.animation = "shake 0.5s"; }, 10);
-            break;
-                        
-        case "/flash":
-            const fx = document.getElementById("fade-overlay");
-            fx.style.transition = "none";
-            fx.style.background = "white";
-            fx.style.opacity = 1;
-            setTimeout(() => {
-                fx.style.transition = "opacity 0.5s ease";
-                fx.style.opacity = 0;
-            }, 50);
-        break;
 
         case '/give':
             const item = args[0];
@@ -2875,6 +2846,10 @@ function resetGame() {
     gameFlags = { placeholder: false, place: false };
     meters = { stamina: 100, sanity: 100, picolove: 50, keithlove: 50 };
     inventory = new Map([["guns", 2], ["ammo", 1], ["importantthings", 0]]);
+}
+    
+function draw() {
+    //nothing
 }
 
 
