@@ -267,14 +267,15 @@ a,
     to { opacity: 0.8; }
 }
 
-    .menu-fade-in {
-    animation: menuFade 1s forwards ease;
+.menu-fade-in {
+    animation: menuFade 4s ease forwards;
 }
 
 @keyframes menuFade {
     from { opacity: 0; }
-    to { opacity: 0.1; }
+    to { opacity: 1; }
 }
+
 
     #disclaimer-screen {
     position: absolute;
@@ -2655,6 +2656,15 @@ function closeDialog() {
 
   _isTyping = false;
   clearInterval(_typingTimeout);
+
+  const title = document.getElementById("title-screen");
+  const buttons = document.getElementById("title-buttons");
+
+  title.style.display = 'flex';
+  buttons.style.display = 'flex';
+
+  title.classList.add('menu-fade-in');
+  buttons.classList.add('menu-fade-in');
 
   if (typeof draw === "function") draw();
 }
