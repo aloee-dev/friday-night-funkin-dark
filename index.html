@@ -3490,6 +3490,7 @@ const CHARACTER_DATA = {
     bf: {
         src: "assets/final/bf-sprit.png",
         xml: "assets/final/bf-sprit.xml",
+        healthbar: "assets/final/healthbar-blue.png",
         playable: true,
         imageObj: new Image(),
         animations: {}
@@ -3497,6 +3498,7 @@ const CHARACTER_DATA = {
     pico: {
         src: "assets/final/pico-sprite.png",
         xml: "assets/final/pico-sprite.xml",
+        healthbar: "assets/final/healthbar-green.png",
         playable: true,
         imageObj: new Image(),
         animations: {}
@@ -3504,6 +3506,7 @@ const CHARACTER_DATA = {
     gf: {
         src: "assets/final/gf-sprite.png",
         xml: "assets/final/gf-sprite.xml",
+        healthbar: "assets/final/healthbar-gf.png",
         playable: false,
         imageObj: new Image(),
         animations: {}
@@ -3815,6 +3818,13 @@ async function startSong(songId) {
         playerCanvas.style.right = "auto";
         playerCanvas.style.top = `${_activeSong.playerPosition.y}px`;
     }
+
+if (_playerChar && _playerChar.healthbar) {
+    document.getElementById("hp-green").src = _playerChar.healthbar;
+}
+if (_opponentChar && _opponentChar.healthbar) {
+    document.getElementById("hp-red").src = _opponentChar.healthbar;
+}
 
     cam.style.display = "block"; 
     stage.style.display = "block";
