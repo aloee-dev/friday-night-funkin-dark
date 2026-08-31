@@ -1285,6 +1285,15 @@ a,
         onmouseout="this.style.backgroundImage='url(\'assets/credits.png\')'"></button>
 </div>
 
+<div id="restart-confirm-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 6; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
+    <h1 style="color: white; font-family: 'Funkin'; font-size: 40px; text-align: center; max-width: 600px;">
+        YOU HAVE A SAVE FILE.<br>ARE YOU SURE YOU WANT TO RESTART YOUR GAME?
+    </h1>
+    <button class="settings-exit" id="confirm-restart-btn">YES</button>
+    <button class="settings-exit" style="font-size: 40px;" onclick="document.getElementById('restart-confirm-menu').style.display='none'">BACK</button>
+</div>
+
+
 
     <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
     <h1 style="color: white; font-family: 'Funkin'; font-size: 60px;">CONTINUE FROM...</h1>
@@ -1743,13 +1752,27 @@ async function showDisclaimer() {
     fade.style.opacity = 0;
 };
 
-// check if play saves so that the player can still quit if they misclick instead of continue
-    
 document.getElementById("btn-play").onclick = () => {
+    const sceneSave = localStorage.getItem(SCENE_SAVE_KEY);
+    const chapterSave = localStorage.getItem(CHAPTER_SAVE_KEY);
+
+    if (sceneSave || chapterSave) {
+        document.getElementById("restart-confirm-menu").style.display = "flex";
+        return;
+    }
+
     resetGame();
     transLoad("prologuev2");
 };
 
+document.getElementById("confirm-restart-btn").onclick = () => {
+    document.getElementById("restart-confirm-menu").style.display = "none";
+    resetGame();
+    transLoad("prologuev2");
+};
+
+
+    
 document.getElementById("btn-continue").onclick = () => {
     const sceneSave = localStorage.getItem(SCENE_SAVE_KEY);
     const chapterSave = localStorage.getItem(CHAPTER_SAVE_KEY);
