@@ -3580,7 +3580,7 @@ const CHARACTER_DATA = {
     }
 }
 
-    let _specialAnimation = null;     
+let _specialAnimation = null;     
 let _specialTarget = null;        
 let _specialDurationTicks = 0;    
 
@@ -3602,7 +3602,7 @@ function triggerSpecial(target, animName, holdTicks) {
     ratingImg.src = `assets/final/${ratingType}.png`;
     ratingImg.className = "rating-popup";
 
-    document.getElementById("rhythm-stage").appendChild(ratingImg);
+    document.getElementById("rhythm-ui").appendChild(ratingImg);
 
     setTimeout(() => ratingImg.remove(), 800);
 }
@@ -3620,7 +3620,7 @@ function triggerSpecial(target, animName, holdTicks) {
         comboContainer.appendChild(digitImg);
     });
         
-    document.getElementById("rhythm-stage").appendChild(comboContainer);
+    document.getElementById("rhythm-ui").appendChild(comboContainer);
         
     setTimeout(() => comboContainer.remove(), 1200);
 }
