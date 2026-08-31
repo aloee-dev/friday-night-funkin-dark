@@ -1998,8 +1998,8 @@ const freeplayData = [
     {
         chapterName: "Additional Content",
         scenes: [
-            { label: "This does nothing", file: "test.json" },
-            { label: "Ill edit later", file: "test.json" }
+            { label: "This does nothing", file: "finaltest.json" },
+            { label: "Ill edit later", file: "test" }
         ]
     },
     {
@@ -2824,9 +2824,12 @@ function loadGameData() {
     if (!raw) return null;
     
     const data = JSON.parse(raw);
-    gameFlags = data.flags;
-    meters = data.meters;
-    inventory = new Map(Object.entries(data.inventory));
+    gameFlags = { ...gameFlags, ...data.flags };
+    meters = { ...meters, ...data.meters };
+    const cItems = Object.fromEntries(inventory);
+    const mergeItems = { ...cItems, ...data.inventory };
+    inventory = new Map(Object.entries(mergeItems));
+    
     return data.currentScene;
 }
 
