@@ -267,10 +267,6 @@ a,
     to { opacity: 0.8; }
 }
 
-.menu-fade-in {
-    animation: menuFade 4s ease forwards;
-}
-
 @keyframes menuFade {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -2662,11 +2658,9 @@ function closeDialog() {
 
   title.style.display = 'flex';
   buttons.style.display = 'flex';
-
-  title.classList.add('menu-fade-in');
-  buttons.classList.add('menu-fade-in');
-
-  if (typeof draw === "function") draw();
+    
+  title.style.animation = "menuFade 8s ease forwards";
+  buttons.style.animation = "menuFade 8s ease forwards";
 }
 
 const textBox = new Audio("sfx/textboxClick.mp3");
