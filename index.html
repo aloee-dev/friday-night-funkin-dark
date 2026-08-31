@@ -1699,6 +1699,8 @@ async function showDisclaimer() {
             setTimeout(() => {
                 const buttons = document.getElementById("title-buttons");
                 buttons.style.transition = "none";
+                title.style.transition = "opacity 1s ease";
+                buttons.style.transition = "opacity 0.8s ease";
                 buttons.style.opacity = 1;
                 buttons.style.pointerEvents = "auto";
             }, 300);
@@ -1759,6 +1761,7 @@ async function showDisclaimer() {
 
     creditsScreen.style.display = "none";
     titleButtons.style.transition = "none";
+    titleButtons.style.transition = "opacity 0.8s ease";    
     titleButtons.style.display = "flex";
     fade.style.opacity = 0;
 };
@@ -1864,6 +1867,7 @@ document.getElementById("btn-settings").onclick = () => {
 document.getElementById("menu-back").onclick = () => {
   document.getElementById("settings-menu").style.display = "none";
   document.getElementById("title-buttons").style.transition = "none";
+  document.getElementById("title-buttons").style.transition = "opacity 0.8s ease";
   document.getElementById("title-buttons").style.display = "flex";
 };
 
@@ -1989,6 +1993,7 @@ document.addEventListener('keydown', async (e) => {
         await new Promise(r => setTimeout(r, 300));
 
         titleButtons.style.transition = "none";
+        titleButtons.style.transition = "opacity 0.8s ease";
         titleButtons.style.display = "flex";
         freePlay.style.display = "none";
         await new Promise(r => setTimeout(r, 1500));
