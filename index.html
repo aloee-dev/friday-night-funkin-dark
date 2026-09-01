@@ -2664,19 +2664,22 @@ function closeDialog() {
 
   title.offsetHeight; 
 
-  title.style.transition = 'opacity 8s ease';
-  buttons.style.transition = 'opacity 8s ease';
-  title.style.opacity = '1';
-  buttons.style.opacity = '1';
+  requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    title.style.transition = 'opacity 8s ease';
+    buttons.style.transition = 'opacity 8s ease';
 
-  menuMusic.play();
+    title.style.opacity = '1';
+    buttons.style.opacity = '1';
+        menuMusic.play();
   menuMusic.volume = 0.2;
   menuMusic.loop = true;
-
-  setTimeout(() => {
-  title.style.transition = '';
-  buttons.style.transition = '';
-}, 8000); 
+    setTimeout(() => {
+      title.style.transition = '';
+      buttons.style.transition = '';
+    }, 8000);
+  });
+});
     
 }
 
