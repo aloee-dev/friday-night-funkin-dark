@@ -3538,16 +3538,21 @@ window.addEventListener("keyup", (e) => {
     };
 
     const cleanKey = e.key.toUpperCase();
+
     _heldKeys.delete(cleanKey);
 
-    const targetLane = keyToLane[cleanKey];
-    if (targetLane !== undefined) {
-        const pla = document.getElementById("player-lanes");
-        const receptor = pla.children[targetLane];
-        if (receptor) {
-            receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
+const targetLane = keyToLane[cleanKey];
+if (targetLane !== undefined) {
+    const pla = document.getElementById("player-lanes");
+    const receptor = pla.children[targetLane];
+    if (receptor) {
+        const cachedImg = preloadedImages[`arrow_${targetLane}`];
+        if (cachedImg) {
+            receptor.innerHTML = "";
+            receptor.appendChild(cachedImg.cloneNode(true));
         }
     }
+}
 
     _playerKey = null;
 });
