@@ -1606,8 +1606,6 @@ function preloadAsset(src) {
     });
 }
 
-const preloadedImages = {};
-
 async function preloadAll() {
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
@@ -1618,17 +1616,14 @@ async function preloadAll() {
         loaded++;
         const percent = Math.floor((loaded / assets.length) * 100);
         progressBar.style.width = percent + "%";
-        
-        const filename = src.split('/').pop().split('.')[0];
 
-if (src.includes("sprites/")) {
-    const id = src.split('/').pop().split('.')[0]; 
-    element.id = id; 
-    element.className = "char"; 
-    gameViewport.appendChild(element);
-} else if (!src.endsWith(".m4a") && !src.endsWith(".mp3") && !src.endsWith(".wav")) {
-    preloadedImages[src] = element;
-}
+        if (src.includes("sprites/")) {
+            const id = src.split('/').pop().split('.')[0]; 
+            element.id = id; 
+            element.className = "char"; 
+            gameViewport.appendChild(element);
+        }
+
         return element;
     });
 
@@ -2890,10 +2885,6 @@ function resetGame() {
     meters = { stamina: 100, sanity: 100, picolove: 50, keithlove: 50 };
     inventory = new Map([["guns", 2], ["ammo", 1], ["importantthings", 0]]);
 }
-    
-function draw() {
-    //nothing
-}
 
 
 let currentLevelRooms = []; 
@@ -3438,19 +3429,12 @@ window.addEventListener("keydown", (e) => {
     _playerKey = cleanKey;
     _lastPressedPlayerKey = cleanKey;
     _playerAnimationTimer = 250;
-
-const targetLane = keyToLane[cleanKey];
-if (targetLane !== undefined) {
+    
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
-        const cachedImg = preloadedImages[`assets/final/arrowhold_${targetLane}.png`];
-        if (cachedImg) {
-            receptor.innerHTML = "";
-            receptor.appendChild(cachedImg.cloneNode(true));
-        }
+        receptor.style.backgroundImage = `url('assets/final/arrowhold_${targetLane}.png')`;
     }
-}
 
     const currentTime = _inst.currentTime * 1000;
     const notes = document.querySelectorAll("#player-lanes .note");
@@ -3538,21 +3522,16 @@ window.addEventListener("keyup", (e) => {
     };
 
     const cleanKey = e.key.toUpperCase();
-
     _heldKeys.delete(cleanKey);
 
-const targetLane = keyToLane[cleanKey];
-if (targetLane !== undefined) {
-    const pla = document.getElementById("player-lanes");
-    const receptor = pla.children[targetLane];
-    if (receptor) {
-        const cachedImg = preloadedImages[`arrow_${targetLane}`];
-        if (cachedImg) {
-            receptor.innerHTML = "";
-            receptor.appendChild(cachedImg.cloneNode(true));
+    const targetLane = keyToLane[cleanKey];
+    if (targetLane !== undefined) {
+        const pla = document.getElementById("player-lanes");
+        const receptor = pla.children[targetLane];
+        if (receptor) {
+            receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
         }
     }
-}
 
     _playerKey = null;
 });
