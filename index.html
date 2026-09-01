@@ -987,7 +987,6 @@ a,
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 5px;
     width: 463px;
@@ -998,7 +997,7 @@ a,
     width: 100%;
     height: 34px;
     background-color: #000000;
-    position: relative;
+    position: absolute;
     overflow: hidden;
 }
 
@@ -1016,6 +1015,7 @@ a,
 
 
     #timer-text {
+    position: absolute;
     font-family: 'VCR', sans-serif;
     font-size: 25px;
     font-weight: bold;
