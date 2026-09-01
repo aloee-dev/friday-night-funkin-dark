@@ -1619,15 +1619,16 @@ async function preloadAll() {
         const percent = Math.floor((loaded / assets.length) * 100);
         progressBar.style.width = percent + "%";
         
-        if (src.includes("sprites/")) {
-            const id = src.split('/').pop().split('.')[0]; 
-            element.id = id; 
-            element.className = "char"; 
-            gameViewport.appendChild(element);
-        } else if (!src.endsWith(".m4a") && !src.endsWith(".mp3") && !src.endsWith(".wav")) {
-            preloadedImages[src] = element;
-        }
+        const filename = src.split('/').pop().split('.')[0];
 
+if (src.includes("sprites/")) {
+    const id = src.split('/').pop().split('.')[0]; 
+    element.id = id; 
+    element.className = "char"; 
+    gameViewport.appendChild(element);
+} else if (!src.endsWith(".m4a") && !src.endsWith(".mp3") && !src.endsWith(".wav")) {
+    preloadedImages[src] = element;
+}
         return element;
     });
 
@@ -3545,7 +3546,7 @@ if (targetLane !== undefined) {
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
-        const cachedImg = preloadedImages[`assets/final/arrow_${targetLane}.png`];
+        const cachedImg = preloadedImages[`arrow_${targetLane}`];
         if (cachedImg) {
             receptor.innerHTML = "";
             receptor.appendChild(cachedImg.cloneNode(true));
