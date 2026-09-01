@@ -1073,7 +1073,6 @@ a,
 
     
 .results-screen {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -1084,13 +1083,21 @@ a,
   background-image: url('assets/final/results/results-bg.png');
   background-size: cover;
   background-position: center;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
 }
 
 .results-screen.active {
   display: flex;
   justify-content: center;
   align-items: center;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
+
 
 .results-display,
 .score-panel,
@@ -4316,6 +4323,7 @@ function showResults() {
   setTimeout(() => { scorePanel.classList.add('slide-left'); }, 1450);
   setTimeout(() => { rankContainer.classList.add('slide-right'); }, 1700);
 }
+
 
 
 
