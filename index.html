@@ -4125,11 +4125,23 @@ function updateRhythmLoop() {
     const masterTime = _inst.currentTime;
     const maxDelay = 0.01; 
 
-    if (Math.abs(_voicePlayer.currentTime - masterTime) > maxDelay) {
-        _voicePlayer.currentTime = masterTime;
+    if (_voicePlayer && !_voicePlayer.paused) {
+        const playerDelay = Math.abs(_voicePlayer.currentTime - masterTime);
+        if (playerDelay > maxDelay) {
+            _voicePlayer.muted = true; 
+            _voicePlayer.currentTime = masterTime;
+            
+            requestAnimationFrame(() => { if (_voicePlayer) _voicePlayer.muted = false; });
+        }
     }
-    if (Math.abs(_voiceOpponent.currentTime - masterTime) > maxDelay) {
-        _voiceOpponent.currentTime = masterTime;
+
+    if (_voiceOpponent && !_voiceOpponent.paused) {
+        const opponentDelay = Math.abs(_voiceOpponent.currentTime - masterTime);
+        if (opponentDelay > maxDelay) {
+            _voiceOpponent.muted = true;
+            _voiceOpponent.currentTime = masterTime;
+            requestAnimationFrame(() => { if (_voiceOpponent) _voiceOpponent.muted = false; });
+        }
     }
 
     if (_activeSong.events) {
