@@ -2669,6 +2669,10 @@ function closeDialog() {
   title.style.opacity = '1';
   buttons.style.opacity = '1';
 
+  menuMusic.play();
+  menuMusic.volume = 0.2;
+  menuMusic.loop = true;
+
   setTimeout(() => {
   title.style.transition = '';
   buttons.style.transition = '';
