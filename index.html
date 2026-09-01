@@ -4057,6 +4057,16 @@ function updateRhythmLoop() {
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
 
+    const masterTime = _inst.currentTime;
+    const maxDelay = 0.01; 
+
+    if (Math.abs(_voicePlayer.currentTime - masterTime) > maxDelay) {
+        _voicePlayer.currentTime = masterTime;
+    }
+    if (Math.abs(_voiceOpponent.currentTime - masterTime) > maxDelay) {
+        _voiceOpponent.currentTime = masterTime;
+    }
+
     if (_activeSong.events) {
         const holdTicks = 5;
         for (let i = 0; i < _activeSong.events.length; i++) {
