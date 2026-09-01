@@ -1619,16 +1619,15 @@ async function preloadAll() {
         const percent = Math.floor((loaded / assets.length) * 100);
         progressBar.style.width = percent + "%";
         
-        const filename = src.split('/').pop().split('.')[0];
+        if (src.includes("sprites/")) {
+            const id = src.split('/').pop().split('.')[0]; 
+            element.id = id; 
+            element.className = "char"; 
+            gameViewport.appendChild(element);
+        } else if (!src.endsWith(".m4a") && !src.endsWith(".mp3") && !src.endsWith(".wav")) {
+            preloadedImages[src] = element;
+        }
 
-if (src.includes("sprites/")) {
-    const id = src.split('/').pop().split('.')[0]; 
-    element.id = id; 
-    element.className = "char"; 
-    gameViewport.appendChild(element);
-} else if (!src.endsWith(".m4a") && !src.endsWith(".mp3") && !src.endsWith(".wav")) {
-    preloadedImages[src] = element;
-}
         return element;
     });
 
@@ -3444,7 +3443,11 @@ if (targetLane !== undefined) {
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
-        receptor.style.backgroundImage = `url('assets/final/arrowhold_${targetLane}.png')`;
+        const cachedImg = preloadedImages[`assets/final/arrowhold_${targetLane}.png`];
+        if (cachedImg) {
+            receptor.innerHTML = "";
+            receptor.appendChild(cachedImg.cloneNode(true));
+        }
     }
 }
 
@@ -3535,18 +3538,20 @@ window.addEventListener("keyup", (e) => {
 
     const cleanKey = e.key.toUpperCase();
 
-_heldKeys.delete(cleanKey);
+    _heldKeys.delete(cleanKey);
 
 const targetLane = keyToLane[cleanKey];
 if (targetLane !== undefined) {
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
-        receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
+        const cachedImg = preloadedImages[`assets/final/arrow_${targetLane}.png`];
+        if (cachedImg) {
+            receptor.innerHTML = "";
+            receptor.appendChild(cachedImg.cloneNode(true));
+        }
     }
 }
-
-
 
     _playerKey = null;
 });
