@@ -1,0 +1,18 @@
+if (_voicePlayer && !_voicePlayer.paused) {
+        const playerDelay = Math.abs(_voicePlayer.currentTime - masterTime);
+        if (playerDelay > maxDelay) {
+            _voicePlayer.muted = true; 
+            _voicePlayer.currentTime = masterTime;
+            
+            requestAnimationFrame(() => { if (_voicePlayer) _voicePlayer.muted = false; });
+        }
+    }
+
+    if (_voiceOpponent && !_voiceOpponent.paused) {
+        const opponentDelay = Math.abs(_voiceOpponent.currentTime - masterTime);
+        if (opponentDelay > maxDelay) {
+            _voiceOpponent.muted = true;
+            _voiceOpponent.currentTime = masterTime;
+            requestAnimationFrame(() => { if (_voiceOpponent) _voiceOpponent.muted = false; });
+        }
+    }
