@@ -1606,6 +1606,8 @@ function preloadAsset(src) {
     });
 }
 
+const preloadedImages = {};
+
 async function preloadAll() {
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
@@ -1616,14 +1618,17 @@ async function preloadAll() {
         loaded++;
         const percent = Math.floor((loaded / assets.length) * 100);
         progressBar.style.width = percent + "%";
+        
+        const filename = src.split('/').pop().split('.')[0];
 
-        if (src.includes("sprites/")) {
-            const id = src.split('/').pop().split('.')[0]; 
-            element.id = id; 
-            element.className = "char"; 
-            gameViewport.appendChild(element);
-        }
-
+if (src.includes("sprites/")) {
+    const id = src.split('/').pop().split('.')[0]; 
+    element.id = id; 
+    element.className = "char"; 
+    gameViewport.appendChild(element);
+} else if (!src.endsWith(".m4a") && !src.endsWith(".mp3") && !src.endsWith(".wav")) {
+    preloadedImages[src] = element;
+}
         return element;
     });
 
@@ -2663,14 +2668,14 @@ function closeDialog() {
   _isTyping = false;
   clearInterval(_typingTimeout);
 
-    fadeToMenu(); // kill this shit if it doesnt work
+    //fadeToMenu(); // kill this shit if it doesnt work
 }
 
     function fadeToMenu() {
         const title = document.getElementById("title-screen");
   const buttons = document.getElementById("title-buttons");
 
-  title.style.display = 'block';
+  title.style.display = 'flex';
   buttons.style.display = 'flex';
 
     title.style.opacity = '1';
@@ -3433,12 +3438,19 @@ window.addEventListener("keydown", (e) => {
     _playerKey = cleanKey;
     _lastPressedPlayerKey = cleanKey;
     _playerAnimationTimer = 250;
-    
+
+const targetLane = keyToLane[cleanKey];
+if (targetLane !== undefined) {
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
-        receptor.style.backgroundImage = `url('assets/final/arrowhold_${targetLane}.png')`;
+        const cachedImg = preloadedImages[`assets/final/arrowhold_${targetLane}.png`];
+        if (cachedImg) {
+            receptor.innerHTML = "";
+            receptor.appendChild(cachedImg.cloneNode(true));
+        }
     }
+}
 
     const currentTime = _inst.currentTime * 1000;
     const notes = document.querySelectorAll("#player-lanes .note");
@@ -3526,16 +3538,21 @@ window.addEventListener("keyup", (e) => {
     };
 
     const cleanKey = e.key.toUpperCase();
+
     _heldKeys.delete(cleanKey);
 
-    const targetLane = keyToLane[cleanKey];
-    if (targetLane !== undefined) {
-        const pla = document.getElementById("player-lanes");
-        const receptor = pla.children[targetLane];
-        if (receptor) {
-            receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
+const targetLane = keyToLane[cleanKey];
+if (targetLane !== undefined) {
+    const pla = document.getElementById("player-lanes");
+    const receptor = pla.children[targetLane];
+    if (receptor) {
+        const cachedImg = preloadedImages[`arrow_${targetLane}`];
+        if (cachedImg) {
+            receptor.innerHTML = "";
+            receptor.appendChild(cachedImg.cloneNode(true));
         }
     }
+}
 
     _playerKey = null;
 });
