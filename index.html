@@ -981,6 +981,30 @@ a,
 
 #icon-opponent { transform: scaleX(-1); }
 
+#timer-container {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 463px;
+    z-index: 50;
+}
+
+    #timer-text {
+    font-family: 'VCR', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    -webkit-text-stroke: 5px black;
+    text-stroke: 5px black;
+    paint-order: stroke fill;
+}
     
 #rhythm-stats {
     position: absolute;
@@ -1394,6 +1418,13 @@ a,
         <img id="hp-green" src="assets/final/health-green.png">
     </div>
     <img id="hp-outline" src="assets/final/healthbar.png">
+</div>
+
+    <div id="timer-container" style="display:none;">
+    <div id="timer-bar">
+        <div id="timer-color"></div>
+    </div>
+    <div id="timer-text">0:00</div>
 </div>
 
     <div id="icon-container">
