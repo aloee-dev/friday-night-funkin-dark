@@ -2663,23 +2663,24 @@ function closeDialog() {
   _isTyping = false;
   clearInterval(_typingTimeout);
 
-    //fadeToMenu(); // kill this shit if it doesnt work
+    fadeToMenu(); // kill this shit if it doesnt work
 }
 
-    function fadeToMenu() {
-        const title = document.getElementById("title-screen");
+const fadeToMenu = () => {
+  const title = document.getElementById("title-screen");
   const buttons = document.getElementById("title-buttons");
 
   title.style.display = 'flex';
   buttons.style.display = 'flex';
 
-    title.style.opacity = '1';
-    buttons.style.opacity = '1';
+  title.style.opacity = '1';
+  buttons.style.opacity = '1';
 
   menuMusic.play();
   menuMusic.volume = 0.2;
   menuMusic.loop = true;
-    }
+};
+
 
 const textBox = new Audio("sfx/textboxClick.mp3");
 
