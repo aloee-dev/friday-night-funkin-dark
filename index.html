@@ -2654,19 +2654,23 @@ function closeDialog() {
   _isTyping = false;
   clearInterval(_typingTimeout);
 
-  //fadeToMenu(); //kill this shit if it doesnt work
+  fadeToMenu(); //kill this shit if it doesnt work
 }
 
 function fadeToMenu() {
-  const title = document.getElementById("title-screen");
-  const buttons = document.getElementById("title-buttons");
+        
+        setTimeout(() => {
+            document.getElementById("title-screen").style.opacity = 1;
+            menuMusic.play();
+            menuMusic.volume = 0.2;
+            menuMusic.loop = true;
+            setTimeout(() => {
+                const buttons = document.getElementById("title-buttons");
+                buttons.style.opacity = 1;
+                buttons.style.pointerEvents = "auto";
+            }, 300);
 
-  title.style.opacity = '1';
-  buttons.style.opacity = '1';
-
-  menuMusic.play();
-  menuMusic.volume = 0.2;
-  menuMusic.loop = true;
+        }, 1000);
 }
 
 
