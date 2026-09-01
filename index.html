@@ -2656,7 +2656,11 @@ function closeDialog() {
   _isTyping = false;
   clearInterval(_typingTimeout);
 
-  if (typeof draw === "function") draw();
+  const title = document.getElementById("title-screen");
+  const buttons = document.getElementById("title-buttons");
+
+  title.style.display = 'flex';
+  buttons.style.display = 'flex';
 }
 
 const textBox = new Audio("sfx/textboxClick.mp3");
@@ -2753,6 +2757,22 @@ function doCommand(input) {
             console.log("Showing section:", args[0]);
             startPointNClick(args[0]);
             break;
+                        
+        case "/shake":
+            document.body.style.animation = "none";
+            setTimeout(() => { document.body.style.animation = "shake 0.5s"; }, 10);
+            break;
+                        
+        case "/flash":
+            const fx = document.getElementById("fade-overlay");
+            fx.style.transition = "none";
+            fx.style.background = "white";
+            fx.style.opacity = 1;
+            setTimeout(() => {
+                fx.style.transition = "opacity 0.5s ease";
+                fx.style.opacity = 0;
+            }, 50);
+        break;
 
         case '/give':
             const item = args[0];
