@@ -2661,6 +2661,19 @@ function closeDialog() {
 
   title.style.display = 'flex';
   buttons.style.display = 'flex';
+
+  title.offsetHeight; 
+
+  title.style.transition = 'opacity 8s ease';
+  buttons.style.transition = 'opacity 8s ease';
+  title.style.opacity = '1';
+  buttons.style.opacity = '1';
+
+  setTimeout(() => {
+  title.style.transition = '';
+  buttons.style.transition = '';
+}, 8000); 
+    
 }
 
 const textBox = new Audio("sfx/textboxClick.mp3");
