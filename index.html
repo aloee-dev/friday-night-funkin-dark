@@ -3822,6 +3822,8 @@ async function startSong(songId) {
     if (!data) return;
 
     _activeSong = {
+        name: data.name || "Song",
+        composer: data.composer || "??",
         background: data.background,
         bpm: data.bpm,
         scrollSpeed: data.scrollSpeed,
@@ -4515,6 +4517,27 @@ function updateHPBar(currentTime) {
 
     pIcon.style.left = (splitX - 125 + 100) + "px"; 
     oIcon.style.left = (splitX - 125 - 100) + "px";
+
+if (_inst && _inst.duration > 0) {
+    const songProgress = _inst.currentTime / _inst.duration;
+    const progressPercentage = songProgress * 100;
+    document.getElementById("timer-color").style.width = progressPercentage + "%";
+
+    const timeRemaining = Math.max(0, _inst.duration - _inst.currentTime);
+
+    const currentSecondsTotal = Math.floor(timeRemaining);
+    const mins = Math.floor(currentSecondsTotal / 60);
+    const secs = currentSecondsTotal % 60;
+    
+    const formattedTime = mins + ":" + (secs < 10 ? "0" : "") + secs;
+
+if (_activeSong && _activeSong.name) {
+    document.getElementById("timer-text").textContent = `${_activeSong.name} - ${formattedTime}`;
+} else {
+    document.getElementById("timer-text").textContent = formattedTime;
+ }   
+}
+
 
     document.getElementById("stats-score").textContent = score;
     document.getElementById("stats-misses").textContent = misses;
