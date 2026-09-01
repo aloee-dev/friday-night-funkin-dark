@@ -1058,7 +1058,7 @@ a,
     z-index: 100;
     pointer-events: none;
     
-    animation: ratingPopAnim 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+    animation: ratingPopAnim 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
 
     .combo-popup {
@@ -1072,7 +1072,7 @@ a,
     justify-content: center;
     align-items: center;
     height: 128px; 
-    animation: comboPopAnim 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+    animation: comboPopAnim 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
 
 .combo-digit {
@@ -1087,8 +1087,8 @@ a,
         transform: translate(-50%, -50%);
         opacity: 1;
     }
-    33% {
-        transform: translate(-50%, -58%);
+    50% {
+        transform: translate(-50%, -56%);
         opacity: 1;
     }
     100% {
@@ -4123,7 +4123,7 @@ function updateRhythmLoop() {
     const speed = _activeSong.scrollSpeed;
 
     const masterTime = _inst.currentTime;
-    const maxDelay = 0.01; 
+    const maxDelay = 0.02; 
 
     if (_voicePlayer && !_voicePlayer.paused) {
         const playerDelay = Math.abs(_voicePlayer.currentTime - masterTime);
