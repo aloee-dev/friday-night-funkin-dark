@@ -199,6 +199,18 @@ a,
     transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
 
+#btn-play { background-image: url('assets/play.png'); }
+#btn-play:hover { background-image: url('assets/play-hover.png'); }
+
+#btn-continue { background-image: url('assets/continue.png'); }
+#btn-continue:hover { background-image: url('assets/continue-hover.png'); }
+
+#btn-settings { background-image: url('assets/settings.png'); }
+#btn-settings:hover { background-image: url('assets/settings-hover.png'); }
+
+#btn-credits { background-image: url('assets/credits.png'); }
+#btn-credits:hover { background-image: url('assets/credits-hover.png'); }
+
 .menu-btn:hover {
     transform: scale(1.3);
     background: transparent;
@@ -1385,26 +1397,12 @@ a,
 
 <div id="title-screen" style="background-image: url('backgrounds/title.png');"></div>
 <div id="title-buttons">
-    <button class="menu-btn" id="btn-play" 
-        style="background-image: url('assets/play.png');"
-        onmouseover="this.style.backgroundImage='url(\'assets/play-hover.png\')'"
-        onmouseout="this.style.backgroundImage='url(\'assets/play.png\')'"></button>
-        
-    <button class="menu-btn" id="btn-continue" 
-        style="background-image: url('assets/continue.png');"
-        onmouseover="this.style.backgroundImage='url(\'assets/continue-hover.png\')'"
-        onmouseout="this.style.backgroundImage='url(\'assets/continue.png\')'"></button>
-        
-    <button class="menu-btn" id="btn-settings" 
-        style="background-image: url('assets/settings.png');"
-        onmouseover="this.style.backgroundImage='url(\'assets/settings-hover.png\')'"
-        onmouseout="this.style.backgroundImage='url(\'assets/settings.png\')'"></button>
-        
-    <button class="menu-btn" id="btn-credits" 
-        style="background-image: url('assets/credits.png');"
-        onmouseover="this.style.backgroundImage='url(\'assets/credits-hover.png\')'"
-        onmouseout="this.style.backgroundImage='url(\'assets/credits.png\')'"></button>
+    <button class="menu-btn" id="btn-play"></button>
+    <button class="menu-btn" id="btn-continue"></button>
+    <button class="menu-btn" id="btn-settings"></button>
+    <button class="menu-btn" id="btn-credits"></button>
 </div>
+
 
 <div id="restart-confirm-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 6; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
     <h1 style="color: white; font-family: 'Funkin'; font-size: 40px; text-align: center; max-width: 600px;">
@@ -1662,6 +1660,7 @@ const assets = [
     "assets/final/pause/restart.png",
     "assets/final/pause/restart-selected.png",
     "assets/final/pause/exit.png",
+    "assets/final/pause/breakfast-pico.mp3",
     "assets/final/pause/exit-selected.png",
     "assets/final/results/results-bg.png",
     "assets/final/results/results-bads.png",
@@ -1713,6 +1712,7 @@ const assets = [
 
 const menuMusic = new Audio('assets/music/menu.m4a');
 let loaded = 0;
+const assetCache = {};
 
 function preloadAsset(src) {
     return new Promise((resolve) => {
@@ -1730,9 +1730,11 @@ function preloadAsset(src) {
         img.onload = () => {
             img.decode()
                 .then(() => {
+                    assetCache[src] = img;
                     resolve(img);
                 })
                 .catch(() => {
+                    assetCache[src] = img;
                     resolve(img);
                 });
         };
