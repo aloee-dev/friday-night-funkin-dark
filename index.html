@@ -1940,7 +1940,6 @@ document.getElementById("btn-continue").onclick = () => {
     document.getElementById("continue-menu").style.display = "flex";
 };
 
-    
 function doSave(data) {
     if (!data) return;
     gameFlags = data.flags;
@@ -1948,7 +1947,8 @@ function doSave(data) {
     inventory = new Map(Object.entries(data.inventory));
     
     document.getElementById("continue-menu").style.display = "none";
-    transLoad(data.currentScene);
+    
+    transLoad(data.currentScene, data.currentLineId); 
 }
 
 document.getElementById("load-line-btn").onclick = () => {
@@ -1966,7 +1966,7 @@ document.getElementById("load-chapter-btn").onclick = () => {
     doSave(data);
 };
 
-async function transLoad(scene) {
+async function transLoad(scene, arrayId = null) {
     const fade = document.getElementById("fade-overlay");
     const titleButtons = document.getElementById("title-buttons");
     const titleScreen = document.getElementById("title-screen");
@@ -1985,7 +1985,7 @@ async function transLoad(scene) {
     menuMusic.pause();
     menuMusic.currentTime = 0;
     
-    loadDialogue(scene);
+    loadDialogue(scene, arrayId);
 }
     
     // below i will yoink things from my previous game well i added a lot in between what i was referring to, i did not mean the settings, i meant the dialogue
@@ -2331,6 +2331,7 @@ inventory.set("microphone", 0);
 };
 
 const shownDialogs = new Set();
+let currentSceneName = "";
 let _dialogQueue = [];
 let _typingTimeout = null;
 let _isTyping = false;
@@ -2522,8 +2523,8 @@ function applyDialogStyle(box, style) {
     }
 
         if (line.id) {
-            saveLine(id);
-        }
+ saveLine(currentSceneName, line.id);
+ }
 
 const oldSprite = document.querySelector(".char.visible");
 if (oldSprite) {
@@ -2670,15 +2671,16 @@ function handleBranch(trig) {
     }
 }
     
-async function loadDialogue(sceneName) {
+async function loadDialogue(sceneName, arrayId = null) {
     try {
         const response = await fetch(`dialogue/${sceneName}.json`);
         if (!response.ok) throw new Error("File not found");
         
         const data = await response.json();
-        saveScene(sceneName);
         
-        showDialog(data);
+        currentSceneName = sceneName;
+        saveScene(sceneName, arrayId);        
+        showDialog(data, {}, arrayId);
     } catch (err) {
         console.error("Failed to load dialogue:", sceneName, err);
     }
@@ -2781,17 +2783,21 @@ function showChoices(choices) {
     });
 }
     
-function showDialog(lines, opts = {}) {
+function showDialog(lines, opts = {}, arrayId = null) {
     _dialogQueue = normalizeDialogLines(lines, opts.style);
     document.getElementById("dialog-box").style.display = "block";
     document.getElementById("dialog-background").style.display = "block";
     
+    if (arrayId) {
+        while (_dialogQueue.length > 0 && _dialogQueue[0].id !== arrayId) {
+            _dialogQueue.shift();
+        }
+    }
+
     if (_dialogQueue.length > 0) {
         renderLine(_dialogQueue.shift());
     }
 }
-
-
 
 function closeDialog() {
   const textDiv = document.getElementById("dialog-text");
@@ -2974,9 +2980,10 @@ const CHAPTER_SAVE_KEY = 'fnf_dark_minds_chapter_save';
 const SCENE_SAVE_KEY = 'fnf_dark_minds_scene_save';
 const LINE_SAVE_KEY = 'fnf-dark-minds_line_save';
 
-function getGame(sceneName) {
+function getGame(sceneName, lineId = null) {
     return {
         currentScene: sceneName,
+        currentLineId: lineId,
         flags: { ...gameFlags },
         meters: { ...meters },
         inventory: Object.fromEntries(inventory),
@@ -2984,19 +2991,20 @@ function getGame(sceneName) {
     };
 }
 
-function saveLine(sceneName) {
-    localStorage.setItem(LINE_SAVE_KEY, JSON.stringify(getGame(sceneName)));
+function saveLine(sceneName, lineId) {
+    localStorage.setItem(LINE_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
 }
 
-function saveScene(sceneName) {
-    localStorage.setItem(SCENE_SAVE_KEY, JSON.stringify(getGame(sceneName)));
+function saveScene(sceneName, lineId) {
+    localStorage.setItem(SCENE_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
     console.log("Current Scene Saved:", sceneName);
 }
 
-function saveChapter(sceneName) {
-    localStorage.setItem(CHAPTER_SAVE_KEY, JSON.stringify(getGame(sceneName)));
+function saveChapter(sceneName, lineId) {
+    localStorage.setItem(CHAPTER_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
     console.log("Chapter Milestone Saved:", sceneName);
 }
+
 
 function saveSettings() {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
