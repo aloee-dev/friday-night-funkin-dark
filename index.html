@@ -3919,6 +3919,10 @@ async function startSong(songId) {
     const data = await loadSongData(songId);
     if (!data) return;
 
+    document.querySelectorAll('.note').forEach(note => note.remove());
+
+    _rawChart = JSON.parse(JSON.stringify(data));
+
     _activeSong = {
         name: data.name || "Song",
         composer: data.composer || "??",
@@ -3930,29 +3934,15 @@ async function startSong(songId) {
         opponent: data.opponent,
         opponentPosition: { ...data.opponentPosition },
         playerPosition: { ...data.playerPosition },
-        opponentNotes: [...data.opponentNotes],
-        playerNotes: [...data.playerNotes],
-        events: data.events ? [...data.events] : []
+        opponentNotes: JSON.parse(JSON.stringify(_rawChart.opponentNotes)),
+        playerNotes: JSON.parse(JSON.stringify(_rawChart.playerNotes)),
+        events: data.events ? JSON.parse(JSON.stringify(_rawChart.events)) : []
     };
-
+    
     await startA(_activeSong);
-
-    if (chartData) {
-        _rawChart = JSON.parse(JSON.stringify(chartData));
-    }
     
     _rhythmStarted = true;
 
-        if (_rawChart) {
-        document.querySelectorAll('.note').forEach(note => note.remove());
-        _activeSong.opponentNotes = JSON.parse(JSON.stringify(_rawChart.opponentNotes));
-        _activeSong.playerNotes = JSON.parse(JSON.stringify(_rawChart.playerNotes));
-        
-        if (_rawChart.events) {
-            _activeSong.events = JSON.parse(JSON.stringify(_rawChart.events));
-        }
-    }
-    
     resetScore();
     
     const fade = document.getElementById("fade-overlay");
