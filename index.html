@@ -1416,6 +1416,7 @@ a,
 
     <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
     <h1 style="color: white; font-family: 'Funkin'; font-size: 60px;">CONTINUE FROM...</h1>
+    <button class="settings-exit" id="load-line-btn">CURRENT LINE</button>
     <button class="settings-exit" id="load-scene-btn">CURRENT SCENE</button>
     <button class="settings-exit" id="load-chapter-btn">CURRENT CHAPTER</button>
     <button class="settings-exit" style="font-size: 40px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
@@ -1928,10 +1929,11 @@ document.getElementById("confirm-restart-btn").onclick = () => {
 
     
 document.getElementById("btn-continue").onclick = () => {
+    const lineSave = localStorage.getItem(LINE_SAVE_KEY);
     const sceneSave = localStorage.getItem(SCENE_SAVE_KEY);
     const chapterSave = localStorage.getItem(CHAPTER_SAVE_KEY);
 
-    if (!sceneSave && !chapterSave) {
+    if (!!lineSave && !sceneSave && !chapterSave) {
         console.log("shit yourself"); 
         return;
     }
@@ -1948,6 +1950,11 @@ function doSave(data) {
     document.getElementById("continue-menu").style.display = "none";
     transLoad(data.currentScene);
 }
+
+document.getElementById("load-line-btn").onclick = () => {
+    const data = JSON.parse(localStorage.getItem(LINE_SAVE_KEY));
+    doSave(data);
+};
 
 document.getElementById("load-scene-btn").onclick = () => {
     const data = JSON.parse(localStorage.getItem(SCENE_SAVE_KEY));
@@ -2424,6 +2431,7 @@ function normalizeDialogLines(input, defaultStyle) {
       };
     }
     return {
+      id: line.id || null,
       speaker: line.speaker || null,
       mood: line.mood || null,
       position: line.position || 'center',
@@ -2513,6 +2521,9 @@ function applyDialogStyle(box, style) {
         speakerText.textContent = "";
     }
 
+        if (line.id) {
+            saveLine(id);
+        }
 
 const oldSprite = document.querySelector(".char.visible");
 if (oldSprite) {
@@ -2961,6 +2972,7 @@ function doCommand(input) {
 const SETTINGS_KEY = 'fnf_dark_minds_settings';
 const CHAPTER_SAVE_KEY = 'fnf_dark_minds_chapter_save';
 const SCENE_SAVE_KEY = 'fnf_dark_minds_scene_save';
+const LINE_SAVE_KEY = 'fnf-dark-minds_line_save';
 
 function getGame(sceneName) {
     return {
@@ -2970,6 +2982,10 @@ function getGame(sceneName) {
         inventory: Object.fromEntries(inventory),
         timestamp: new Date().toLocaleTimeString()
     };
+}
+
+function saveLine(sceneName) {
+    localStorage.setItem(LINE_SAVE_KEY, JSON.stringify(getGame(sceneName)));
 }
 
 function saveScene(sceneName) {
