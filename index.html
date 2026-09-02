@@ -3454,6 +3454,7 @@ let camera = {
 };
 
 let _activeSong = null;
+let _rawChart = null;
 let _inst = null;
 let _voicePlayer = null;
 let _voiceOpponent = null;
@@ -3835,6 +3836,15 @@ function triggerSpecial(target, animName, holdTicks) {
     setTimeout(() => comboContainer.remove(), 1200);
 }
 
+function resetScore() {
+    sicks = 0;
+    goods = 0;
+    bads = 0;
+    shits = 0;
+    misses = 0;
+    score = 0; 
+    combo = 0;
+  }
 
 async function loadSongData(songId) {
     const base = `assets/final/songs/${songId}/`;
@@ -3920,22 +3930,30 @@ async function startSong(songId) {
         opponent: data.opponent,
         opponentPosition: { ...data.opponentPosition },
         playerPosition: { ...data.playerPosition },
-        opponentNotes: structuredClone(data.opponentNotes),
-        playerNotes: structuredClone(data.playerNotes),
+        opponentNotes: [...data.opponentNotes],
+        playerNotes: [...data.playerNotes],
         events: data.events ? [...data.events] : []
     };
 
     await startA(_activeSong);
+
+    if (chartData) {
+        _rawChart = JSON.parse(JSON.stringify(chartData));
+    }
     
     _rhythmStarted = true;
+
+        if (_rawChart) {
+        document.querySelectorAll('.note').forEach(note => note.remove());
+        _activeSong.opponentNotes = JSON.parse(JSON.stringify(_rawChart.opponentNotes));
+        _activeSong.playerNotes = JSON.parse(JSON.stringify(_rawChart.playerNotes));
+        
+        if (_rawChart.events) {
+            _activeSong.events = JSON.parse(JSON.stringify(_rawChart.events));
+        }
+    }
     
-    sicks = 0;
-    goods = 0;
-    bads = 0;
-    shits = 0;
-    misses = 0;
-    score = 0; 
-    combo = 0;
+    resetScore();
     
     const fade = document.getElementById("fade-overlay");
     const songLoading = document.getElementById("song-loading-screen");
