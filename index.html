@@ -3398,6 +3398,9 @@ let accuracy = "100.00";
 let grade = "??";
 let splashes = []; 
 
+let canPause = false;
+let isPaused = false;
+
 let timing = { 
     sick: 45,
     good: 90,
@@ -3992,6 +3995,8 @@ if (_opponentChar && _opponentChar.healthbar) {
     const masterTime = _inst.currentTime;
     _voicePlayer.currentTime = masterTime;
     _voiceOpponent.currentTime = masterTime;
+
+    canPause = true;
 
     requestAnimationFrame(updateRhythmLoop);
 }
