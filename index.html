@@ -2874,6 +2874,7 @@ const devInput = document.getElementById("dev-input");
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "-") {
+        canPause = false;
         e.preventDefault();
         const isVisible = devConsole.style.display === "block";
         devConsole.style.display = isVisible ? "none" : "block";
@@ -3546,6 +3547,7 @@ const _heldKeys = new Set();
 
 window.addEventListener("keydown", (e) => {
     if (!_rhythmStarted || !_inst) return;
+        if (isPaused) return;
 
     const keyToLane = {
         "ARROWLEFT": 0, "D": 0,
