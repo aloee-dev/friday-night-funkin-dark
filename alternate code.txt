@@ -1,8 +1,14 @@
-if (_voicePlayer && !_voicePlayer.paused) {
+    const now = performance.now();
+    const syncCooldown = 1500;
+
+    if (_voicePlayer && !_voicePlayer.paused) {
         const playerDelay = Math.abs(_voicePlayer.currentTime - masterTime);
-        if (playerDelay > maxDelay) {
+        
+        if (playerDelay > maxDelay && (now - _lastPlayerSyncTime) > syncCooldown) {
             _voicePlayer.muted = true; 
             _voicePlayer.currentTime = masterTime;
+            
+            _lastPlayerSyncTime = now;
             
             requestAnimationFrame(() => { if (_voicePlayer) _voicePlayer.muted = false; });
         }
@@ -10,9 +16,13 @@ if (_voicePlayer && !_voicePlayer.paused) {
 
     if (_voiceOpponent && !_voiceOpponent.paused) {
         const opponentDelay = Math.abs(_voiceOpponent.currentTime - masterTime);
-        if (opponentDelay > maxDelay) {
+        
+        if (opponentDelay > maxDelay && (now - _lastOpponentSyncTime) > syncCooldown) {
             _voiceOpponent.muted = true;
             _voiceOpponent.currentTime = masterTime;
+            
+            _lastOpponentSyncTime = now;
+            
             requestAnimationFrame(() => { if (_voiceOpponent) _voiceOpponent.muted = false; });
         }
     }
