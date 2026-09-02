@@ -3460,6 +3460,7 @@ let camera = {
 
 let _activeSong = null;
 let _rawChart = null;
+let sId = 0;
 let _inst = null;
 let _voicePlayer = null;
 let _voiceOpponent = null;
@@ -3923,6 +3924,9 @@ async function loadSongData(songId) {
 
 
 async function startSong(songId) {
+    sId++;
+    const mySId = sId;
+    
     const data = await loadSongData(songId);
     if (!data) return;
 
@@ -4090,7 +4094,7 @@ if (_opponentChar && _opponentChar.healthbar) {
 
     canPause = true;
 
-    requestAnimationFrame(updateRhythmLoop);
+    requestAnimationFrame(() => updateRhythmLoop(mySId));
 }
 
     
@@ -4189,7 +4193,11 @@ let _lastPlayerSyncTime = 0;
 let _lastOpponentSyncTime = 0;
 
 
-function updateRhythmLoop() {
+function updateRhythmLoop(rSId) {
+    
+    if (rSId !== sId) {
+        return; 
+    }
     if (!_rhythmStarted || !_inst) return;
 
     if (_inst && _inst.ended && _rhythmStarted) {
@@ -4393,7 +4401,7 @@ function updateRhythmLoop() {
         }
     }
 
-    requestAnimationFrame(updateRhythmLoop);
+    requestAnimationFrame(() => updateRhythmLoop(rSId));
 }
 
 function createNoteElement(n, isPlayer) {
