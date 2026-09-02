@@ -4586,6 +4586,8 @@ function doPauseAction() {
     if (typeof _voicePlayer !== 'undefined' && _voicePlayer) { _voicePlayer.pause(); _voicePlayer.src = ""; }
     if (typeof _voiceOpponent !== 'undefined' && _voiceOpponent) { _voiceOpponent.pause(); _voiceOpponent.src = ""; }
 
+    updateHPBar(currentTime)
+
     if (!_activeSong || !_activeSong.id) return;
 
     const pauseOverlay = document.getElementById('pause-overlay');
