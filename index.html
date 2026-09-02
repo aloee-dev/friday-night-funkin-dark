@@ -1954,11 +1954,6 @@ document.getElementById("load-line-btn").onclick = () => {
 
     const rawData = localStorage.getItem(LINE_SAVE_KEY);
     
-    if (!rawData) {
-        alert("this is the problem");
-        return; 
-    }
-    
     doSave(data);
 };
 
