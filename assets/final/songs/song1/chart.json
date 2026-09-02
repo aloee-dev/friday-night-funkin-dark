@@ -1,5 +1,6 @@
 {
-  "bpm": 170,
+  "song": "Stress",
+  "bpm": 178,
   "scrollSpeed": 1.7,
     "stageLayers": [
     { "id": "white", "type": "static", "src": "white.png", "zIndex": 1 }
