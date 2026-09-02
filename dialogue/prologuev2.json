@@ -75,6 +75,7 @@
     "triggers": []
   },
   {
+    "id": "001",
     "speaker": "Pico",
     "mood": "neutral",
     "position": "left",
