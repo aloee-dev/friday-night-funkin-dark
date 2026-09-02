@@ -4460,6 +4460,9 @@ function createNoteElement(n, isPlayer) {
   }
 }
 
+
+
+const breakfastPico = new Audio('assets/final/pause/breakfast-pico.mp3');
     
 let pauseIndex = 0; 
 
@@ -4495,6 +4498,10 @@ function pause() {
     if (_voicePlayer) _voicePlayer.pause();
     if (_voiceOpponent) _voiceOpponent.pause();
 
+    breakfastPico.play();
+    breakfastPico.currentTime = 0;
+    breakfastPico.loop = true;
+
     document.getElementById('pause-overlay').style.display = 'block';
     
     setTimeout(() => {
@@ -4521,6 +4528,7 @@ function selectPauseBtn() {
 }
     
 function doPauseAction() {
+    breakfastPico.pause();
     if (pauseIndex === 0) {
         resume();
     } 
