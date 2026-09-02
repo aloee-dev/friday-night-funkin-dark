@@ -3939,6 +3939,7 @@ async function startSong(songId) {
     _rawChart = JSON.parse(JSON.stringify(data));
 
     _activeSong = {
+        id: songId,
         name: data.name || "Song",
         composer: data.composer || "??",
         background: data.background,
@@ -4545,7 +4546,7 @@ function doPauseAction() {
         document.getElementById('pause-overlay').classList.remove('active');
         document.getElementById('pause-overlay').style.display = 'none';
         isPaused = false;
-        //restartSong(); 
+        restartSong(); 
     } 
     else if (pauseIndex === 2) {
         document.getElementById('pause-overlay').style.display = 'none';
@@ -4570,6 +4571,128 @@ function doPauseAction() {
     }, 300);
 }
 
+    function restartSong() {
+
+    sId++;
+    const mySId = sId;
+    _rhythmStarted = false;
+
+    if (typeof _playerKey !== 'undefined') _playerKey = null;
+    if (typeof _lastPressedPlayerKey !== 'undefined') _lastPressedPlayerKey = null;
+
+    document.querySelectorAll('.note').forEach(note => note.remove());
+
+    if (typeof _inst !== 'undefined' && _inst) { _inst.pause(); _inst.src = ""; }
+    if (typeof _voicePlayer !== 'undefined' && _voicePlayer) { _voicePlayer.pause(); _voicePlayer.src = ""; }
+    if (typeof _voiceOpponent !== 'undefined' && _voiceOpponent) { _voiceOpponent.pause(); _voiceOpponent.src = ""; }
+
+    if (!_activeSong || !_activeSong.id) return;
+
+    const pauseOverlay = document.getElementById('pause-overlay');
+    const pauseMenu = document.getElementById('pause-menu');
+    if (pauseOverlay) pauseOverlay.style.display = 'none';
+    if (pauseMenu) pauseMenu.classList.remove('active');
+    isPaused = false;
+
+    _rawChart = JSON.parse(JSON.stringify(_rawChart));
+
+    _activeSong.opponentNotes = JSON.parse(JSON.stringify(_rawChart.opponentNotes));
+    _activeSong.playerNotes = JSON.parse(JSON.stringify(_rawChart.playerNotes));
+    _activeSong.events = _rawChart.events ? JSON.parse(JSON.stringify(_rawChart.events)) : [];
+
+    startA(_activeSong);
+    _rhythmStarted = true;
+    resetScore();
+
+    const stage = document.getElementById("rhythm-stage");
+    const cam = document.getElementById("camera-container");
+    const dialogBg = document.getElementById("dialog-background");
+
+    dialogBg.style.display = "none";
+    stage.innerHTML = '';
+    stage.style.backgroundImage = 'none';
+
+    if (_activeSong.stageLayers) {
+        _activeSong.stageLayers.forEach(layer => {
+            const layerEl = document.createElement("div");
+            layerEl.id = `layer-${layer.id}`;
+            layerEl.className = "stage-layer";
+            layerEl.style.zIndex = layer.zIndex;
+
+            if (layer.type === "static") {
+                layerEl.style.backgroundImage = `url("${layer.src}")`;
+            } else if (layer.type === "animated") {
+                layerEl.style.backgroundImage = `url("${layer.src}")`;
+                layerEl.classList.add("animated-sprite");
+                layer.activeAnimation = layer.activeAnimation || "idle";
+            }
+            stage.appendChild(layerEl);
+        });
+    }
+
+    const opponentCanvas = document.getElementById("opponentCanvas");
+    const playerCanvas = document.getElementById("playerCanvas");
+
+    if (opponentCanvas) {
+        opponentCanvas.style.left = `${_activeSong.opponentPosition.x}px`;
+        opponentCanvas.style.right = "auto";
+        opponentCanvas.style.top = `${_activeSong.opponentPosition.y}px`;
+    }
+    if (playerCanvas) {
+        playerCanvas.style.left = `${_activeSong.playerPosition.x}px`;
+        playerCanvas.style.right = "auto";
+        playerCanvas.style.top = `${_activeSong.playerPosition.y}px`;
+    }
+
+    if (_playerChar && _playerChar.healthbar) {
+        document.getElementById("hp-green").src = _playerChar.healthbar;
+    }
+    if (_opponentChar && _opponentChar.healthbar) {
+        document.getElementById("hp-red").src = _opponentChar.healthbar;
+    }
+
+    _inst = new Audio(_activeSong.instSrc || _rawChart.instSrc);
+    _voicePlayer = new Audio(_activeSong.voicePlayer || _rawChart.voicePlayer);
+    _voiceOpponent = new Audio(_activeSong.voiceOpponent || _rawChart.voiceOpponent);
+
+    cam.style.display = "block"; 
+    stage.style.display = "block";
+    document.getElementById("song-loading-screen").style.display = "none";
+
+    document.getElementById("icon-container").style.display = "block";
+    document.getElementById("icon-player").style.display = "block";
+    document.getElementById("icon-opponent").style.display = "block";
+    document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
+    document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
+
+    document.getElementById("healthbar").style.display = "block";
+    document.getElementById("rhythm-stats").style.display = "block";
+    document.getElementById("timer-container").style.display = "flex";
+    document.getElementById("timer-color").style.width = "0%";
+    hp = 100;
+    updateHPBar();
+
+    setupReceptors();
+    document.getElementById("rhythm-ui").style.display = "block";
+
+    runCountdown().then(() => {
+        _inst.currentTime = 0;
+        _voicePlayer.currentTime = 0;
+        _voiceOpponent.currentTime = 0;
+
+        _inst.play().catch(() => {});
+        _voicePlayer.play().catch(() => {});
+        _voiceOpponent.play().catch(() => {});
+
+        const masterTime = _inst.currentTime;
+        _voicePlayer.currentTime = masterTime;
+        _voiceOpponent.currentTime = masterTime;
+
+        canPause = true;
+
+        requestAnimationFrame(() => updateRhythmLoop(mySId));
+    });
+}
 
 function showResults() {
   const screen = document.querySelector('.results-screen');
