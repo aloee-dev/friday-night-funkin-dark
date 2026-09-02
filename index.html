@@ -3736,11 +3736,13 @@ function triggerSpecial(target, animName, holdTicks) {
 }
 
     function spawnCombo(combo) {
-        //if (combo < 10) return;
+    // if (combo < 10) return;
 
     const comboContainer = document.createElement("div");
     comboContainer.className = "combo-popup";
-    const digits = String(combo).split("");
+    
+    const digits = String(combo).padStart(3, "0").split("");
+    
     digits.forEach(digit => {
         const digitImg = document.createElement("img");
         digitImg.src = `assets/final/combo/${digit}.png`;
