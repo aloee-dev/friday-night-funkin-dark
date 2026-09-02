@@ -3932,6 +3932,10 @@ async function startSong(songId) {
 
     document.querySelectorAll('.note').forEach(note => note.remove());
 
+    if (typeof _inst !== 'undefined' && _inst) { _inst.pause(); _inst.src = ""; }
+    if (typeof _voicePlayer !== 'undefined' && _voicePlayer) { _voicePlayer.pause(); _voicePlayer.src = ""; }
+    if (typeof _voiceOpponent !== 'undefined' && _voiceOpponent) { _voiceOpponent.pause(); _voiceOpponent.src = ""; }
+
     _rawChart = JSON.parse(JSON.stringify(data));
 
     _activeSong = {
