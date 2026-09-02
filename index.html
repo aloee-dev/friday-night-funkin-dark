@@ -3920,8 +3920,8 @@ async function startSong(songId) {
         opponent: data.opponent,
         opponentPosition: { ...data.opponentPosition },
         playerPosition: { ...data.playerPosition },
-        opponentNotes: [...data.opponentNotes],
-        playerNotes: [...data.playerNotes],
+        opponentNotes: structuredClone(data.opponentNotes),
+        playerNotes: structuredClone(data.playerNotes),
         events: data.events ? [...data.events] : []
     };
 
