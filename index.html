@@ -1112,6 +1112,66 @@ a,
     }
 }
 
+#pause-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 501;
+}
+
+#pause-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateY(1099px);
+    transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1.1);
+    z-index: 502;
+}
+
+#pause-menu.active {
+    transform: translateY(0px);
+}
+
+.pause-button {
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 633px; 
+    height: 428px; 
+}
+
+#btn-resume {
+    top: 40px; 
+    left: 30px;
+    background-image: url('assets/final/pause/resume.png');
+}
+#btn-resume.selected {
+    background-image: url('assets/final/pause/resume-selected.png');
+}
+
+#btn-restart {
+    top: 350px;
+    left: 30px;
+    background-image: url('assets/final/pause/restart.png');
+}
+#btn-restart.selected {
+    background-image: url('assets/final/pause/restart-selected.png');
+}
+
+#btn-exit {
+    top: 700px;
+    left: 30px;
+    background-image: url('assets/final/pause/exit.png');
+}
+#btn-exit.selected {
+    background-image: url('assets/final/pause/exit-selected.png');
+}
+
     
 .results-screen {
   position: fixed;
@@ -1465,12 +1525,15 @@ a,
     <span id="stats-grade">??</span>
 </div>
 
+<div id="pause-overlay" style="display: none;">
     <div id="pause-menu">
-    <img id="pause-bg" src="assets/final/pause-bg.png">
-  <div id="btn-resume" class="pause-button"></div>
-  <div id="btn-restart" class="pause-button"></div>
-  <div id="btn-exit" class="pause-button"></div>
+        <img id="pause-bg" src="assets/final/pause-bg.png">
+        <div id="btn-resume" class="pause-button"></div>
+        <div id="btn-restart" class="pause-button"></div>
+        <div id="btn-exit" class="pause-button"></div>
+    </div>
 </div>
+
 
     
 <div class="results-screen">
@@ -4376,35 +4439,94 @@ function createNoteElement(n, isPlayer) {
 let pauseIndex = 0; 
 
 window.addEventListener('keydown', (e) => {
-    if (!isPaused) return;
-  
-  if (e.key === 'ArrowDown') {
-    pauseIndex = (pauseIndex + 1) % 3;
-    selectPauseBtn();
-  } 
-  
-  else if (e.key === 'ArrowUp') {
-    pauseIndex = (pauseIndex - 1 + 3) % 3;
-    selectPauseBtn();
-  }
+    if (isPaused) {
+        if (e.key === 'ArrowDown') {
+            pauseIndex = (pauseIndex + 1) % 3;
+            selectPauseBtn();
+        } 
+        else if (e.key === 'ArrowUp') {
+            pauseIndex = (pauseIndex - 1 + 3) % 3;
+            selectPauseBtn();
+        }
+        else if (e.key === 'Enter') {
+            doPauseAction();
+        }
+        return;
+    }
+    
+    if (!isPaused && (e.key.toLowerCase() === 'p' || e.key === 'Enter')) {
+        if (canPause && _inst && !_inst.paused) {
+            pause();
+        }
+    }
 });
 
-function selectPauseBtn() {
-  const buttons = [
-    document.getElementById('btn-resume'),
-    document.getElementById('btn-restart'),
-    document.getElementById('btn-exit')
-  ];
+function pause() {
+    isPaused = true;
+    pauseIndex = 0; 
+    selectPauseBtn();
 
-  buttons.forEach((btn, index) => {
-    if (index === pauseIndex) {
-      btn.classList.add('selected');
-    } else {
-      btn.classList.remove('selected');
-    }
-  });
+    if (_inst) _inst.pause();
+    if (_voicePlayer) _voicePlayer.pause();
+    if (_voiceOpponent) _voiceOpponent.pause();
+
+    document.getElementById('pause-overlay').style.display = 'block';
+    
+    setTimeout(() => {
+        document.getElementById('pause-menu').classList.add('active');
+    }, 10);
 }
 
+function selectPauseBtn() {
+    const buttons = [
+        document.getElementById('btn-resume'),
+        document.getElementById('btn-restart'),
+        document.getElementById('btn-exit')
+    ];
+
+    buttons.forEach((btn, index) => {
+        if (btn) {
+            if (index === pauseIndex) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        }
+    });
+}
+    
+function doPauseAction() {
+    if (pauseIndex === 0) {
+        resume();
+    } 
+    else if (pauseIndex === 1) {
+        document.getElementById('pause-overlay').classList.remove('active');
+        document.getElementById('pause-overlay').style.display = 'none';
+        isPaused = false;
+        //restartSong(); 
+    } 
+    else if (pauseIndex === 2) {
+        document.getElementById('pause-overlay').style.display = 'none';
+        isPaused = false;
+        //exitSong(); 
+    }
+}
+    
+    function resume() {
+    document.getElementById('pause-menu').classList.remove('active');
+    
+    setTimeout(() => {
+        document.getElementById('pause-overlay').style.display = 'none';
+        isPaused = false;
+        
+        _lastPlayerSyncTime = 0;
+        _lastOpponentSyncTime = 0;
+
+        if (_inst) _inst.play().catch(() => {});
+        if (_voicePlayer) _voicePlayer.play().catch(() => {});
+        if (_voiceOpponent) _voiceOpponent.play().catch(() => {});
+    }, 300);
+}
 
 
 function showResults() {
