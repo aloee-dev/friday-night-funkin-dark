@@ -1116,8 +1116,8 @@ a,
     position: absolute;
     top: 0;
     left: 0;
-    width: 1595px;
-    height: 1099px;
+    width: 1600px;
+    height: 1101px;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 501;
 }
@@ -1127,7 +1127,7 @@ a,
     top: 0;
     left: 0;
     width: 1595px;
-    height: 1095px;
+    height: 1099px;
     transform: translateY(1099px);
     transition: transform 0.3s cubic-bezier(0.15, 0.85, 0.35, 1.1);
     z-index: 502;
@@ -1141,7 +1141,7 @@ a,
     position: absolute;
     background-repeat: no-repeat;
     background-size: contain;
-    left: -20px
+    margin-left: -20px;
     width: 633px; 
     height: 428px; 
 }
@@ -3654,6 +3654,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("keyup", (e) => {
+    if (isPaused) return;
     const keyToLane = {
         "ARROWLEFT": 0, "D": 0,
         "ARROWDOWN": 1, "F": 1,
