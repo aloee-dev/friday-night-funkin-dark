@@ -4805,7 +4805,7 @@ let _playerMissAnimState = null;
             _playerMissAnimState = null;
         }
     }
-    else if (!isPaused && _playerAnimationTimer > 0 || _playerKey) {
+     else if (!isPaused && (_playerAnimationTimer > 0 || _playerKey)) {
         const activeKey = _playerKey || _lastPressedPlayerKey; 
         if (activeKey) {
             playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
