@@ -1058,7 +1058,7 @@ a,
     z-index: 100;
     pointer-events: none;
     
-    animation: ratingPopAnim 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+    animation: ratingPopAnim 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
 
     .combo-popup {
@@ -1087,7 +1087,7 @@ a,
         transform: translate(-50%, -50%);
         opacity: 1;
     }
-    50% {
+    60% {
         transform: translate(-50%, -56%);
         opacity: 1;
     }
@@ -4086,6 +4086,8 @@ function updateCamera() {
     }
 }
 
+let _lastPlayerSyncTime = 0;
+let _lastOpponentSyncTime = 0;
 
 
 function updateRhythmLoop() {
