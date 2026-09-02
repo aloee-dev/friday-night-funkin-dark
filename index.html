@@ -1925,8 +1925,6 @@ document.getElementById("confirm-restart-btn").onclick = () => {
     resetGame();
     transLoad("prologuev2");
 };
-
-
     
 document.getElementById("btn-continue").onclick = () => {
     const lineSave = localStorage.getItem(LINE_SAVE_KEY);
@@ -1953,6 +1951,14 @@ function doSave(data) {
 
 document.getElementById("load-line-btn").onclick = () => {
     const data = JSON.parse(localStorage.getItem(LINE_SAVE_KEY));
+
+    const rawData = localStorage.getItem(LINE_SAVE_KEY);
+    
+    if (!rawData) {
+        alert("this is the problem");
+        return; 
+    }
+    
     doSave(data);
 };
 
