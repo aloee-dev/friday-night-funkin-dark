@@ -4506,10 +4506,14 @@ let pauseIndex = 0;
 window.addEventListener('keydown', (e) => {
     if (isPaused) {
         if (e.key === 'ArrowDown') {
+            hoverSfx.currentTime = 0;
+            hoverSfx.play();
             pauseIndex = (pauseIndex + 1) % 3;
             selectPauseBtn();
         } 
         else if (e.key === 'ArrowUp') {
+            hoverSfx.currentTime = 0;
+            hoverSfx.play();
             pauseIndex = (pauseIndex - 1 + 3) % 3;
             selectPauseBtn();
         }
