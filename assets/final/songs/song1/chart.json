@@ -4,7 +4,7 @@
   "bpm": 178,
   "scrollSpeed": 1.7,
     "stageLayers": [
-    { "id": "white", "type": "static", "src": "white.png", "zIndex": 1 }
+    { "id": "white", "type": "static", "src": "white.png", "zIndex": 1 },
     { "id": "background", "type": "static", "src": "bg.png", "zIndex": 2 }
   ],
   "player": "bf",
