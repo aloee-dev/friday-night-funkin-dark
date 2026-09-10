@@ -1700,6 +1700,14 @@ const assets = [
     "assets/final/notes/arrow_1.png",
     "assets/final/notes/arrow_2.png",
     "assets/final/notes/arrow_3.png",
+    "assets/final/notes/notestyles/arrow_0.png",
+    "assets/final/notes/notestyles/arrow_1.png",
+    "assets/final/notes/notestyles/arrow_2.png",
+    "assets/final/notes/notestyles/arrow_3.png",
+    "assets/final/notes/notestyles/receptor_0.png",
+    "assets/final/notes/notestyles/receptor_1.png",
+    "assets/final/notes/notestyles/receptor_2.png",
+    "assets/final/notes/notestyles/receptor_3.png",
     "sprites/Pico-neutral.png",
     "sprites/Boyfriend-neutral.png",
     "sprites/Sprite-test.png",
@@ -3706,7 +3714,7 @@ window.addEventListener("keyup", (e) => {
         const pla = document.getElementById("player-lanes");
         const receptor = pla.children[targetLane];
         if (receptor) {
-            receptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrow_${targetLane}.png')`;
+            receptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${targetLane}.png')`;
             //receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
         }
     }
