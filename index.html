@@ -3609,7 +3609,7 @@ window.addEventListener("keydown", (e) => {
     const pla = document.getElementById("player-lanes");
     const receptor = pla.children[targetLane];
     if (receptor) {
-        receptor.style.backgroundImage = `url('assets/final/arrowhold_${targetLane}.png')`;
+        receptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowhold_${targetLane}.png')`;
     }
 
     const currentTime = _inst.currentTime * 1000;
@@ -3706,7 +3706,8 @@ window.addEventListener("keyup", (e) => {
         const pla = document.getElementById("player-lanes");
         const receptor = pla.children[targetLane];
         if (receptor) {
-            receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
+            receptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrow_${targetLane}.png')`;
+            //receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
         }
     }
 
