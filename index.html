@@ -4386,19 +4386,28 @@ function updateRhythmLoop(rSId) {
                 el.remove();
             }
         }
+
         else { 
-            const centerTimeOffset = 75 / speed;
-            if (diff <= -centerTimeOffset) {
-                const lane = parseInt(el.dataset.lane);
-                const directionMap = ["left", "down", "up", "right"];
-                
-                if (directionMap[lane]) {
-                    _opponentAnimState = directionMap[lane];
-                    _opponentAnimTimer = 250;
-                }
-                el.remove(); 
-            }
+    const centerTimeOffset = 75 / speed;
+    if (diff <= -centerTimeOffset) {
+        const lane = parseInt(el.dataset.lane);
+        const directionMap = ["left", "down", "up", "right"];
+        
+        if (directionMap[lane]) {
+            _opponentAnimState = directionMap[lane];
+            _opponentAnimTimer = 250;
         }
+        const oppLanes = document.getElementById("opponent-lanes");
+        const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
+        if (oppReceptor) {
+            oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
+            setTimeout(() => {
+                oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
+            }, 150); 
+        }
+        el.remove(); 
+    }
+}
     });
 
     const bodies = document.querySelectorAll(".sustain-body");
