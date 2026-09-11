@@ -4385,29 +4385,28 @@ function updateRhythmLoop(rSId) {
                 }
                 el.remove();
             }
-        }
-
+        } 
         else { 
-    const centerTimeOffset = 75 / speed;
-    if (diff <= -centerTimeOffset) {
-        const lane = parseInt(el.dataset.lane);
-        const directionMap = ["left", "down", "up", "right"];
-        
-        if (directionMap[lane]) {
-            _opponentAnimState = directionMap[lane];
-            _opponentAnimTimer = 250;
+            const centerTimeOffset = 75 / speed;
+            if (diff <= -centerTimeOffset) {
+                const lane = parseInt(el.dataset.lane);
+                const directionMap = ["left", "down", "up", "right"];
+                
+                if (directionMap[lane]) {
+                    _opponentAnimState = directionMap[lane];
+                    _opponentAnimTimer = 250;
+                }
+                const oppLanes = document.getElementById("opponent-lanes");
+                const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
+                if (oppReceptor) {
+                    oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
+                    setTimeout(() => {
+                        oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
+                    }, 150); 
+                }
+                el.remove(); 
+            }
         }
-        const oppLanes = document.getElementById("opponent-lanes");
-        const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
-        if (oppReceptor) {
-            oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
-            setTimeout(() => {
-                oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
-            }, 150); 
-        }
-        el.remove(); 
-    }
-}
     });
 
     const bodies = document.querySelectorAll(".sustain-body");
@@ -4415,6 +4414,8 @@ function updateRhythmLoop(rSId) {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
         const diff = headTime - currentTime;
+        const lane = parseInt(el.dataset.lane);
+        const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
         const height = length * speed;
@@ -4422,7 +4423,48 @@ function updateRhythmLoop(rSId) {
         el.style.top = headY + "px";
         el.style.height = height + "px";
 
-        if (diff < -length - 350) el.remove();
+        const isPlayerHolding = isPlayerLane && (
+            _heldKeys.has(getLane(lane).arrow) || 
+            _heldKeys.has(getLane(lane).letter)
+        );
+        
+        const isOpponentSection = !isPlayerLane && (diff * speed <= 0);
+
+        if (isPlayerHolding || isOpponentSection) {
+            let visualTop = headY + 75;
+            let clipAmount = 50 - visualTop; 
+            
+            if (clipAmount > 0) {
+                el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
+                if (isPlayerHolding) {
+                    hp = Math.min(200, hp + 0.1); 
+                }
+            } else {
+                el.style.clipPath = "none";
+            }
+        } 
+        else if (isPlayerLane && (diff * speed) + 75 < -50) {
+            misses++;
+            combo = 0;
+            playMiss();
+
+            const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+            if (directionMap[lane]) {
+                _playerMissAnimState = directionMap[lane];
+                _playerAnimationTimer = 350; 
+            }
+
+            document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
+                trail.remove();
+            });
+        } 
+        else {
+            el.style.clipPath = "none";
+        }
+
+        if (el.parentNode && diff < -length - 350) {
+            el.remove();
+        }
     });
 
     const ends = document.querySelectorAll(".sustain-end");
@@ -4430,12 +4472,34 @@ function updateRhythmLoop(rSId) {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
         const diff = headTime - currentTime;
+        const lane = parseInt(el.dataset.lane);
+        const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
         const height = length * speed;
-
         const endHeight = 60;
-        el.style.top = (headY + height - endHeight) + "px";
+        
+        const currentTop = headY + height - endHeight;
+        el.style.top = currentTop + "px";
+
+        const isPlayerHolding = isPlayerLane && (
+            _heldKeys.has(getLane(lane).arrow) || 
+            _heldKeys.has(getLane(lane).letter)
+        );
+        
+        const isOpponentSection = !isPlayerLane && (diff * speed <= 0);
+
+        if (isPlayerHolding || isOpponentSection) {
+            let clipAmount = 50 - currentTop;
+            
+            if (clipAmount > 0) {
+                el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
+            } else {
+                el.style.clipPath = "none";
+            }
+        } else {
+            el.style.clipPath = "none";
+        }
 
         if (diff < -length - 200) el.remove();
     });
