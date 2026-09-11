@@ -4405,7 +4405,7 @@ function updateRhythmLoop(rSId) {
             }
         }
     });
-    
+
     const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
@@ -4415,15 +4415,14 @@ function updateRhythmLoop(rSId) {
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
-        const endHeight = 60;
-        const height = Math.max(0, (length * speed) - endHeight);
+        const height = length * speed;
 
         el.style.top = headY + "px";
         el.style.height = height + "px";
 
         const isPlayerHolding = isPlayerLane && (
-            _heldKeys.has(getLaneKeyName(lane).arrow) || 
-            _heldKeys.has(getLaneKeyName(lane).letter)
+            _heldKeys.has(getLane(lane).arrow) || 
+            _heldKeys.has(getLane(lane).letter)
         );
         
         const isOpponentSection = !isPlayerLane && (diff * speed <= 0);
