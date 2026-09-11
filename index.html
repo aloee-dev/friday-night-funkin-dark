@@ -3625,7 +3625,7 @@ window.addEventListener("keydown", (e) => {
     _playerAnimationTimer = 250;
     
     const pla = document.getElementById("player-lanes");
-    const receptor = pla.children[targetLane];
+    const receptor = pla ? pla.children[targetLane] : null;
     
     if (receptor) {
         receptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowhold_${targetLane}.png')`;
@@ -3658,17 +3658,9 @@ window.addEventListener("keydown", (e) => {
 
         const hitTime = closestNote.dataset.time;
        
-        document.querySelectorAll(`#player-lanes [data-time="${hitTime}"][data-lane="${targetLane}"]:not(.sustain-body):not(.sustain-end)`).forEach(sus => {
-            sus.dataset.hit = "true";
-            sus.remove();
-        });
-    }
-});
-
-       
         closestNote.dataset.hit = "true";
         closestNote.remove();
-        
+
         if (minDistance <= timing.sick) {
             hp = Math.min(maxHP, hp + 5); 
             spawnRating("sick");
@@ -3678,6 +3670,7 @@ window.addEventListener("keydown", (e) => {
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
+            
             splashes.push({
                 lane: targetLane,
                 startTime: currentTime,
@@ -3688,28 +3681,28 @@ window.addEventListener("keydown", (e) => {
             spawnRating("good");
             goods++;
             score += 200;
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
             combo++;
             spawnCombo(combo);
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
         } else if (minDistance <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
             bads++;
             score += 100;
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
             combo++;
             spawnCombo(combo);
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
             shits++;
             score += 50;
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
             combo = 0;
             spawnCombo(combo);
+            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            grade = calculateGrade(accuracy);
         }
 
         updateHPBar(currentTime);
