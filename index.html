@@ -4373,7 +4373,7 @@ function updateRhythmLoop(rSId) {
                     
                     if (directionMap[lane]) {
                         _playerMissAnimState = directionMap[lane];
-                        _playerAnimationTimer = 350; 
+                        _playerAnimationTimer = 250; 
                     }
                 }
                 el.remove();
@@ -4444,7 +4444,7 @@ function updateRhythmLoop(rSId) {
             const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
             if (directionMap[lane]) {
                 _playerMissAnimState = directionMap[lane];
-                _playerAnimationTimer = 350; 
+                _playerAnimationTimer = 250; 
             }
 
             document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
