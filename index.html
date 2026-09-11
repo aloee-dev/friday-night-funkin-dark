@@ -3588,6 +3588,16 @@ function playMiss() {
   }
 }
 
+function getLane(lane) {
+    const maps = [
+        { arrow: "ARROWLEFT",  letter: "D" },
+        { arrow: "ARROWDOWN",  letter: "F" },
+        { arrow: "ARROWUP",    letter: "J" },
+        { arrow: "ARROWRIGHT", letter: "K" } 
+    ];
+    return maps[lane];
+}
+
 const _heldKeys = new Set();
 
 window.addEventListener("keydown", (e) => {
