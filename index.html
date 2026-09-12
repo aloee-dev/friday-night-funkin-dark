@@ -3909,6 +3909,8 @@ function resetScore() {
     misses = 0;
     score = 0; 
     combo = 0;
+    accuracy = "100.00";
+    grade = "??";
   }
 
 async function loadSongData(songId) {
@@ -4296,17 +4298,11 @@ function updateRhythmLoop(rSId) {
     const masterTime = _inst.currentTime;
     const maxDelay = 0.02; 
 
-    const now = performance.now();
-    const syncCooldown = 1500;
-
     if (_voicePlayer && !_voicePlayer.paused) {
         const playerDelay = Math.abs(_voicePlayer.currentTime - masterTime);
-        
-        if (playerDelay > maxDelay && (now - _lastPlayerSyncTime) > syncCooldown) {
+        if (playerDelay > maxDelay) {
             _voicePlayer.muted = true; 
             _voicePlayer.currentTime = masterTime;
-            
-            _lastPlayerSyncTime = now;
             
             requestAnimationFrame(() => { if (_voicePlayer) _voicePlayer.muted = false; });
         }
@@ -4314,13 +4310,9 @@ function updateRhythmLoop(rSId) {
 
     if (_voiceOpponent && !_voiceOpponent.paused) {
         const opponentDelay = Math.abs(_voiceOpponent.currentTime - masterTime);
-        
-        if (opponentDelay > maxDelay && (now - _lastOpponentSyncTime) > syncCooldown) {
+        if (opponentDelay > maxDelay) {
             _voiceOpponent.muted = true;
             _voiceOpponent.currentTime = masterTime;
-            
-            _lastOpponentSyncTime = now;
-            
             requestAnimationFrame(() => { if (_voiceOpponent) _voiceOpponent.muted = false; });
         }
     }
@@ -4425,7 +4417,8 @@ function updateRhythmLoop(rSId) {
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
-        const height = length * speed;
+        const endHeight = 60;
+        const height = Math.max(0, (length * speed) - endHeight);
 
         el.style.top = headY + "px";
         el.style.height = height + "px";
@@ -4444,13 +4437,13 @@ function updateRhythmLoop(rSId) {
             if (clipAmount > 0) {
                 el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
                 if (isPlayerHolding) {
-                    hp = Math.min(200, hp + 0.1); 
+                    hp = Math.min(200, hp + 0.3); 
                 }
             } else {
                 el.style.clipPath = "none";
             }
         } 
-        else if (isPlayerLane && (diff * speed) + 75 < -50) {
+        else if (isPlayerLane && (diff * speed) + 75 < -350) {
             misses++;
             combo = 0;
             playMiss();
