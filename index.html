@@ -4138,9 +4138,9 @@ async function startSong(songId) {
 
     box.style.display = "none";
     
-    updateLoadingBar(0);
+    updateBar(0);
     songLoading.style.display = "block";
-    updateLoadingBar(1);
+    updateBar(1);
 
     fade.style.opacity = 0;
     await new Promise(r => setTimeout(r, 500));
@@ -4166,7 +4166,7 @@ async function startSong(songId) {
     _voicePlayer = new Audio(data.voicePlayer);
     _voiceOpponent = new Audio(data.voiceOpponent);
     
-    updateLoadingBar(2);
+    updateBar(2);
     
     const downloadQueue = [
         waitForAudio(_inst),
@@ -4182,7 +4182,7 @@ async function startSong(songId) {
         });
     }
     
-    updateLoadingBar(3);
+    updateBar(3);
     
     let assetsLoadedCount = 0;
     const totalAssets = downloadQueue.length;
@@ -4193,9 +4193,9 @@ async function startSong(songId) {
             const ratio = assetsLoadedCount / totalAssets;
             
             if (ratio >= 0.33 && ratio < 0.66) {
-                updateLoadingBar(4); 
+                updateBar(4); 
             } else if (ratio >= 0.66 && ratio < 1) {
-                updateLoadingBar(5); 
+                updateBar(5); 
             }
         })
     );
@@ -4207,7 +4207,7 @@ async function startSong(songId) {
         return;
     }
 
-    updateLoadingBar(6);
+    updateBar(6);
 
     await new Promise(r => setTimeout(r, 1000));
 
