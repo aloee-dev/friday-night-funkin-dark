@@ -1727,6 +1727,16 @@ const assets = [
     "assets/pointnclick/inv-bar.png",
     "assets/final/bf-sprite.png",
     "assets/final/loading-song.png",
+    "assets/final/loading/loading-song.png",
+    "assets/final/loading/bar-1.png",
+    "assets/final/loading/bar-2.png",
+    "assets/final/loading/bar-3.png",
+    "assets/final/loading/bar-4.png",
+    "assets/final/loading/bar-5.png",
+    "assets/final/loading/bar-6.png",
+    "assets/final/loading/bar-glow.png",
+    "assets/final/loading/boyco.png",
+    "assets/final/loading/glow-boyco.png",
     "assets/final/pause/pause-bg.png",
     "assets/final/pause/resume.png",
     "assets/final/pause/resume-selected.png",
@@ -4127,7 +4137,10 @@ async function startSong(songId) {
     await new Promise(r => setTimeout(r, 500));
 
     box.style.display = "none";
+    
+    updateLoadingBar(0);
     songLoading.style.display = "block";
+    updateLoadingBar(1);
 
     fade.style.opacity = 0;
     await new Promise(r => setTimeout(r, 500));
@@ -4153,6 +4166,8 @@ async function startSong(songId) {
     _voicePlayer = new Audio(data.voicePlayer);
     _voiceOpponent = new Audio(data.voiceOpponent);
     
+    updateLoadingBar(2);
+    
     const downloadQueue = [
         waitForAudio(_inst),
         waitForAudio(_voicePlayer),
@@ -4167,20 +4182,46 @@ async function startSong(songId) {
         });
     }
     
+    updateLoadingBar(3);
+    
+    let assetsLoadedCount = 0;
+    const totalAssets = downloadQueue.length;
+    
+    const trackedQueue = downloadQueue.map(promise => 
+        promise.then(() => {
+            assetsLoadedCount++;
+            const ratio = assetsLoadedCount / totalAssets;
+            
+            if (ratio >= 0.33 && ratio < 0.66) {
+                updateLoadingBar(4); 
+            } else if (ratio >= 0.66 && ratio < 1) {
+                updateLoadingBar(5); 
+            }
+        })
+    );
+    
     try {
-        await Promise.all(downloadQueue);
+        await Promise.all(trackedQueue);
     } catch (err) {
         console.error("Critical asset failed to load:", err);
         return;
     }
 
+    updateLoadingBar(6);
+
+    await new Promise(r => setTimeout(r, 1000));
+
+    fade.style.transition = "opacity 0.5s ease";
     fade.style.opacity = 1;
     await new Promise(r => setTimeout(r, 500));
 
     dialogBg.style.display = "none";
+    songLoading.style.display = "none";
     
     stage.innerHTML = '';
     stage.style.backgroundImage = 'none';
+    
+    fade.style.opacity = 0;
 
     if (_activeSong.stageLayers) {
         _activeSong.stageLayers.forEach(layer => {
