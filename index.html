@@ -771,15 +771,70 @@ a,
     display: none; 
 }
 
-
-    #song-loading-screen {
+#song-loading-screen {
     position: absolute;
     inset: 0;
-    background-size: cover;
-    background-position: center;
+    width: 1595px;
+    height: 1099px;
     z-index: 1000;
     display: none;
 }
+
+.layer {
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+    
+.loading-bg {
+    inset: 0;
+    background-image: url('assets/final/loading/loading-song.png');
+    z-index: 1;
+}
+
+#loading-characters {
+    top: 180px;
+    left: 0;
+    width: 876px;
+    height: 919px;
+    background-image: url('assets/final/loading/boyco.png');
+    z-index: 2;
+}
+
+.loading-bar {
+    top: 340px;
+    left: 785px;
+    width: 810px;
+    height: 759px;
+    z-index: 3;
+    display: none;
+}
+
+#bar-1 { background-image: url('assets/final/loading/bar-1.png'); }
+#bar-2 { background-image: url('assets/final/loading/bar-2.png'); }
+#bar-3 { background-image: url('assets/final/loading/bar-3.png'); }
+#bar-4 { background-image: url('assets/final/loading/bar-4.png'); }
+#bar-5 { background-image: url('assets/final/loading/bar-5.png'); }
+#bar-6 { background-image: url('assets/final/loading/bar-6.png'); }
+
+#bar-glow {
+    top: 340px;
+    left: 785px;
+    width: 810px;
+    height: 759px;
+    background-image: url('assets/final/loading/bar-glow.png');
+    z-index: 4;
+    display: none;
+}
+
+#song-loading-screen.glow-active #loading-characters {
+    background-image: url('assets/final/loading/glow-boyco.png');
+}
+
+#song-loading-screen.glow-active #bar-glow {
+    display: block;
+}
+
     
 #rhythm-ui {
     position: absolute;
@@ -1490,7 +1545,19 @@ a,
 
 
 
-<div id="song-loading-screen" style="display:none; background-image: url('assets/final/loading-song.png');">
+<div id="song-loading-screen" style="display: none;">
+  <div class="layer loading-bg"></div>
+
+  <div id="loading-characters" class="layer"></div>
+
+  <div id="bar-1" class="layer loading-bar"></div>
+  <div id="bar-2" class="layer loading-bar"></div>
+  <div id="bar-3" class="layer loading-bar"></div>
+  <div id="bar-4" class="layer loading-bar"></div>
+  <div id="bar-5" class="layer loading-bar"></div>
+  <div id="bar-6" class="layer loading-bar"></div>
+
+  <div id="bar-glow" class="layer"></div>
 </div>
 
 
