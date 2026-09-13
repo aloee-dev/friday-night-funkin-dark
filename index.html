@@ -3980,6 +3980,29 @@ function resetScore() {
     grade = "??";
   }
 
+    function updateBar(progressStep) {
+    const barIds = ['bar-1', 'bar-2', 'bar-3', 'bar-4', 'bar-5', 'bar-6'];
+    const screenElement = document.getElementById('song-loading-screen');
+
+    barIds.forEach((id, index) => {
+        const barElement = document.getElementById(id);
+        if (!barElement) return;
+
+        if (index < progressStep) {
+            barElement.style.display = 'block';
+        } else {
+            barElement.style.display = 'none';
+        }
+    });
+
+    if (progressStep >= 6) {
+        screenElement.classList.add('glow-active');
+    } else {
+        screenElement.classList.remove('glow-active');
+    }
+}
+
+
 async function loadSongData(songId) {
     const base = `assets/final/songs/${songId}/`;
     const res = await fetch(base + "chart.json");
