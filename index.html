@@ -4731,7 +4731,7 @@ function updateRhythmLoop(rSId) {
             _heldKeys.has(getLane(lane).letter)
         );
         
-        const isOpponentSection = !isPlayerLane && (diff * speed <= 0);
+        const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
 
         if (isPlayerHolding || isOpponentSection) {
             let clipAmount = 50 - currentTop;
@@ -4750,12 +4750,17 @@ function updateRhythmLoop(rSId) {
                 }
             }
         } else {
-            el.style.clipPath = "none";
+            if (currentTop < -10) {
+                el.style.clipPath = `inset(100% 0px 0px 0px)`;
+            } else {
+                el.style.clipPath = "none";
+            }
         }
 
-        if (el.parentNode && (tailProgressTime <= -200 || currentTop < 50)) {
+        if (el.parentNode && (tailProgressTime <= -200 || currentTop < -10)) {
             el.remove();
         }
+    });
 
     const frameDuration = 60;
 
