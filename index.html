@@ -4802,7 +4802,7 @@ function createNoteElement(n, isPlayer) {
         body.dataset.lane = lane;
         body.style.left = (lane * 155) + "px";
         body.style.transform = `translateY(${offset}px)`;
-        body.style.backgroundImage = `url('assets/final/notes/sustain_body${lane}.png')`;
+        body.style.backgroundImage = `url('assets/final/notes/sustain-body${lane}.png')`;
         laneContainer.appendChild(body);
 
         const end = document.createElement("div");
@@ -4811,7 +4811,7 @@ function createNoteElement(n, isPlayer) {
         end.dataset.length = length;
         end.dataset.lane = lane;
         end.style.left = (lane * 155) + "px";
-        end.style.backgroundImage = `url('assets/final/notes/sustain_end${lane}.png')`;
+        end.style.backgroundImage = `url('assets/final/notes/sustain-end${lane}.png')`;
         laneContainer.appendChild(end);
     }
 }
