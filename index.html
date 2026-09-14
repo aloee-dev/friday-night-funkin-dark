@@ -4702,7 +4702,7 @@ function updateRhythmLoop(rSId) {
         }
     }
     
-    const ends = document.querySelectorAll(".sustain-end");
+        const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
@@ -4717,10 +4717,12 @@ function updateRhythmLoop(rSId) {
         const currentTop = headY + height - endHeight;
         el.style.top = currentTop + "px";
 
+        const holdEnd = (currentTop <= 50) && (currentTop > -endHeight);
+
         const isPlayerHolding = isPlayerLane && (
-    _heldKeys.has(getLane(lane).arrow) || 
-    _heldKeys.has(getLane(lane).letter)
-);
+            _heldKeys.has(getLane(lane).arrow) || 
+            _heldKeys.has(getLane(lane).letter)
+        );
         
         const isOpponentSection = !isPlayerLane && (diff * speed <= 0);
 
@@ -4731,6 +4733,14 @@ function updateRhythmLoop(rSId) {
                 el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
             } else {
                 el.style.clipPath = "none";
+            }
+
+            if (holdEnd) {
+                if (isPlayerLane) {
+                    activePlayerSustains.add(lane);
+                } else {
+                    activeOpponentSustains.add(lane);
+                }
             }
         } else {
             el.style.clipPath = "none";
