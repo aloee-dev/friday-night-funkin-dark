@@ -4589,7 +4589,7 @@ function updateRhythmLoop(rSId) {
         
         const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
 
-        if (isPlayerHolding || isOpponentSection) {
+                if (isPlayerHolding || isOpponentSection) {
             let visualTop = headY + 75;
             let clipAmount = 50 - visualTop; 
             
@@ -4624,10 +4624,14 @@ function updateRhythmLoop(rSId) {
             });
         }
         else {
-            el.style.clipPath = "none";
+            if (headY + height < 50) {
+                el.style.clipPath = `inset(100% 0px 0px 0px)`;
+            } else {
+                el.style.clipPath = "none";
+            }
         }
 
-        if (el.parentNode && tailProgressTime <= -200) {
+        if (el.parentNode && (tailProgressTime <= -200 || headY + height < -50)) {
             el.remove();
         }
     });
@@ -4749,10 +4753,9 @@ function updateRhythmLoop(rSId) {
             el.style.clipPath = "none";
         }
 
-        if (tailProgressTime <= -200) {
+        if (el.parentNode && (tailProgressTime <= -200 || currentTop < 50)) {
             el.remove();
         }
-    });
 
     const frameDuration = 60;
 
