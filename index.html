@@ -4579,13 +4579,13 @@ function updateRhythmLoop(rSId) {
 
         const isPlayerHolding = isPlayerLane && 
             (diff <= 0) && 
-            (diff > -length - 100) && 
+            (diff > -length) && 
             (
                 _heldKeys.has(getLane(lane).arrow) || 
                 _heldKeys.has(getLane(lane).letter)
             );
         
-        const isOpponentSection = !isPlayerLane && (diff <= 0) && (diff > -length - 100);
+        const isOpponentSection = !isPlayerLane && (diff <= 0) && (diff > -length);
 
         if (isPlayerHolding || isOpponentSection) {
             let visualTop = headY + 75;
@@ -4606,22 +4606,20 @@ function updateRhythmLoop(rSId) {
                 activeOpponentSustains.add(lane);
             }
         } 
-        else if (isPlayerLane && (diff * speed) + (length * speed) < -150) {
-            if (el.parentNode) {
-                misses++;
-                combo = 0;
-                playMiss();
+        else if (isPlayerLane && (diff * speed) + 75 < -350) {
+            misses++;
+            combo = 0;
+            playMiss();
 
-                const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-                if (directionMap[lane]) {
-                    _playerMissAnimState = directionMap[lane];
-                    _playerAnimationTimer = 250; 
-                }
-
-                document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
-                    trail.remove();
-                });
+            const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+            if (directionMap[lane]) {
+                _playerMissAnimState = directionMap[lane];
+                _playerAnimationTimer = 250; 
             }
+
+            document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
+                trail.remove();
+            });
         } 
         else {
             el.style.clipPath = "none";
@@ -4704,7 +4702,7 @@ function updateRhythmLoop(rSId) {
         }
     }
     
-    const ends = document.querySelectorAll(".sustain-end");
+        const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
@@ -4750,7 +4748,7 @@ function updateRhythmLoop(rSId) {
 
         if (diff < -length - 200) el.remove();
     });
-    
+
     const frameDuration = 60;
 
     for (let i = splashes.length - 1; i >= 0; i--) {
