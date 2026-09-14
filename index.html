@@ -4308,6 +4308,8 @@ function setupReceptors() {
     const opp = document.getElementById("opponent-lanes");
     const pla = document.getElementById("player-lanes");
 
+    if (!opp || !pla) return;
+
     opp.innerHTML = "";
     pla.innerHTML = "";
 
@@ -4319,7 +4321,6 @@ function setupReceptors() {
         const oImg = document.createElement("img");
         oImg.src = `assets/final/notes/notestyles/receptor_${i}.png`;
         o.appendChild(oImg);
-        
         opp.appendChild(o);
 
         const p = document.createElement("div");
@@ -4329,7 +4330,6 @@ function setupReceptors() {
         const pImg = document.createElement("img");
         pImg.src = `assets/final/notes/notestyles/receptor_${i}.png`;
         p.appendChild(pImg);
-        
         pla.appendChild(p);
     }
 }
