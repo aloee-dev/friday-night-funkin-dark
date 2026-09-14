@@ -4625,7 +4625,7 @@ function updateRhythmLoop(rSId) {
 
     const arrowKeys = ["ARROWLEFT", "ARROWDOWN", "ARROWUP", "ARROWRIGHT"];
     const letterKeys = ["D", "F", "J", "K"];
-    
+
     const playerLanes = document.getElementById("player-lanes");
     if (playerLanes) {
         for (let lane = 0; lane < 4; lane++) {
@@ -4647,7 +4647,7 @@ function updateRhythmLoop(rSId) {
                     innerImg.style.left = holdFlicker === 0 ? "-150px" : "-300px";
                 }
             } 
-            else if (isKeyHeld || timeSinceHit < 150) {
+            else if (timeSinceHit < 150) {
                 innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
                 
                 if (timeSinceHit < 75) {
@@ -4655,6 +4655,10 @@ function updateRhythmLoop(rSId) {
                 } else {
                     innerImg.style.left = "-150px";
                 }
+            } 
+            else if (isKeyHeld) {
+                innerImg.src = `assets/final/notes/notestyles/arrowhold_${lane}.png`;
+                innerImg.style.left = "0px";
             } 
             else {
                 innerImg.src = `assets/final/notes/notestyles/receptor_${lane}.png`;
