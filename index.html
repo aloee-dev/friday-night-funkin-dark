@@ -4802,7 +4802,7 @@ function createNoteElement(n, isPlayer) {
         body.dataset.lane = lane;
         body.style.left = (lane * 155) + "px";
         body.style.transform = `translateY(${offset}px)`;
-        body.style.backgroundImage = `url('assets/final/notes/sustain-body${lane}.png')`;
+        body.style.backgroundImage = `url('assets/final/notes/sustain-body_${lane}.png')`;
         laneContainer.appendChild(body);
 
         const end = document.createElement("div");
