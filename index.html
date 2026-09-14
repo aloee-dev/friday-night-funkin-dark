@@ -3623,8 +3623,8 @@ let timing = {
     shit: 166
 };
 
-const _playerLaneHitTimes = {0: 0, 1: 0, 2: 0, 3: 0};
-const _opponentLaneHitTimes = {0: 0, 1: 0, 2: 0, 3: 0};
+let _playerLaneHitTimes = {0: -1, 1: -1, 2: -1, 3: -1};
+let _opponentLaneHitTimes = {0: -1, 1: -1, 2: -1, 3: -1};
     
 function calculateAccuracy(sicks, goods, bads, shits, misses) {
   const totalNotes = sicks + goods + bads + shits + misses;
@@ -4639,7 +4639,9 @@ function updateRhythmLoop(rSId) {
             if (!innerImg) continue;
 
             const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
-            const timeSinceHit = currentTime - _playerLaneHitTimes[lane];
+            
+            const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
+            const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : Infinity;
 
             if (activePlayerSustains.has(lane)) {
                 if (timeSinceHit < 75) {
@@ -4649,7 +4651,7 @@ function updateRhythmLoop(rSId) {
                     innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
                 }
             } 
-            else if (timeSinceHit < 150) {
+            else if (hasHitHappened && timeSinceHit < 150) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
                 } else {
@@ -4673,17 +4675,18 @@ function updateRhythmLoop(rSId) {
             const innerImg = receptor.querySelector("img");
             if (!innerImg) continue;
 
-            const timeSinceHit = currentTime - _opponentLaneHitTimes[lane];
+            const hasHitHappened = _opponentLaneHitTimes[lane] !== -1;
+            const timeSinceHit = hasHitHappened ? (currentTime - _opponentLaneHitTimes[lane]) : Infinity;
 
             if (activeOpponentSustains.has(lane)) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
                 } else {
-                    const holdFlicker = Math.floor((currentTime - (_opponentLaneHitTimes[lane] + 75)) / 250) % 2;
+                    const holdFlicker = Math.floor((currentTime - (_opponentLaneHitTimes[lane] + 75)) / 50) % 2;
                     innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
                 }
             } 
-            else if (timeSinceHit < 150) {
+            else if (hasHitHappened && timeSinceHit < 150) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
                 } else {
