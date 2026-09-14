@@ -3719,9 +3719,7 @@ window.addEventListener("keydown", (e) => {
     _playerAnimationTimer = 250;
     
     const currentTime = _inst.currentTime * 1000;
-
-    _playerLaneHitTimes[targetLane] = currentTime; 
-
+    
     const notes = document.querySelectorAll("#player-lanes .note");
     let closestNote = null;
     let minDistance = Infinity;
@@ -3743,6 +3741,7 @@ window.addEventListener("keydown", (e) => {
     if (closestNote && minDistance <= timing.bad) {
 
         const hitTime = closestNote.dataset.time;
+        _playerLaneHitTimes[targetLane] = currentTime;
        
         closestNote.dataset.hit = "true";
         closestNote.remove();
