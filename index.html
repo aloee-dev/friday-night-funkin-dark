@@ -4571,7 +4571,7 @@ function updateRhythmLoop(rSId) {
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
-        const endHeight = 150;
+        const endHeight = 145;
         const height = Math.max(0, (length * speed) - endHeight);
 
         el.style.top = headY + "px";
@@ -4579,7 +4579,7 @@ function updateRhythmLoop(rSId) {
 
         const tailProgressTime = headTime + length - currentTime;
 
-        const isPlayerHolding = isPlayerLane && 
+               const isPlayerHolding = isPlayerLane && 
             (diff <= 0) && 
             (tailProgressTime > 0) && 
             (
@@ -4608,7 +4608,7 @@ function updateRhythmLoop(rSId) {
                 activeOpponentSustains.add(lane);
             }
         } 
-        else if (isPlayerLane && diff <= 0 && tailProgressTime > 0) {
+        else if (isPlayerLane && diff < -150 && tailProgressTime > 0) {
             misses++;
             combo = 0;
             playMiss();
