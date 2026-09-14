@@ -867,8 +867,9 @@ a,
     position: absolute;
     top: 0;
     left: 0;
-    width: 450px;
+    width: 750px;
     height: 150px;
+    max-width: none;
 }
 
 
@@ -4319,7 +4320,8 @@ function setupReceptors() {
         o.style.animationDelay = `${i * 0.2}s`;
         
         const oImg = document.createElement("img");
-        oImg.src = `assets/final/notes/notestyles/receptor_${i}.png`;
+        oImg.src = `assets/final/notes/notestyles/receptor-map_${i}.png`;
+        oImg.style.left = "0px";
         o.appendChild(oImg);
         opp.appendChild(o);
 
@@ -4328,11 +4330,13 @@ function setupReceptors() {
         p.style.animationDelay = `${(i + 4) * 0.2}s`;
         
         const pImg = document.createElement("img");
-        pImg.src = `assets/final/notes/notestyles/receptor_${i}.png`;
+        pImg.src = `assets/final/notes/notestyles/receptor-map_${i}.png`;
+        pImg.style.left = "0px";
         p.appendChild(pImg);
         pla.appendChild(p);
     }
 }
+
     
 async function runCountdown() {
     const display = document.getElementById("countdown-display");
@@ -4638,30 +4642,24 @@ function updateRhythmLoop(rSId) {
             const timeSinceHit = currentTime - _playerLaneHitTimes[lane];
 
             if (activePlayerSustains.has(lane)) {
-                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
-                
                 if (timeSinceHit < 75) {
-                    innerImg.style.left = "0px";
+                    innerImg.style.left = "-300px";
                 } else {
-                    const holdFlicker = Math.floor((currentTime - (_playerLaneHitTimes[lane] + 75)) / 250) % 2;
-                    innerImg.style.left = holdFlicker === 0 ? "-150px" : "-300px";
+                    const holdFlicker = Math.floor((currentTime - (_playerLaneHitTimes[lane] + 75)) / 50) % 2;
+                    innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
                 }
             } 
             else if (timeSinceHit < 150) {
-                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
-                
                 if (timeSinceHit < 75) {
-                    innerImg.style.left = "0px";
+                    innerImg.style.left = "-300px";
                 } else {
-                    innerImg.style.left = "-150px";
+                    innerImg.style.left = "-450px";
                 }
             } 
             else if (isKeyHeld) {
-                innerImg.src = `assets/final/notes/notestyles/arrowhold_${lane}.png`;
-                innerImg.style.left = "0px";
+                innerImg.style.left = "-150px";
             } 
             else {
-                innerImg.src = `assets/final/notes/notestyles/receptor_${lane}.png`;
                 innerImg.style.left = "0px";
             }
         }
@@ -4678,26 +4676,21 @@ function updateRhythmLoop(rSId) {
             const timeSinceHit = currentTime - _opponentLaneHitTimes[lane];
 
             if (activeOpponentSustains.has(lane)) {
-                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
-                
                 if (timeSinceHit < 75) {
-                    innerImg.style.left = "0px";
+                    innerImg.style.left = "-300px";
                 } else {
                     const holdFlicker = Math.floor((currentTime - (_opponentLaneHitTimes[lane] + 75)) / 250) % 2;
-                    innerImg.style.left = holdFlicker === 0 ? "-150px" : "-300px";
+                    innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
                 }
             } 
             else if (timeSinceHit < 150) {
-                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
-                
                 if (timeSinceHit < 75) {
-                    innerImg.style.left = "0px";
+                    innerImg.style.left = "-300px";
                 } else {
-                    innerImg.style.left = "-150px";
+                    innerImg.style.left = "-450px";
                 }
             } 
             else {
-                innerImg.src = `assets/final/notes/notestyles/receptor_${lane}.png`;
                 innerImg.style.left = "0px";
             }
         }
