@@ -4316,11 +4316,21 @@ function setupReceptors() {
         const o = document.createElement("div");
         o.className = `receptor r-${i}`;
         o.style.animationDelay = `${i * 0.2}s`;
+        
+        const oImg = document.createElement("img");
+        oImg.src = `assets/final/notes/notestyles/receptor_${i}.png`;
+        o.appendChild(oImg);
+        
         opp.appendChild(o);
 
         const p = document.createElement("div");
         p.className = `receptor r-${i}`;
         p.style.animationDelay = `${(i + 4) * 0.2}s`;
+        
+        const pImg = document.createElement("img");
+        pImg.src = `assets/final/notes/notestyles/receptor_${i}.png`;
+        p.appendChild(pImg);
+        
         pla.appendChild(p);
     }
 }
