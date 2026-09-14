@@ -4076,6 +4076,11 @@ async function loadSongData(songId) {
 async function startSong(songId) {
     sId++;
     const mySId = sId;
+
+    for (let i = 0; i < 4; i++) {
+        _playerLaneHitTimes[i] = -1;
+        _opponentLaneHitTimes[i] = -1;
+    }
     
     const data = await loadSongData(songId);
     if (!data) return;
@@ -4940,6 +4945,11 @@ function doPauseAction() {
     sId++;
     const mySId = sId;
     _rhythmStarted = false;
+
+        for (let i = 0; i < 4; i++) {
+        _playerLaneHitTimes[i] = -1;
+        _opponentLaneHitTimes[i] = -1;
+    }
 
     if (typeof _playerKey !== 'undefined') _playerKey = null;
     if (typeof _lastPressedPlayerKey !== 'undefined') _lastPressedPlayerKey = null;
