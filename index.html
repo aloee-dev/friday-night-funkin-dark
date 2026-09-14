@@ -4541,10 +4541,14 @@ function updateRhythmLoop(rSId) {
                 }
                 const oppLanes = document.getElementById("opponent-lanes");
                 const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
+                
                 if (oppReceptor) {
                     oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
+                    
                     setTimeout(() => {
-                        oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
+                        if (!oppReceptor.dataset.holdingSustain) {
+                            oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
+                        }
                     }, 150); 
                 }
                 el.remove(); 
@@ -4553,6 +4557,8 @@ function updateRhythmLoop(rSId) {
     });
 
     const bodies = document.querySelectorAll(".sustain-body");
+    const activeOpponentSustains = new Set();
+
     bodies.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
@@ -4561,7 +4567,7 @@ function updateRhythmLoop(rSId) {
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
-        const endHeight = 150;
+        const endHeight = 190;
         const height = Math.max(0, (length * speed) - endHeight);
 
         el.style.top = headY + "px";
@@ -4572,7 +4578,7 @@ function updateRhythmLoop(rSId) {
             _heldKeys.has(getLane(lane).letter)
         );
         
-        const isOpponentSection = !isPlayerLane && (diff * speed <= 0);
+        const isOpponentSection = !isPlayerLane && (diff <= 0) && (diff > -length);
 
         if (isPlayerHolding || isOpponentSection) {
             let visualTop = headY + 75;
@@ -4585,6 +4591,16 @@ function updateRhythmLoop(rSId) {
                 }
             } else {
                 el.style.clipPath = "none";
+            }
+
+            if (isOpponentSection) {
+                activeOpponentSustains.add(lane);
+                const oppLanes = document.getElementById("opponent-lanes");
+                const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
+                if (oppReceptor) {
+                    oppReceptor.dataset.holdingSustain = "true";
+                    oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
+                }
             }
         } 
         else if (isPlayerLane && (diff * speed) + 75 < -350) {
@@ -4610,6 +4626,17 @@ function updateRhythmLoop(rSId) {
             el.remove();
         }
     });
+
+    const oppLanes = document.getElementById("opponent-lanes");
+    if (oppLanes) {
+        for (let lane = 0; lane < 4; lane++) {
+            const oppReceptor = oppLanes.children[lane];
+            if (oppReceptor && oppReceptor.dataset.holdingSustain && !activeOpponentSustains.has(lane)) {
+                oppReceptor.removeAttribute('data-holdingSustain');
+                oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
+            }
+        }
+    }
 
     const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
