@@ -4577,15 +4577,17 @@ function updateRhythmLoop(rSId) {
         el.style.top = headY + "px";
         el.style.height = height + "px";
 
+        const tailProgressTime = headTime + length - currentTime;
+
         const isPlayerHolding = isPlayerLane && 
             (diff <= 0) && 
-            (diff > -length) && 
+            (tailProgressTime > 0) && 
             (
                 _heldKeys.has(getLane(lane).arrow) || 
                 _heldKeys.has(getLane(lane).letter)
             );
         
-        const isOpponentSection = !isPlayerLane && (diff <= 0) && (diff > -length);
+        const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
 
         if (isPlayerHolding || isOpponentSection) {
             let visualTop = headY + 75;
@@ -4606,7 +4608,7 @@ function updateRhythmLoop(rSId) {
                 activeOpponentSustains.add(lane);
             }
         } 
-        else if (isPlayerLane && (diff * speed) + 75 < -350) {
+        else if (isPlayerLane && diff <= 0 && tailProgressTime > 0) {
             misses++;
             combo = 0;
             playMiss();
@@ -4620,12 +4622,12 @@ function updateRhythmLoop(rSId) {
             document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
                 trail.remove();
             });
-        } 
+        }
         else {
             el.style.clipPath = "none";
         }
 
-        if (el.parentNode && diff < -length - 350) {
+        if (el.parentNode && tailProgressTime <= -200) {
             el.remove();
         }
     });
@@ -4702,7 +4704,7 @@ function updateRhythmLoop(rSId) {
         }
     }
     
-        const ends = document.querySelectorAll(".sustain-end");
+    const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
@@ -4717,7 +4719,8 @@ function updateRhythmLoop(rSId) {
         const currentTop = headY + height - endHeight;
         el.style.top = currentTop + "px";
 
-        const holdEnd = (currentTop <= 50) && (currentTop > -endHeight);
+        const tailProgressTime = headTime + length - currentTime;
+        const holdEnd = (currentTop <= 50) && (tailProgressTime > 0);
 
         const isPlayerHolding = isPlayerLane && (
             _heldKeys.has(getLane(lane).arrow) || 
@@ -4746,7 +4749,9 @@ function updateRhythmLoop(rSId) {
             el.style.clipPath = "none";
         }
 
-        if (diff < -length - 200) el.remove();
+        if (tailProgressTime <= -200) {
+            el.remove();
+        }
     });
 
     const frameDuration = 60;
