@@ -857,11 +857,20 @@ a,
 .receptor {
     width: 150px;
     height: 150px;
-    background-size: contain;
-    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
     opacity: 0;
     animation: receptorFade 0.6s forwards;
 }
+
+.receptor img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 450px;
+    height: 150px;
+}
+
 
 @keyframes receptorFade {
     from { opacity: 0; }
@@ -3612,6 +3621,9 @@ let timing = {
     bad: 135,
     shit: 166
 };
+
+const _playerLaneHitTimes = {0: 0, 1: 0, 2: 0, 3: 0};
+const _opponentLaneHitTimes = {0: 0, 1: 0, 2: 0, 3: 0};
     
 function calculateAccuracy(sicks, goods, bads, shits, misses) {
   const totalNotes = sicks + goods + bads + shits + misses;
@@ -3705,14 +3717,10 @@ window.addEventListener("keydown", (e) => {
     _lastPressedPlayerKey = cleanKey;
     _playerAnimationTimer = 250;
     
-    const pla = document.getElementById("player-lanes");
-    const receptor = pla ? pla.children[targetLane] : null;
-    
-    if (receptor) {
-        receptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowhold_${targetLane}.png')`;
-    }
-
     const currentTime = _inst.currentTime * 1000;
+
+    _playerLaneHitTimes[targetLane] = currentTime; 
+
     const notes = document.querySelectorAll("#player-lanes .note");
     let closestNote = null;
     let minDistance = Infinity;
@@ -3732,10 +3740,6 @@ window.addEventListener("keydown", (e) => {
     });
 
     if (closestNote && minDistance <= timing.bad) {
-        
-        if (receptor) {
-            receptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${targetLane}.png')`;
-        }
 
         const hitTime = closestNote.dataset.time;
        
@@ -3790,6 +3794,7 @@ window.addEventListener("keydown", (e) => {
     }
 });
 
+
 window.addEventListener("keyup", (e) => {
     if (isPaused) return;
     const keyToLane = {
@@ -3801,16 +3806,6 @@ window.addEventListener("keyup", (e) => {
 
     const cleanKey = e.key.toUpperCase();
     _heldKeys.delete(cleanKey);
-
-    const targetLane = keyToLane[cleanKey];
-    if (targetLane !== undefined) {
-        const pla = document.getElementById("player-lanes");
-        const receptor = pla.children[targetLane];
-        if (receptor) {
-            receptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${targetLane}.png')`;
-            //receptor.style.backgroundImage = `url('assets/final/arrow_${targetLane}.png')`;
-        }
-    }
 
     _playerKey = null;
 });
@@ -4543,26 +4538,18 @@ function updateRhythmLoop(rSId) {
                     _opponentAnimState = directionMap[lane];
                     _opponentAnimTimer = 250;
                 }
-                const oppLanes = document.getElementById("opponent-lanes");
-                const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
                 
-                if (oppReceptor) {
-                    oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
-                    
-                    setTimeout(() => {
-                        if (!oppReceptor.dataset.holdingSustain) {
-                            oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
-                        }
-                    }, 150); 
-                }
+                _opponentLaneHitTimes[lane] = currentTime;
+                
                 el.remove(); 
             }
         }
     });
 
-    const bodies = document.querySelectorAll(".sustain-body");
+    const activePlayerSustains = new Set();
     const activeOpponentSustains = new Set();
-
+    
+    const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
@@ -4597,14 +4584,10 @@ function updateRhythmLoop(rSId) {
                 el.style.clipPath = "none";
             }
 
-            if (isOpponentSection) {
+            if (isPlayerLane) {
+                activePlayerSustains.add(lane);
+            } else {
                 activeOpponentSustains.add(lane);
-                const oppLanes = document.getElementById("opponent-lanes");
-                const oppReceptor = oppLanes ? oppLanes.children[lane] : null;
-                if (oppReceptor) {
-                    oppReceptor.dataset.holdingSustain = "true";
-                    oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/arrowholdglow_${lane}.png')`;
-                }
             }
         } 
         else if (isPlayerLane && (diff * speed) + 75 < -350) {
@@ -4631,17 +4614,82 @@ function updateRhythmLoop(rSId) {
         }
     });
 
-    const oppLanes = document.getElementById("opponent-lanes");
-    if (oppLanes) {
+    const arrowKeys = ["ARROWLEFT", "ARROWDOWN", "ARROWUP", "ARROWRIGHT"];
+    const letterKeys = ["D", "F", "J", "K"];
+    
+    const playerLanes = document.getElementById("player-lanes");
+    if (playerLanes) {
         for (let lane = 0; lane < 4; lane++) {
-            const oppReceptor = oppLanes.children[lane];
-            if (oppReceptor && oppReceptor.dataset.holdingSustain && !activeOpponentSustains.has(lane)) {
-                oppReceptor.removeAttribute('data-holdingSustain');
-                oppReceptor.style.backgroundImage = `url('assets/final/notes/notestyles/receptor_${lane}.png')`;
+            const receptor = playerLanes.children[lane];
+            if (!receptor) continue;
+            const innerImg = receptor.querySelector("img");
+            if (!innerImg) continue;
+
+            const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
+            const timeSinceHit = currentTime - _playerLaneHitTimes[lane];
+
+            if (activePlayerSustains.has(lane)) {
+                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
+                
+                if (timeSinceHit < 75) {
+                    innerImg.style.left = "0px";
+                } else {
+                    const holdFlicker = Math.floor((currentTime - (_playerLaneHitTimes[lane] + 75)) / 250) % 2;
+                    innerImg.style.left = holdFlicker === 0 ? "-150px" : "-300px";
+                }
+            } 
+            else if (isKeyHeld || timeSinceHit < 150) {
+                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
+                
+                if (timeSinceHit < 75) {
+                    innerImg.style.left = "0px";
+                } else {
+                    innerImg.style.left = "-150px";
+                }
+            } 
+            else {
+                innerImg.src = `assets/final/notes/notestyles/receptor_${lane}.png`;
+                innerImg.style.left = "0px";
             }
         }
     }
 
+    const oppLanes = document.getElementById("opponent-lanes");
+    if (oppLanes) {
+        for (let lane = 0; lane < 4; lane++) {
+            const receptor = oppLanes.children[lane];
+            if (!receptor) continue;
+            const innerImg = receptor.querySelector("img");
+            if (!innerImg) continue;
+
+            const timeSinceHit = currentTime - _opponentLaneHitTimes[lane];
+
+            if (activeOpponentSustains.has(lane)) {
+                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
+                
+                if (timeSinceHit < 75) {
+                    innerImg.style.left = "0px";
+                } else {
+                    const holdFlicker = Math.floor((currentTime - (_opponentLaneHitTimes[lane] + 75)) / 250) % 2;
+                    innerImg.style.left = holdFlicker === 0 ? "-150px" : "-300px";
+                }
+            } 
+            else if (timeSinceHit < 150) {
+                innerImg.src = `assets/final/notes/notestyles/arrowholdglow_${lane}.png`;
+                
+                if (timeSinceHit < 75) {
+                    innerImg.style.left = "0px";
+                } else {
+                    innerImg.style.left = "-150px";
+                }
+            } 
+            else {
+                innerImg.src = `assets/final/notes/notestyles/receptor_${lane}.png`;
+                innerImg.style.left = "0px";
+            }
+        }
+    }
+    
     const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
