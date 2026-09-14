@@ -4577,10 +4577,13 @@ function updateRhythmLoop(rSId) {
         el.style.top = headY + "px";
         el.style.height = height + "px";
 
-        const isPlayerHolding = isPlayerLane && (
-            _heldKeys.has(getLane(lane).arrow) || 
-            _heldKeys.has(getLane(lane).letter)
-        );
+        const isPlayerHolding = isPlayerLane && 
+            (diff <= 0) && 
+            (diff > -length) && 
+            (
+                _heldKeys.has(getLane(lane).arrow) || 
+                _heldKeys.has(getLane(lane).letter)
+            );
         
         const isOpponentSection = !isPlayerLane && (diff <= 0) && (diff > -length);
 
