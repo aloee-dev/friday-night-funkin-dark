@@ -2429,7 +2429,7 @@ let _dialogQueue = [];
 let _typingTimeout = null;
 let _isTyping = false;
 let _fullTextToDisplay = "";
-let _currentSpeaker = null;
+let _currentSpeakerDialogue = null;
 let _currentEffect = null;
 let _currentOnFinish = null;
 
@@ -2437,7 +2437,7 @@ let _currentOnFinish = null;
   clearTimeout(_typingTimeout); 
   _isTyping = true;
   _fullTextToDisplay = text;
-  _currentSpeaker = speaker;
+  _currentSpeakerDialogue = speaker;
   _currentEffect = effect;
   _currentOnFinish = onFinish;
 
