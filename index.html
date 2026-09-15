@@ -987,19 +987,11 @@ a,
     background-size: auto;
 }
     
-#opponentCanvas {
+#opponentCanvas, #playerCanvas {
     position: absolute;
-    top: 800px; 
-    left: 200px;
     z-index: 5;
 }
 
-#playerCanvas {
-    position: absolute;
-    top: 800px; 
-    right: 200px;
-    z-index: 5;
-}
 
     #healthbar {
     display: none;
@@ -1573,8 +1565,8 @@ a,
 
     <div id="camera-container">
         <div id="rhythm-stage"></div> 
-        <canvas id="opponentCanvas" width="800" height="800"></canvas>
-        <canvas id="playerCanvas" width="500" height="500"></canvas>
+        <canvas id="opponentCanvas" width="1000" height="1000"></canvas>
+        <canvas id="playerCanvas" width="1000" height="1000"></canvas>
     </div>
     
     <div id="rhythm-ui" style="display:none;">
