@@ -987,7 +987,7 @@ a,
     background-size: auto;
 }
     
-#opponentCanvas, #playerCanvas {
+#opponentCanvas, #playerCanvas, #speakerCanvas {
     position: absolute;
     z-index: 5;
 }
@@ -1567,6 +1567,7 @@ a,
         <div id="rhythm-stage"></div> 
         <canvas id="opponentCanvas" width="1000" height="1000"></canvas>
         <canvas id="playerCanvas" width="1000" height="1000"></canvas>
+        <canvas id="speakerCanvas" width="1000" height="1000"></canvas>
     </div>
     
     <div id="rhythm-ui" style="display:none;">
@@ -3585,8 +3586,10 @@ let _voiceOpponent = null;
 let _rhythmStarted = false;
 let _playerChar = null;
 let _opponentChar = null;
+let _speaker = null;
 let _currentPlayerChar = "bf";
 let _currentOpponentChar = "gf";
+let _currentSpeaker = "radio";
 let _playerSprite = null;
 let _opponentSprite = null;
 let combo = 0;
@@ -3802,6 +3805,9 @@ window.addEventListener("keyup", (e) => {
 let _playerCanvas = document.getElementById("playerCanvas");
 let _playerCtx = _playerCanvas.getContext("2d");
 
+let _speakerCanvas = document.getElementById("speakerCanvas");
+let _speakerCtx = _speakerCanvas.getContext("2d");
+
 let _opponentCanvas = document.getElementById("opponentCanvas");
 let _opponentCtx = _opponentCanvas.getContext("2d");
 
@@ -3843,16 +3849,27 @@ const CHARACTER_DATA = {
     }
 };
 
+    const ENVIRO_DATA = {
+    radio: {
+        src: "assets/final/radio.png",
+        xml: "assets/final/radio.xml",
+        imageObj: new Image(),
+        animations: {}
+    }
+};
+
         async function startA(songJson) {
     _activeSong = songJson;
     _playerChar = CHARACTER_DATA[songJson.player];
     _opponentChar = CHARACTER_DATA[songJson.opponent];
+    _speaker = ENVIRO_DATA[songJson.speaker];
 
     if (!_playerChar || !_opponentChar) {
         return;
     }
 
     await Promise.all([
+        startB(_speaker),
         startB(_playerChar),
         startB(_opponentChar)
     ]);
@@ -4006,6 +4023,7 @@ async function loadSongData(songId) {
 
     json.opponentPosition = json.opponentPosition || { x: 200, y: 1000 };
     json.playerPosition = json.playerPosition || { x: 1600, y: 1000 };
+    json.speakerPosition = json.speakerPosition || {x : 1000, y: 1000 };
 
     if (json.stageLayers) {
         for (let layer of json.stageLayers) {
@@ -4094,8 +4112,10 @@ async function startSong(songId) {
         stageLayers: data.stageLayers ? [...data.stageLayers] : [],
         player: data.player,
         opponent: data.opponent,
+        speaker: data.speaker,
         opponentPosition: { ...data.opponentPosition },
         playerPosition: { ...data.playerPosition },
+        speakerPosition: { ...data.speakerPosition },
         opponentNotes: JSON.parse(JSON.stringify(_rawChart.opponentNotes)),
         playerNotes: JSON.parse(JSON.stringify(_rawChart.playerNotes)),
         events: data.events ? JSON.parse(JSON.stringify(_rawChart.events)) : []
@@ -4116,8 +4136,10 @@ async function startSong(songId) {
 
     _currentPlayerChar = data.player;
     _currentOpponentChar = data.opponent;
+    _currentSpeaker = data.speaker;
     _playerChar = CHARACTER_DATA[data.player];
     _opponentChar = CHARACTER_DATA[data.opponent];
+    _speaker = ENVIRO_DATA[data.speaker];
 
     fade.style.transition = "opacity 0.5s ease";
     fade.style.opacity = 1;
@@ -4233,6 +4255,7 @@ async function startSong(songId) {
 
     const opponentCanvas = document.getElementById("opponentCanvas");
     const playerCanvas = document.getElementById("playerCanvas");
+    const speakerCanvas = document.getElementById("speakerCanvas");
 
     if (opponentCanvas) {
         opponentCanvas.style.left = `${_activeSong.opponentPosition.x}px`;
@@ -4244,6 +4267,12 @@ async function startSong(songId) {
         playerCanvas.style.left = `${_activeSong.playerPosition.x}px`;
         playerCanvas.style.right = "auto";
         playerCanvas.style.top = `${_activeSong.playerPosition.y}px`;
+    }
+
+    if (speakerCanvas) {
+        speakerCanvas.style.left = `${_activeSong.speakerPosition.x}px`;
+        speakerCanvas.style.right = "auto";
+        speakerCanvas.style.top = `${_activeSong.speakerPosition.y}px`;
     }
 
 if (_playerChar && _playerChar.healthbar) {
@@ -5023,6 +5052,7 @@ function doPauseAction() {
 
     const opponentCanvas = document.getElementById("opponentCanvas");
     const playerCanvas = document.getElementById("playerCanvas");
+    const speakerCanvas = document.getElementById("speakerCanvas");
 
     if (opponentCanvas) {
         opponentCanvas.style.left = `${_activeSong.opponentPosition.x}px`;
@@ -5033,6 +5063,12 @@ function doPauseAction() {
         playerCanvas.style.left = `${_activeSong.playerPosition.x}px`;
         playerCanvas.style.right = "auto";
         playerCanvas.style.top = `${_activeSong.playerPosition.y}px`;
+    }
+
+    if (speakerCanvas) {
+        speakerCanvas.style.left = `${_activeSong.speakerPosition.x}px`;
+        speakerCanvas.style.right = "auto";
+        speakerCanvas.style.top = `${_activeSong.speakerPosition.y}px`;
     }
 
     if (_playerChar && _playerChar.healthbar) {
@@ -5154,7 +5190,9 @@ function showResults() {
 }
 
 let _opponentAnimState = "idle";
+let _speakerAnimState = "idle";
 let _opponentAnimTimer = 0;
+let _speakerAnimTimer = 0;
 let _playerAnimationTimer = 0;
 let _lastPressedPlayerKey = null;
 let _playerMissAnimState = null; 
@@ -5173,6 +5211,9 @@ let _playerMissAnimState = null;
 
     _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
     _opponentCtx.clearRect(0, 0, _opponentCtx.canvas.width, _opponentCtx.canvas.height);
+    if (_speakerCtx) {
+        _speakerCtx.clearRect(0, 0, _speakerCtx.canvas.width, _speakerCtx.canvas.height);
+    }
 
     if (_specialDurationTicks > 0) {
         _specialDurationTicks--;
@@ -5224,6 +5265,25 @@ let _playerMissAnimState = null;
     }
 
     drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, tick, holdTicks);
+
+    let speakerState = "idle";
+
+    if (_specialTarget === "speaker" && _specialAnimation) {
+        speakerState = _specialAnimation;
+    } 
+    else if (_speakerAnimTimer > 0) {
+        speakerState = _speakerAnimState;
+        
+        _speakerAnimTimer -= 16.6;
+        
+        if (_speakerAnimTimer <= 0) {
+            _speakerAnimState = "idle";
+        }
+    }
+
+    if (_speaker && _speakerCtx) {
+        drawCharacterFrame(_speakerCtx, _speaker, speakerState, tick, holdTicks);
+    }
 
     if (_activeSong.stageLayers) {
         _activeSong.stageLayers.forEach(layer => {
