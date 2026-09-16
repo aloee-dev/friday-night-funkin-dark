@@ -4307,7 +4307,6 @@ if (_opponentChar && _opponentChar.healthbar) {
     document.getElementById("rhythm-ui").style.display = "block";
 
     fade.style.opacity = 0;
-    await new Promise(r => setTimeout(r, 500));
 
     if (_playerChar && _playerCtx) {
         _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
@@ -4332,6 +4331,8 @@ if (_opponentChar && _opponentChar.healthbar) {
     camera.manualCamera = false; 
 
     updateCamera(); 
+    
+    await new Promise(r => setTimeout(r, 500));
 
     await runCountdown();
 
