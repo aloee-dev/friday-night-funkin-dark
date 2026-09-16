@@ -4497,6 +4497,24 @@ function endIntervals() {
     hpDraining = false;
 }
 
+function pauseIntervals() {
+    if (hpDrainInterval) {
+        clearInterval(hpDrainInterval);
+        hpDrainInterval = null;
+    }
+}
+
+function resumeIntervals() {
+    if (hpDraining && !hpDrainInterval) {
+        hpDrainInterval = setInterval(() => {
+            if (hp > 1) {
+                hp = Math.max(1, hp - 0.3);
+                updateHPBar(_inst ? _inst.currentTime * 1000 : 0);
+            }
+        }, 100);
+    }
+}
+
 function updateRhythmLoop(rSId) {
     
     if (rSId !== sId) {
@@ -5008,6 +5026,8 @@ function pause() {
     if (_voicePlayer) _voicePlayer.pause();
     if (_voiceOpponent) _voiceOpponent.pause();
 
+    pauseIntervals();
+
     breakfastPico.play();
     breakfastPico.currentTime = 0;
     breakfastPico.loop = true;
@@ -5061,6 +5081,7 @@ function doPauseAction() {
     setTimeout(() => {
         document.getElementById('pause-overlay').style.display = 'none';
         isPaused = false;
+        resumeIntervals();
         
         _lastPlayerSyncTime = 0;
         _lastOpponentSyncTime = 0;
@@ -5108,6 +5129,7 @@ function doPauseAction() {
     startA(_activeSong);
     _rhythmStarted = true;
     resetScore();
+    endIntervals();
 
     const stage = document.getElementById("rhythm-stage");
     const cam = document.getElementById("camera-container");
