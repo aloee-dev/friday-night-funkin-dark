@@ -4306,6 +4306,19 @@ if (_opponentChar && _opponentChar.healthbar) {
     fade.style.opacity = 0;
     await new Promise(r => setTimeout(r, 500));
 
+    if (_playerChar && _playerCtx) {
+        _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
+        drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5);
+    }
+    if (_opponentChar && _opponentCtx) {
+        _opponentCtx.clearRect(0, 0, _opponentCtx.canvas.width, _opponentCtx.canvas.height);
+        drawCharacterFrame(_opponentCtx, _opponentChar, "idle", 0, 5);
+    }
+    if (_speaker && _speakerCtx) {
+        _speakerCtx.clearRect(0, 0, _speakerCtx.canvas.width, _speakerCtx.canvas.height);
+        drawCharacterFrame(_speakerCtx, _speaker, "idle", 0, 5);
+    }
+
     await runCountdown();
 
     _inst.currentTime = 0;
