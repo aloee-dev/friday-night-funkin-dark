@@ -61,7 +61,6 @@
     [5000, 1, 1000, 0]
   ],
   "events": [
-  { "time": 8000, "event": "hpDrain" },
-]
-
+  { "time": 8000, "event": "hpDrain" }
+  ]
 }
