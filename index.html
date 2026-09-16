@@ -4468,6 +4468,13 @@ function updateCamera() {
 let _lastPlayerSyncTime = 0;
 let _lastOpponentSyncTime = 0;
 
+function endIntervals {
+    if (hpDrainInterval) {
+    clearInterval(hpDrainInterval);
+    hpDrainInterval = null;
+}
+    hpDraining = false;
+}
 
 function updateRhythmLoop(rSId) {
     
@@ -4477,7 +4484,7 @@ function updateRhythmLoop(rSId) {
     if (!_rhythmStarted || !_inst) return;
 
     if (_inst && _inst.ended && _rhythmStarted) {
-        
+        endIntervals();
         camera.manualCamera = true;
         camera.targetX = camera.x; 
         camera.targetY = 0;        
