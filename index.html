@@ -3686,6 +3686,7 @@ function getLane(lane) {
 }
 
 const _heldKeys = new Set();
+let validHit = false;
 
 window.addEventListener("keydown", (e) => {
     if (!_rhythmStarted || !_inst) return;
@@ -3731,8 +3732,9 @@ window.addEventListener("keydown", (e) => {
     });
 
     if (closestNote && minDistance <= timing.bad) {
-
-        _playerMissAnimState = null; 
+        
+        validHit = true;
+        _playerMissAnimState = null;
         _lastPressedPlayerKey = cleanKey;
         _playerAnimationTimer = 250;
 
@@ -3806,6 +3808,10 @@ window.addEventListener("keyup", (e) => {
 
     const cleanKey = e.key.toUpperCase();
     _heldKeys.delete(cleanKey);
+
+    if (cleanKey === _lastPressedPlayerKey) {
+        validHit = false;
+    }
 
     _playerKey = null;
 });
@@ -5295,13 +5301,12 @@ let _playerMissAnimState = null;
             _playerMissAnimState = null;
         }
     }
-     else if (!isPaused && (_playerAnimationTimer > 0)) {
-        const activeKey = _playerKey || _lastPressedPlayerKey; 
+     else if (!isPaused && (_playerAnimationTimer > 0 || validHit)) {
+        const activeKey = _lastPressedPlayerKey; 
         if (activeKey) {
             playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
         }
-
-        if (_playerAnimationTimer > 0) {
+        if (!validHit && _playerAnimationTimer > 0) {
             _playerAnimationTimer -= 16.6; 
         }
     }
