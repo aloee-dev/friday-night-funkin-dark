@@ -3703,6 +3703,11 @@ window.addEventListener("keydown", (e) => {
 
     if (_heldKeys.has(cleanKey)) return;
     _heldKeys.add(cleanKey);
+
+    
+    _playerKey = cleanKey;
+    _lastPressedPlayerKey = cleanKey;
+    _playerAnimationTimer = 250;
     
     const currentTime = _inst.currentTime * 1000;
     
@@ -3725,10 +3730,6 @@ window.addEventListener("keydown", (e) => {
     });
 
     if (closestNote && minDistance <= timing.bad) {
-
-        _playerKey = cleanKey;
-        _lastPressedPlayerKey = cleanKey;
-        _playerAnimationTimer = 250;
 
         const hitTime = closestNote.dataset.time;
         _playerLaneHitTimes[targetLane] = currentTime;
