@@ -1694,11 +1694,11 @@ a,
 
     // to do list!!
     // see how next works
-    // fix long notes: deleting them when holding + graphics
     // fix results screen should be easy considering i just made it
     // game over
     // plotting out how the point and click section will go out
     // "delay" feature idk what that means but i wrote that in my google doc a month ago
+    // two player/opponent
 
 const version = "0.0.0";
    
@@ -3606,6 +3606,9 @@ let splashes = [];
 let canPause = false;
 let isPaused = false;
 
+let hpDraining = false;
+let hpDrainInterval = null;
+
 let timing = { 
     sick: 45,
     good: 90,
@@ -3738,7 +3741,9 @@ window.addEventListener("keydown", (e) => {
         closestNote.remove();
 
         if (minDistance <= timing.sick) {
-            hp = Math.min(maxHP, hp + 5); 
+            if (!hpDraining) {
+                hp = Math.min(maxHP, hp + 5); 
+            }
             spawnRating("sick");
             sicks++;
             score += 350;
@@ -3753,7 +3758,9 @@ window.addEventListener("keydown", (e) => {
                 el: null
             });
         } else if (minDistance <= timing.good) {
-            hp = Math.min(maxHP, hp + 2); 
+            if (!hpDraining) {
+                hp = Math.min(maxHP, hp + 2); 
+            }
             spawnRating("good");
             goods++;
             score += 200;
@@ -4523,30 +4530,44 @@ function updateRhythmLoop(rSId) {
     }
 
     if (_activeSong.events) {
-        const holdTicks = 5;
-        for (let i = 0; i < _activeSong.events.length; i++) {
-            const ev = _activeSong.events[i];
+    const holdTicks = 5;
+    for (let i = 0; i < _activeSong.events.length; i++) {
+        const ev = _activeSong.events[i];
 
-            if (currentTime >= ev.time && !ev.hasFired) {
-                if (ev.animation) {
-                    triggerSpecial(ev.target, ev.animation, holdTicks);
-                } 
-                else if (ev.cameraCommand) {
-                    if (ev.cameraCommand === "MANUAL_PAN") {
-                        camera.manualCamera = true;
-                        camera.targetX = ev.x || 0;
-                        camera.targetY = ev.y || 1000;
-                        camera.targetZoom = ev.zoom || 1.0;
-                    } 
-                    else if (ev.cameraCommand === "RELEASE_CAMERA") {
-                        camera.manualCamera = false;
+        if (currentTime >= ev.time && !ev.hasFired) {
+            if (ev.animation) {
+                triggerSpecial(ev.target, ev.animation, holdTicks);
+            } 
+            
+            if (ev.event === "hpDrain") {
+                hpDraining = true;
+                
+                if (hpDrainInterval) clearInterval(hpDrainInterval);
+
+                hpDrainInterval = setInterval(() => {
+                    if (hp > 1) {
+                        hp = Math.max(1, hp - 0.3);
+                        updateHPBar(currentTime);
                     }
-                }
-
-                ev.hasFired = true; 
+                }, 100);
             }
+            
+            if (ev.cameraCommand) {
+                if (ev.cameraCommand === "MANUAL_PAN") {
+                    camera.manualCamera = true;
+                    camera.targetX = ev.x || 0;
+                    camera.targetY = ev.y || 1000;
+                    camera.targetZoom = ev.zoom || 1.0;
+                } 
+                else if (ev.cameraCommand === "RELEASE_CAMERA") {
+                    camera.manualCamera = false;
+                }
+            }
+
+            ev.hasFired = true; 
         }
     }
+}
 
     animateCharacters(currentTime);
     updateHPBar(currentTime);
@@ -4644,7 +4665,7 @@ function updateRhythmLoop(rSId) {
             
             if (clipAmount > 0) {
                 el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
-                if (isPlayerHolding) {
+                if (isPlayerHolding && !hpDraining) {
                     hp = Math.min(200, hp + 0.3); 
                 }
             } else {
