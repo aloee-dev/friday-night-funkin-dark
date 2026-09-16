@@ -3709,8 +3709,6 @@ window.addEventListener("keydown", (e) => {
 
     
     _playerKey = cleanKey;
-    _lastPressedPlayerKey = cleanKey;
-    _playerAnimationTimer = 250;
     
     const currentTime = _inst.currentTime * 1000;
     
@@ -3735,6 +3733,8 @@ window.addEventListener("keydown", (e) => {
     if (closestNote && minDistance <= timing.bad) {
 
         _playerMissAnimState = null; 
+        _lastPressedPlayerKey = cleanKey;
+        _playerAnimationTimer = 250;
 
         const hitTime = closestNote.dataset.time;
         _playerLaneHitTimes[targetLane] = currentTime;
@@ -5295,7 +5295,7 @@ let _playerMissAnimState = null;
             _playerMissAnimState = null;
         }
     }
-     else if (!isPaused && (_playerAnimationTimer > 0 || _playerKey)) {
+     else if (!isPaused && (_playerAnimationTimer > 0)) {
         const activeKey = _playerKey || _lastPressedPlayerKey; 
         if (activeKey) {
             playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
