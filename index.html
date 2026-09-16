@@ -4199,14 +4199,6 @@ async function startSong(songId) {
                 });
         }
     });
-    
-    const waitForImage = src =>
-        new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve();
-            img.onerror = () => reject(new Error("Image failed to load: " + src));
-            img.src = src;
-        });
 
     _inst = new Audio(data.instSrc);
     _voicePlayer = new Audio(data.voicePlayer);
