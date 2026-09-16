@@ -9,6 +9,8 @@
   ],
   "player": "bf",
   "opponent": "gf",
+  "speaker": "radio",
+  "speakerPosition": { "x": 600, "y": 800 },
   "instSrc": "Inst.mp3",
   "voicePlayer": "Voices-bf.mp3",
   "voiceOpponent": "Voices-tankman.mp3",
