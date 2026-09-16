@@ -3734,6 +3734,8 @@ window.addEventListener("keydown", (e) => {
 
     if (closestNote && minDistance <= timing.bad) {
 
+        _playerMissAnimState = null; 
+
         const hitTime = closestNote.dataset.time;
         _playerLaneHitTimes[targetLane] = currentTime;
        
