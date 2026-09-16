@@ -4181,6 +4181,24 @@ async function startSong(songId) {
             audio.addEventListener("error", onError, { once: true });
             audio.load();
         });
+
+    const waitForImage = src =>
+    new Promise((resolve, reject) => {
+        const img = new Image();
+        
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Image failed to load: " + src));
+        img.src = src;
+        
+        if (typeof img.decode === "function") {
+            img.decode()
+                .then(() => {
+                    resolve();
+                })
+                .catch(() => {
+                });
+        }
+    });
     
     const waitForImage = src =>
         new Promise((resolve, reject) => {
@@ -4252,25 +4270,28 @@ async function startSong(songId) {
     fade.style.opacity = 0;
 
     if (_activeSong.stageLayers) {
-        _activeSong.stageLayers.forEach(layer => {
-            const layerEl = document.createElement("div");
-            layerEl.id = `layer-${layer.id}`;
-            layerEl.className = "stage-layer";
+    _activeSong.stageLayers.forEach(layer => {
+        const layerEl = document.createElement("div");
+        layerEl.id = `layer-${layer.id}`;
+        layerEl.className = "stage-layer";
+        layerEl.style.zIndex = layer.zIndex;
+
+        if (layer.type === "static") {
+            const imgEl = document.createElement("img");
+            imgEl.src = layer.src;
+            imgEl.style.width = "100%";
+            imgEl.style.height = "100%";
             
-            layerEl.style.zIndex = layer.zIndex;
+            layerEl.appendChild(imgEl);
+        } else if (layer.type === "animated") {
+            layerEl.style.backgroundImage = `url("${layer.src}")`;
+            layerEl.classList.add("animated-sprite");
+            layer.activeAnimation = layer.activeAnimation || "idle";
+        }
 
-            if (layer.type === "static") {
-                layerEl.style.backgroundImage = `url("${layer.src}")`;
-            } else if (layer.type === "animated") {
-                layerEl.style.backgroundImage = `url("${layer.src}")`;
-                layerEl.classList.add("animated-sprite");
-                
-                layer.activeAnimation = layer.activeAnimation || "idle";
-            }
-
-            stage.appendChild(layerEl);
-        });
-    }
+        stage.appendChild(layerEl);
+    });
+}
 
     const opponentCanvas = document.getElementById("opponentCanvas");
     const playerCanvas = document.getElementById("playerCanvas");
