@@ -5285,18 +5285,6 @@ let _playerMissAnimState = null;
     if (_specialTarget === "player" && _specialAnimation) {
         playerState = _specialAnimation;
     } 
-    else if (!isPaused && (_playerAnimationTimer > 0 || _playerKey)) {
-        const activeKey = _playerKey || _lastPressedPlayerKey; 
-        if (activeKey) {
-            playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
-        }
-
-        if (_playerAnimationTimer > 0) {
-            _playerAnimationTimer -= 16.6; 
-        }
-        
-        _playerMissAnimState = null; 
-    }
     else if (_playerAnimationTimer > 0 && _playerMissAnimState) {
         playerState = _playerMissAnimState;
         
