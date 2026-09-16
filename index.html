@@ -4491,15 +4491,21 @@ function updateRhythmLoop(rSId) {
     }
     if (!_rhythmStarted || !_inst) return;
 
-    if (_inst && _inst.ended && _rhythmStarted) {
+        if (_inst && _inst.ended && _rhythmStarted) {
         endIntervals();
+        
+        _rhythmStarted = false; 
+
         camera.manualCamera = true;
         camera.targetX = camera.x; 
         camera.targetY = 0;        
         camera.targetZoom = 1.1;   
         camera.lerpSpeed = 0.08;
         camera.zoomSpeed = 0.05;
-        updateCamera();
+
+        const endLoop = setInterval(() => {
+            updateCamera();
+        }, 16.6);
 
         const fade = document.getElementById("fade-overlay");
         if (fade) {
@@ -4510,11 +4516,11 @@ function updateRhythmLoop(rSId) {
         }
         
         setTimeout(() => {
+            clearInterval(endLoop);
             showResults();
             fade.style.opacity = 0;
             const stage = document.getElementById("rhythm-stage");
             stage.style.display = "none";
-
         }, 800);
         return;
     }
