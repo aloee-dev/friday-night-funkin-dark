@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="radio.png">
+    <SubTexture name="idle 001" x="0" y="0" width="450" height="400"/>
+</TextureAtlas>
