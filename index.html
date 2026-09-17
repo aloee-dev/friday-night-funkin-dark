@@ -4859,7 +4859,7 @@ noteElements.forEach(el => {
             el.remove();
         }
         } catch (bError) {
-        alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + bError.stack);
+        alert("NOTE LOOP CRASH: " + bError.message + "\nStack: " + bError.stack);
         console.error(bError);
     }
     });
