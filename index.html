@@ -4595,6 +4595,9 @@ function resumeIntervals() {
     }
 }
 
+let activePlayerSustains = new Set();
+let activeOpponentSustains = new Set();
+
 function updateRhythmLoop(rSId) {
     
     if (rSId !== sId) {
@@ -4719,9 +4722,6 @@ function updateRhythmLoop(rSId) {
         alert("CRASH DETECTED: " + crashError.message + "\nStack: " + crashError.stack);
         console.error(crashError);
     }
-
-    alert("Step 2");
-    
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
     const targetTime = parseFloat(el.dataset.time);
@@ -4773,10 +4773,9 @@ noteElements.forEach(el => {
         }
     }
 });
-
-    alert("Step 3");
-    const activePlayerSustains = new Set();
-    const activeOpponentSustains = new Set();
+    
+    activePlayerSustains.clear();
+    activeOpponentSustains.clear();
     
         const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
@@ -4931,7 +4930,6 @@ noteElements.forEach(el => {
             }
         }
     }
-    alert("Step 5");
             const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
@@ -4987,8 +4985,6 @@ noteElements.forEach(el => {
             el.remove();
         }
     });
-
-    alert("Step 6");
 
     const frameDuration = 60;
 
