@@ -4639,7 +4639,6 @@ function updateRhythmLoop(rSId) {
         return;
     }
     
-    try {
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
 
@@ -4718,15 +4717,10 @@ function updateRhythmLoop(rSId) {
         createNoteElement(_activeSong.playerNotes.shift(), true);
     }
 
-    } catch (crashError) {
-        alert("CRASH DETECTED: " + crashError.message + "\nStack: " + crashError.stack);
-        console.error(crashError);
-    }
+
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
-    try {
-        const currentTime = _inst.currentTime * 1000;
-        const speed = _activeSong.scrollSpeed; 
+
         const targetTime = parseFloat(el.dataset.time);
         const diff = targetTime - currentTime;
        
@@ -4775,10 +4769,6 @@ noteElements.forEach(el => {
                 el.remove(); 
             }
         }
-    } catch (noteError) {
-        alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + noteError.stack);
-        console.error(noteError);
-    }
 });
 
     activePlayerSustains.clear();
@@ -4787,7 +4777,6 @@ noteElements.forEach(el => {
     const bodies = document.querySelectorAll(".sustain-body");
     
     bodies.forEach(el => {
-        try {
             const headTime = parseFloat(el.dataset.time);
             const length = parseFloat(el.dataset.length);
             const diff = headTime - currentTime;
@@ -4861,10 +4850,6 @@ noteElements.forEach(el => {
             if (el.parentNode && (tailProgressTime <= -200 || headY + height < -50)) {
                 el.remove();
             }
-        } catch (bError) {
-            alert("SUSTAIN BODY CRASH: " + bError.message + "\nStack: " + bError.stack);
-            console.error(bError);
-        }
     });
 
     alert("Step 4");
