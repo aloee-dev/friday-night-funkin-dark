@@ -4636,6 +4636,8 @@ function updateRhythmLoop(rSId) {
         return;
     }
     
+    alert("Step 1");
+
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
 
@@ -4714,6 +4716,8 @@ function updateRhythmLoop(rSId) {
         createNoteElement(_activeSong.playerNotes.shift(), true);
     }
 
+    alert("Step 2");
+    
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
     const targetTime = parseFloat(el.dataset.time);
@@ -4766,6 +4770,7 @@ noteElements.forEach(el => {
     }
 });
 
+    alert("Step 3");
     const activePlayerSustains = new Set();
     const activeOpponentSustains = new Set();
     
@@ -4846,6 +4851,8 @@ noteElements.forEach(el => {
         }
     });
 
+    alert("Step 4");
+    
     const arrowKeys = ["ARROWLEFT", "ARROWDOWN", "ARROWUP", "ARROWRIGHT"];
     const letterKeys = ["D", "F", "J", "K"];
 
@@ -4920,7 +4927,7 @@ noteElements.forEach(el => {
             }
         }
     }
-    
+    alert("Step 5");
             const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
@@ -4976,6 +4983,8 @@ noteElements.forEach(el => {
             el.remove();
         }
     });
+
+    alert("Step 6");
 
     const frameDuration = 60;
 
