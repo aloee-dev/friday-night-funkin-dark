@@ -4858,9 +4858,9 @@ noteElements.forEach(el => {
         if (el.parentNode && (tailProgressTime <= -200 || headY + height < -50)) {
             el.remove();
         }
-        } catch (noteError) {
-        alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + noteError.stack);
-        console.error(noteError);
+        } catch (bError) {
+        alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + bError.stack);
+        console.error(bError);
     }
     });
 
