@@ -4725,6 +4725,7 @@ function updateRhythmLoop(rSId) {
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
     try {
+        const currentTime = _inst.currentTime * 1000;
         const targetTime = parseFloat(el.dataset.time);
         const diff = targetTime - currentTime;
        
