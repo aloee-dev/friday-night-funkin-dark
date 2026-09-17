@@ -987,7 +987,7 @@ a,
     background-size: auto;
 }
     
-#opponentCanvas, #playerCanvas, #speakerCanvas {
+#opponentCanvas, #playerCanvas, #speakerCanvas, #player2Canvas, #opponent2Canvas {
     position: absolute;
     z-index: 5;
 }
@@ -1568,6 +1568,8 @@ a,
         <canvas id="opponentCanvas" width="1000" height="1000"></canvas>
         <canvas id="playerCanvas" width="1000" height="1000"></canvas>
         <canvas id="speakerCanvas" width="1000" height="1000"></canvas>
+        <canvas id="player2Canvas" width="1000" height="1000"></canvas>
+        <canvas id="opponent2Canvas" width="1000" height="1000"></canvas>
     </div>
     
     <div id="rhythm-ui" style="display:none;">
@@ -3585,10 +3587,14 @@ let _voicePlayer = null;
 let _voiceOpponent = null;
 let _rhythmStarted = false;
 let _playerChar = null;
+let _player2Char = null;
 let _opponentChar = null;
+let _opponent2Char = null;
 let _speaker = null;
 let _currentPlayerChar = "bf";
+let _currentPlayer2Char = "bf";
 let _currentOpponentChar = "gf";
+let _currentOpponent2Char = "gf";
 let _currentSpeaker = "radio";
 let _playerSprite = null;
 let _opponentSprite = null;
@@ -3827,6 +3833,12 @@ let _speakerCtx = _speakerCanvas.getContext("2d");
 let _opponentCanvas = document.getElementById("opponentCanvas");
 let _opponentCtx = _opponentCanvas.getContext("2d");
 
+let _player2Canvas = document.getElementById("player2Canvas");
+let _player2Ctx = _opponentCanvas.getContext("2d");
+
+let _opponent2Canvas = document.getElementById("opponent2Canvas");
+let _opponent2Ctx = _opponentCanvas.getContext("2d");
+
 let _playerKey = null; 
 window.addEventListener("keydown", e => _playerKey = e.key.toUpperCase());
 window.addEventListener("keyup", () => _playerKey = null);
@@ -3877,7 +3889,9 @@ const CHARACTER_DATA = {
         async function startA(songJson) {
     _activeSong = songJson;
     _playerChar = CHARACTER_DATA[songJson.player];
+    _player2Char = CHARACTER_DATA[songJson.player2];
     _opponentChar = CHARACTER_DATA[songJson.opponent];
+    _opponent2Char = CHARACTER_DATA[songJson.opponent2];
     _speaker = ENVIRO_DATA[songJson.speaker];
 
     if (!_playerChar || !_opponentChar) {
@@ -3887,7 +3901,9 @@ const CHARACTER_DATA = {
     await Promise.all([
         startB(_speaker),
         startB(_playerChar),
-        startB(_opponentChar)
+        startB(_player2Char),
+        startB(_opponentChar),
+        startB(_opponent2Char)
     ]);
 }
 
@@ -4127,10 +4143,14 @@ async function startSong(songId) {
         scrollSpeed: data.scrollSpeed,
         stageLayers: data.stageLayers ? [...data.stageLayers] : [],
         player: data.player,
+        player2: data.player2,
         opponent: data.opponent,
+        opponent2: data.opponent2,
         speaker: data.speaker,
         opponentPosition: { ...data.opponentPosition },
+        opponent2Position: { ...data.opponent2Position },
         playerPosition: { ...data.playerPosition },
+        player2Position: { ...data.player2Position },
         speakerPosition: { ...data.speakerPosition },
         cameraStartX: { ...data.cameraStartX },
         cameraStartY: { ...data.cameraStartY },
@@ -4288,6 +4308,8 @@ async function startSong(songId) {
     const opponentCanvas = document.getElementById("opponentCanvas");
     const playerCanvas = document.getElementById("playerCanvas");
     const speakerCanvas = document.getElementById("speakerCanvas");
+    const opponentCanvas = document.getElementById("opponent2Canvas");
+    const playerCanvas = document.getElementById("player2Canvas");
 
     if (opponentCanvas) {
         opponentCanvas.style.left = `${_activeSong.opponentPosition.x}px`;
@@ -4295,10 +4317,22 @@ async function startSong(songId) {
         opponentCanvas.style.top = `${_activeSong.opponentPosition.y}px`;
     }
 
+    if (opponent2Canvas) {
+        opponent2Canvas.style.left = `${_activeSong.opponent2Position.x}px`;
+        opponent2Canvas.style.right = "auto";
+        opponent2Canvas.style.top = `${_activeSong.opponent2Position.y}px`;
+    }
+
     if (playerCanvas) {
         playerCanvas.style.left = `${_activeSong.playerPosition.x}px`;
         playerCanvas.style.right = "auto";
         playerCanvas.style.top = `${_activeSong.playerPosition.y}px`;
+    }
+
+    if (player2Canvas) {
+        player2Canvas.style.left = `${_activeSong.player2Position.x}px`;
+        player2Canvas.style.right = "auto";
+        player2Canvas.style.top = `${_activeSong.player2Position.y}px`;
     }
 
     if (speakerCanvas) {
@@ -4937,6 +4971,8 @@ function createNoteElement(n, isPlayer) {
     note.dataset.time = time;
     note.dataset.length = length;
     note.dataset.lane = lane;
+    note.dataset.type = type;
+    note.dataset.target = target;
     note.style.left = (lane * 155) + "px";
     //note.style.backgroundImage = `url('assets/final/notes/arrow_${lane}.png')`;
     note.style.backgroundImage = `url('assets/final/notes/notestyles/arrow_${lane}.png')`;
@@ -4954,6 +4990,8 @@ function createNoteElement(n, isPlayer) {
         body.dataset.time = time;
         body.dataset.length = length;
         body.dataset.lane = lane;
+        body.dataset.type = type;
+        body.dataset.target = target;
         body.style.left = (lane * 155) + "px";
         body.style.transform = `translateY(${offset}px)`;
         body.style.backgroundImage = `url('assets/final/notes/sustain-body_${lane}.png')`;
@@ -4964,6 +5002,8 @@ function createNoteElement(n, isPlayer) {
         end.dataset.time = time;
         end.dataset.length = length;
         end.dataset.lane = lane;
+        end.dataset.type = type;
+        end.dataset.target = target;
         end.style.left = (lane * 155) + "px";
         end.style.backgroundImage = `url('assets/final/notes/sustain-end_${lane}.png')`;
         laneContainer.appendChild(end);
