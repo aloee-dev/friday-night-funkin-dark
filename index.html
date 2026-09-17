@@ -4086,7 +4086,9 @@ async function loadSongData(songId) {
     const json = await res.json();
 
     json.opponentPosition = json.opponentPosition || { x: 200, y: 1000 };
+    json.opponent2Position = json.opponent2Position || { x: 200, y: 1000 };
     json.playerPosition = json.playerPosition || { x: 1600, y: 1000 };
+    json.player2Position = json.player2Position || { x: 1600, y: 1000 };
     json.speakerPosition = json.speakerPosition || {x: 1000, y: 1000 };
 
     if (json.stageLayers) {
