@@ -3889,22 +3889,37 @@ const CHARACTER_DATA = {
         async function startA(songJson) {
     _activeSong = songJson;
     _playerChar = CHARACTER_DATA[songJson.player];
-    _player2Char = CHARACTER_DATA[songJson.player2];
     _opponentChar = CHARACTER_DATA[songJson.opponent];
-    _opponent2Char = CHARACTER_DATA[songJson.opponent2];
-    _speaker = ENVIRO_DATA[songJson.speaker];
 
     if (!_playerChar || !_opponentChar) {
+        console.error("Missing core character data for player or opponent.");
         return;
     }
 
-    await Promise.all([
-        startB(_speaker),
-        startB(_playerChar),
-        startB(_player2Char),
-        startB(_opponentChar),
-        startB(_opponent2Char)
-    ]);
+    _player2Char = songJson.player2 ? CHARACTER_DATA[songJson.player2] : null;
+    _opponent2Char = songJson.opponent2 ? CHARACTER_DATA[songJson.opponent2] : null;
+    _speaker = songJson.speaker ? ENVIRO_DATA[songJson.speaker] : null;
+
+    const loadingXQueue = [];
+
+    loadingXQueue.push(startB(_playerChar));
+    loadingXQueue.push(startB(_opponentChar));
+
+    if (_speaker) {
+        loadingXQueue.push(startB(_speaker));
+    }
+    if (_player2Char) {
+        loadingXQueue.push(startB(_player2Char));
+    }
+    if (_opponent2Char) {
+        loadingXQueue.push(startB(_opponent2Char));
+    }
+
+    try {
+        await Promise.all(loadingXQueue);
+    } catch (error) {
+        console.error("Error loading song assets:", error);
+    }
 }
 
     async function startB(charData) {
@@ -3967,16 +3982,27 @@ let _specialTarget = null;
 let _specialDurationTicks = 0;    
 
 function triggerSpecial(target, animName, holdTicks) {
-    const charData = (target === "player") ? _playerChar : _opponentChar;
-    if (!charData || !charData.animations || !charData.animations[animName]) return;
+    const targetMap = {
+        "player": _playerChar,
+        "player2": _player2Char,
+        "opponent": _opponentChar,
+        "opponent2": _opponent2Char,
+        "speaker": _speaker
+    };
 
+    const charData = targetMap[target];
+    
+    if (!charData || !charData.animations || !charData.animations[animName]) {
+        console.warn(`Special animation "${animName}" or target "${target}" not found.`);
+        return;
+    }
     const totalFrames = charData.animations[animName].length;
 
     _specialTarget = target;
     _specialAnimation = animName;
-    
     _specialDurationTicks = totalFrames * holdTicks; 
 }
+
 
 
     function spawnRating(ratingType) {
