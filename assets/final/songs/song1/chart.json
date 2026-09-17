@@ -8,9 +8,7 @@
     { "id": "background", "type": "static", "src": "bg.png", "zIndex": 2 }
   ],
   "player": "bf",
-  "player2": "bf",
   "opponent": "gf",
-  "opponent2": "gf",
   "speaker": "radio",
   "speakerPosition": { "x": 600, "y": 800 },
   "instSrc": "Inst.mp3",
