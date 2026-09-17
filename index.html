@@ -4709,15 +4709,21 @@ function updateRhythmLoop(rSId) {
                 el.remove();
             }
         } 
-        else { 
+                else { 
             const centerTimeOffset = 75 / speed;
             if (diff <= -centerTimeOffset) {
                 const lane = parseInt(el.dataset.lane);
                 const directionMap = ["left", "down", "up", "right"];
-                
+                const noteTarget = parseInt(el.dataset.target) || 0;
+
                 if (directionMap[lane]) {
-                    _opponentAnimState = directionMap[lane];
-                    _opponentAnimTimer = 250;
+                    if (noteTarget === 1) {
+                        _opponent2AnimState = directionMap[lane];
+                        _opponent2AnimTimer = 250;
+                    } else {
+                        _opponentAnimState = directionMap[lane];
+                        _opponentAnimTimer = 250;
+                    }
                 }
                 
                 _opponentLaneHitTimes[lane] = currentTime;
@@ -4725,7 +4731,6 @@ function updateRhythmLoop(rSId) {
                 el.remove(); 
             }
         }
-    });
 
     const activePlayerSustains = new Set();
     const activeOpponentSustains = new Set();
@@ -5355,6 +5360,7 @@ let _opponentAnimTimer = 0;
 let _speakerAnimTimer = 0;
 let _opponent2AnimTimer = 0;
 let _playerAnimationTimer = 0;
+let _player2AnimationTimer = 0;
 let _lastPressedPlayerKey = null;
 let _playerMissAnimState = null; 
 
