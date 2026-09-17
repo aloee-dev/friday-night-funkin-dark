@@ -4240,21 +4240,21 @@ async function startSong(songId) {
             audio.load();
         });
 
-    const waitForImage = src =>
+        const waitForImage = src =>
     new Promise((resolve, reject) => {
         const img = new Image();
-        
-        img.onload = () => resolve();
         img.onerror = () => reject(new Error("Image failed to load: " + src));
-        img.src = src;
         
         if (typeof img.decode === "function") {
+            img.src = src;
             img.decode()
-                .then(() => {
-                    resolve();
-                })
+                .then(() => resolve())
                 .catch(() => {
+                    img.onload = () => resolve();
                 });
+        } else {
+            img.onload = () => resolve();
+            img.src = src;
         }
     });
 
@@ -4414,7 +4414,7 @@ if (_opponentChar && _opponentChar.healthbar) {
         drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5);
     }
     if (_player2Char && _player2Ctx) {
-        _player2Ctx.clearRect(0, 0, _player22Ctx.canvas.width, _player2Ctx.canvas.height);
+        _player2Ctx.clearRect(0, 0, _player2Ctx.canvas.width, _player2Ctx.canvas.height);
         drawCharacterFrame(_player2Ctx, _player2Char, "idle", 0, 5);
     }
     if (_opponentChar && _opponentCtx) {
