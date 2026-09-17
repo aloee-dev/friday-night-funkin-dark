@@ -4766,16 +4766,16 @@ noteElements.forEach(el => {
     }
 });
 
-
     const activePlayerSustains = new Set();
     const activeOpponentSustains = new Set();
     
-    const bodies = document.querySelectorAll(".sustain-body");
+        const bodies = document.querySelectorAll(".sustain-body");
     bodies.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
         const diff = headTime - currentTime;
         const lane = parseInt(el.dataset.lane);
+        const noteTarget = parseInt(el.dataset.target) || 0; 
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
@@ -4787,7 +4787,7 @@ noteElements.forEach(el => {
 
         const tailProgressTime = headTime + length - currentTime;
 
-               const isPlayerHolding = isPlayerLane && 
+        const isPlayerHolding = isPlayerLane && 
             (diff <= 0) && 
             (tailProgressTime > 0) && 
             (
@@ -4797,7 +4797,7 @@ noteElements.forEach(el => {
         
         const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
 
-                if (isPlayerHolding || isOpponentSection) {
+        if (isPlayerHolding || isOpponentSection) {
             let visualTop = headY + 75;
             let clipAmount = 50 - visualTop; 
             
@@ -4809,11 +4809,11 @@ noteElements.forEach(el => {
             } else {
                 el.style.clipPath = "none";
             }
-
+            const trackingKey = `${lane}-${noteTarget}`;
             if (isPlayerLane) {
-                activePlayerSustains.add(lane);
+                activePlayerSustains.add(trackingKey);
             } else {
-                activeOpponentSustains.add(lane);
+                activeOpponentSustains.add(trackingKey);
             }
         } 
         else if (isPlayerLane && diff < -150 && tailProgressTime > 0) {
@@ -4825,6 +4825,8 @@ noteElements.forEach(el => {
             if (directionMap[lane]) {
                 _playerMissAnimState = directionMap[lane];
                 _playerAnimationTimer = 250; 
+                _player2MissAnimState = directionMap[lane];
+                _player2AnimationTimer = 250;
             }
 
             document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
@@ -4860,14 +4862,16 @@ noteElements.forEach(el => {
             const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
             const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : Infinity;
 
-            if (activePlayerSustains.has(lane)) {
+            const anyPSustainActive = activePlayerSustains.has(`${lane}-0`) || activePlayerSustains.has(`${lane}-1`);
+            
+            if (anyPSustainActive) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
                 } else {
                     const holdFlicker = Math.floor((currentTime - (_playerLaneHitTimes[lane] + 75)) / 50) % 2;
                     innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
                 }
-            } 
+            }
             else if (hasHitHappened && timeSinceHit < 150) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
@@ -4894,15 +4898,16 @@ noteElements.forEach(el => {
 
             const hasHitHappened = _opponentLaneHitTimes[lane] !== -1;
             const timeSinceHit = hasHitHappened ? (currentTime - _opponentLaneHitTimes[lane]) : Infinity;
-
-            if (activeOpponentSustains.has(lane)) {
+            const anyOSustainActive = activeOpponentSustains.has(`${lane}-0`) || activeOpponentSustains.has(`${lane}-1`);
+            
+            if (anyOSustainActive) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
                 } else {
                     const holdFlicker = Math.floor((currentTime - (_opponentLaneHitTimes[lane] + 75)) / 50) % 2;
                     innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
                 }
-            } 
+            }
             else if (hasHitHappened && timeSinceHit < 150) {
                 if (timeSinceHit < 75) {
                     innerImg.style.left = "-300px";
