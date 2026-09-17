@@ -3736,13 +3736,22 @@ window.addEventListener("keydown", (e) => {
             closestNote = el;
         }
     });
-
-    if (closestNote && minDistance <= timing.bad) {
+        
+        if (closestNote && minDistance <= timing.bad) {
         
         validHit = true;
         _playerMissAnimState = null;
-        _lastPressedPlayerKey = cleanKey;
-        _playerAnimationTimer = 250;
+        _player2MissAnimState = null;
+
+        const noteTarget = parseInt(closestNote.dataset.target) || 0;
+
+        if (noteTarget === 1) {
+            _lastPressedPlayer2Key = cleanKey;
+            _player2AnimationTimer = 250;
+        } else {
+            _lastPressedPlayerKey = cleanKey;
+            _playerAnimationTimer = 250;
+        }
 
         const hitTime = closestNote.dataset.time;
         _playerLaneHitTimes[targetLane] = currentTime;
@@ -3815,14 +3824,11 @@ window.addEventListener("keyup", (e) => {
     const cleanKey = e.key.toUpperCase();
     _heldKeys.delete(cleanKey);
 
-    if (cleanKey === _lastPressedPlayerKey) {
+    if (cleanKey === _lastPressedPlayerKey || cleanKey === _lastPressedPlayer2Key) {
         validHit = false;
     }
-
     _playerKey = null;
 });
-
-
 
 let _playerCanvas = document.getElementById("playerCanvas");
 let _playerCtx = _playerCanvas.getContext("2d");
