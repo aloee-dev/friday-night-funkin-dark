@@ -4725,143 +4725,144 @@ function updateRhythmLoop(rSId) {
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
     try {
-    const targetTime = parseFloat(el.dataset.time);
-    const diff = targetTime - currentTime;
-   
-    const y = 50 + (diff * speed);
-    el.style.top = y + "px";
-    const isPlayerLane = el.parentElement.id === "player-lanes";
+        const targetTime = parseFloat(el.dataset.time);
+        const diff = targetTime - currentTime;
+       
+        const y = 50 + (diff * speed);
+        el.style.top = y + "px";
+        const isPlayerLane = el.parentElement.id === "player-lanes";
 
-    if (isPlayerLane) {
-        const centerTimeOffset = 75 / speed;
-        if (diff < -350 + centerTimeOffset) {
-            if (!el.dataset.hit) {
-                hp = Math.max(0, hp - 10);
-                misses++;
-                combo = 0;
-                playMiss();
+        if (isPlayerLane) {
+            const centerTimeOffset = 75 / speed;
+            if (diff < -350 + centerTimeOffset) {
+                if (!el.dataset.hit) {
+                    hp = Math.max(0, hp - 10);
+                    misses++;
+                    combo = 0;
+                    playMiss();
 
+                    const lane = parseInt(el.dataset.lane);
+                    const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+                    
+                    if (directionMap[lane]) {
+                        _playerMissAnimState = directionMap[lane];
+                        _playerAnimationTimer = 250; 
+                    }
+                }
+                el.remove();
+            }
+        } 
+        else { 
+            const centerTimeOffset = 75 / speed;
+            if (diff <= -centerTimeOffset) {
                 const lane = parseInt(el.dataset.lane);
-                const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-                
-                if (directionMap[lane]) {
-                    _playerMissAnimState = directionMap[lane];
-                    _playerAnimationTimer = 250; 
-                }
-            }
-            el.remove();
-        }
-    } 
-    else { 
-        const centerTimeOffset = 75 / speed;
-        if (diff <= -centerTimeOffset) {
-            const lane = parseInt(el.dataset.lane);
-            const directionMap = ["left", "down", "up", "right"];
-            const noteTarget = parseInt(el.dataset.target) || 0;
+                const directionMap = ["left", "down", "up", "right"];
+                const noteTarget = parseInt(el.dataset.target) || 0;
 
-            if (directionMap[lane]) {
-                if (noteTarget === 1) {
-                    _opponent2AnimState = directionMap[lane];
-                    _opponent2AnimTimer = 250; 
-                } else {
-                    _opponentAnimState = directionMap[lane];
-                    _opponentAnimTimer = 250;
+                if (directionMap[lane]) {
+                    if (noteTarget === 1) {
+                        _opponent2AnimState = directionMap[lane];
+                        _opponent2AnimTimer = 250; 
+                    } else {
+                        _opponentAnimState = directionMap[lane];
+                        _opponentAnimTimer = 250;
+                    }
                 }
+                _opponentLaneHitTimes[lane] = currentTime;
+                
+                el.remove(); 
             }
-            _opponentLaneHitTimes[lane] = currentTime;
-            
-            el.remove(); 
         }
-    }
-        } catch (noteError) {
+    } catch (noteError) {
         alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + noteError.stack);
         console.error(noteError);
     }
 });
-    
+
     activePlayerSustains.clear();
     activeOpponentSustains.clear();
     
-        const bodies = document.querySelectorAll(".sustain-body");
-        try {
+    const bodies = document.querySelectorAll(".sustain-body");
+    
     bodies.forEach(el => {
-        const headTime = parseFloat(el.dataset.time);
-        const length = parseFloat(el.dataset.length);
-        const diff = headTime - currentTime;
-        const lane = parseInt(el.dataset.lane);
-        const noteTarget = parseInt(el.dataset.target) || 0; 
-        const isPlayerLane = el.parentElement.id === "player-lanes";
+        try {
+            const headTime = parseFloat(el.dataset.time);
+            const length = parseFloat(el.dataset.length);
+            const diff = headTime - currentTime;
+            const lane = parseInt(el.dataset.lane);
+            const noteTarget = parseInt(el.dataset.target) || 0; 
+            const isPlayerLane = el.parentElement.id === "player-lanes";
 
-        const headY = 50 + (diff * speed);
-        const endHeight = 135;
-        const height = Math.max(0, (length * speed) - endHeight);
+            const headY = 50 + (diff * speed);
+            const endHeight = 135;
+            const height = Math.max(0, (length * speed) - endHeight);
 
-        el.style.top = headY + "px";
-        el.style.height = height + "px";
+            el.style.top = headY + "px";
+            el.style.height = height + "px";
 
-        const tailProgressTime = headTime + length - currentTime;
+            const tailProgressTime = headTime + length - currentTime;
 
-        const isPlayerHolding = isPlayerLane && 
-            (diff <= 0) && 
-            (tailProgressTime > 0) && 
-            (
-                _heldKeys.has(getLane(lane).arrow) || 
-                _heldKeys.has(getLane(lane).letter)
-            );
-        
-        const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
-
-        if (isPlayerHolding || isOpponentSection) {
-            let visualTop = headY + 75;
-            let clipAmount = 50 - visualTop; 
+            const isPlayerHolding = isPlayerLane && 
+                (diff <= 0) && 
+                (tailProgressTime > 0) && 
+                (
+                    _heldKeys.has(getLane(lane).arrow) || 
+                    _heldKeys.has(getLane(lane).letter)
+                );
             
-            if (clipAmount > 0) {
-                el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
-                if (isPlayerHolding && !hpDraining) {
-                    hp = Math.min(200, hp + 0.3); 
+            const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
+
+            if (isPlayerHolding || isOpponentSection) {
+                let visualTop = headY + 75;
+                let clipAmount = 50 - visualTop; 
+                
+                if (clipAmount > 0) {
+                    el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
+                    if (isPlayerHolding && !hpDraining) {
+                        hp = Math.min(200, hp + 0.3); 
+                    }
+                } else {
+                    el.style.clipPath = "none";
                 }
-            } else {
-                el.style.clipPath = "none";
-            }
-            const trackingKey = `${lane}-${noteTarget}`;
-            if (isPlayerLane) {
-                activePlayerSustains.add(trackingKey);
-            } else {
-                activeOpponentSustains.add(trackingKey);
-            }
-        } 
-        else if (isPlayerLane && diff < -150 && tailProgressTime > 0) {
-            misses++;
-            combo = 0;
-            playMiss();
+                const trackingKey = `${lane}-${noteTarget}`;
+                if (isPlayerLane) {
+                    activePlayerSustains.add(trackingKey);
+                } else {
+                    activeOpponentSustains.add(trackingKey);
+                }
+            } 
+            else if (isPlayerLane && diff < -150 && tailProgressTime > 0) {
+                misses++;
+                combo = 0;
+                playMiss();
 
-            const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-            if (directionMap[lane]) {
-                _playerMissAnimState = directionMap[lane];
-                _playerAnimationTimer = 250; 
-                _player2MissAnimState = directionMap[lane];
-                _player2AnimationTimer = 250;
+                const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+                if (directionMap[lane]) {
+                    _playerMissAnimState = directionMap[lane];
+                    _playerAnimationTimer = 250; 
+                    _player2MissAnimState = directionMap[lane];
+                    _player2AnimationTimer = 250;
+                }
+
+                document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
+                    trail.remove();
+                });
+            }
+            else {
+                if (headY + height < 50) {
+                    el.style.clipPath = `inset(100% 0px 0px 0px)`;
+                } else {
+                    el.style.clipPath = "none";
+                }
             }
 
-            document.querySelectorAll(`#player-lanes [data-time="${headTime}"][data-lane="${lane}"]`).forEach(trail => {
-                trail.remove();
-            });
-        }
-        else {
-            if (headY + height < 50) {
-                el.style.clipPath = `inset(100% 0px 0px 0px)`;
-            } else {
-                el.style.clipPath = "none";
+            if (el.parentNode && (tailProgressTime <= -200 || headY + height < -50)) {
+                el.remove();
             }
-        }
-
-        if (el.parentNode && (tailProgressTime <= -200 || headY + height < -50)) {
-            el.remove();
-        }
         } catch (bError) {
-        alert("NOTE LOOP CRASH: " + bError.message + "\nStack: " + bError.stack);
-        console.error(bError);
-    }
+            alert("SUSTAIN BODY CRASH: " + bError.message + "\nStack: " + bError.stack);
+            console.error(bError);
+        }
     });
 
     alert("Step 4");
