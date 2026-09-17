@@ -4174,10 +4174,14 @@ async function startSong(songId) {
     const dialogBg = document.getElementById("dialog-background");
 
     _currentPlayerChar = data.player;
+    _currentPlayer2Char = data.player2;
     _currentOpponentChar = data.opponent;
+    _currentOpponentChar = data.opponent2;
     _currentSpeaker = data.speaker;
     _playerChar = CHARACTER_DATA[data.player];
+    _player2Char = CHARACTER_DATA[data.player2];
     _opponentChar = CHARACTER_DATA[data.opponent];
+    _opponent2Char = CHARACTER_DATA[data.opponent2];
     _speaker = ENVIRO_DATA[data.speaker];
 
     fade.style.transition = "opacity 0.5s ease";
@@ -4308,8 +4312,8 @@ async function startSong(songId) {
     const opponentCanvas = document.getElementById("opponentCanvas");
     const playerCanvas = document.getElementById("playerCanvas");
     const speakerCanvas = document.getElementById("speakerCanvas");
-    const opponentCanvas = document.getElementById("opponent2Canvas");
-    const playerCanvas = document.getElementById("player2Canvas");
+    const opponent2Canvas = document.getElementById("opponent2Canvas");
+    const player2Canvas = document.getElementById("player2Canvas");
 
     if (opponentCanvas) {
         opponentCanvas.style.left = `${_activeSong.opponentPosition.x}px`;
@@ -4375,9 +4379,17 @@ if (_opponentChar && _opponentChar.healthbar) {
         _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
         drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5);
     }
+    if (_player2Char && _player2Ctx) {
+        _player2Ctx.clearRect(0, 0, _player22Ctx.canvas.width, _player2Ctx.canvas.height);
+        drawCharacterFrame(_player2Ctx, _player2Char, "idle", 0, 5);
+    }
     if (_opponentChar && _opponentCtx) {
         _opponentCtx.clearRect(0, 0, _opponentCtx.canvas.width, _opponentCtx.canvas.height);
         drawCharacterFrame(_opponentCtx, _opponentChar, "idle", 0, 5);
+    }
+    if (_opponent2Char && _opponent2Ctx) {
+        _opponent2Ctx.clearRect(0, 0, _opponent2Ctx.canvas.width, _opponent2Ctx.canvas.height);
+        drawCharacterFrame(_opponent2Ctx, _opponent2Char, "idle", 0, 5);
     }
     if (_speaker && _speakerCtx) {
         _speakerCtx.clearRect(0, 0, _speakerCtx.canvas.width, _speakerCtx.canvas.height);
