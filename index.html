@@ -4921,12 +4921,13 @@ noteElements.forEach(el => {
         }
     }
     
-    const ends = document.querySelectorAll(".sustain-end");
+        const ends = document.querySelectorAll(".sustain-end");
     ends.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
         const diff = headTime - currentTime;
         const lane = parseInt(el.dataset.lane);
+        const noteTarget = parseInt(el.dataset.target) || 0;
         const isPlayerLane = el.parentElement.id === "player-lanes";
 
         const headY = 50 + (diff * speed);
@@ -4956,10 +4957,11 @@ noteElements.forEach(el => {
             }
 
             if (holdEnd) {
+                const trackingKey = `${lane}-${noteTarget}`;
                 if (isPlayerLane) {
-                    activePlayerSustains.add(lane);
+                    activePlayerSustains.add(trackingKey);
                 } else {
-                    activeOpponentSustains.add(lane);
+                    activeOpponentSustains.add(trackingKey);
                 }
             }
         } else {
@@ -5448,6 +5450,11 @@ let _lastPressedPlayer2Key = null;
         _specialAnimation = null;
     }
 
+    const isP1HoldingSustain = Array.from(activePlayerSustains).some(key => key.endsWith("-0"));
+    const isP2HoldingSustain = Array.from(activePlayerSustains).some(key => key.endsWith("-1"));
+    const isO1HoldingSustain = Array.from(activeOpponentSustains).some(key => key.endsWith("-0"));
+    const isO2HoldingSustain = Array.from(activeOpponentSustains).some(key => key.endsWith("-1"));
+
     let playerState = "idle";
     
     if (_specialTarget === "player" && _specialAnimation) {
@@ -5461,12 +5468,16 @@ let _lastPressedPlayer2Key = null;
             _playerMissAnimState = null;
         }
     }
-    else if (!isPaused && (_playerAnimationTimer > 0 || validHit)) {
+    else if (!isPaused && (_playerAnimationTimer > 0 || validHit || isP1HoldingSustain)) {
+        if (isP1HoldingSustain) {
+            _playerAnimationTimer = 250;
+        }
+
         const activeKey = _lastPressedPlayerKey; 
         if (activeKey) {
             playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
         }
-        if (!validHit && _playerAnimationTimer > 0) {
+        if (!validHit && _playerAnimationTimer > 0 && !isP1HoldingSustain) {
             _playerAnimationTimer -= 16.6; 
         }
     }
@@ -5486,12 +5497,16 @@ let _lastPressedPlayer2Key = null;
             _player2MissAnimState = null;
         }
     }
-    else if (!isPaused && (_player2AnimationTimer > 0 || validHit)) {
+    else if (!isPaused && (_player2AnimationTimer > 0 || validHit || isP2HoldingSustain)) {
+        if (isP2HoldingSustain) {
+            _player2AnimationTimer = 250;
+        }
+
         const activeKey = _lastPressedPlayer2Key; 
         if (activeKey) {
             player2State = INPUT_MAP[activeKey.toUpperCase()] || "idle";
         }
-        if (!validHit && _player2AnimationTimer > 0) {
+        if (!validHit && _player2AnimationTimer > 0 && !isP2HoldingSustain) {
             _player2AnimationTimer -= 16.6; 
         }
     }
@@ -5499,16 +5514,22 @@ let _lastPressedPlayer2Key = null;
     if (_player2Char && _player2Ctx) {
         drawCharacterFrame(_player2Ctx, _player2Char, player2State, tick, holdTicks);
     }
-
+        
     let opponentState = "idle";
 
     if (_specialTarget === "opponent" && _specialAnimation) {
         opponentState = _specialAnimation;
     } 
-    else if (_opponentAnimTimer > 0) {
+    else if (_opponentAnimTimer > 0 || isO1HoldingSustain) {
+        if (isO1HoldingSustain) {
+            _opponentAnimTimer = 250;
+        }
+
         opponentState = _opponentAnimState;
         
-        _opponentAnimTimer -= 16.6;
+        if (!isO1HoldingSustain) {
+            _opponentAnimTimer -= 16.6;
+        }
         
         if (_opponentAnimTimer <= 0) {
             _opponentAnimState = "idle";
@@ -5522,9 +5543,16 @@ let _lastPressedPlayer2Key = null;
     if (_specialTarget === "opponent2" && _specialAnimation) {
         opponent2State = _specialAnimation;
     } 
-    else if (_opponent2AnimTimer > 0) {
+    else if (_opponent2AnimTimer > 0 || isO2HoldingSustain) {
+        if (isO2HoldingSustain) {
+            _opponent2AnimTimer = 250;
+        }
+
         opponent2State = _opponent2AnimState;
-        _opponent2AnimTimer -= 16.6;
+
+        if (!isO2HoldingSustain) {
+            _opponent2AnimTimer -= 16.6;
+        }
         
         if (_opponent2AnimTimer <= 0) {
             _opponent2AnimState = "idle";
@@ -5577,9 +5605,6 @@ let _lastPressedPlayer2Key = null;
         });
     }
 }
-
-
-
     
 function updateHPBar(currentTime) {
     const hpPercent = hp / maxHP;
