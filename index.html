@@ -4724,6 +4724,7 @@ function updateRhythmLoop(rSId) {
     }
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
+    try {
     const targetTime = parseFloat(el.dataset.time);
     const diff = targetTime - currentTime;
    
@@ -4772,12 +4773,17 @@ noteElements.forEach(el => {
             el.remove(); 
         }
     }
+        } catch (noteError) {
+        alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + noteError.stack);
+        console.error(noteError);
+    }
 });
     
     activePlayerSustains.clear();
     activeOpponentSustains.clear();
     
         const bodies = document.querySelectorAll(".sustain-body");
+        try {
     bodies.forEach(el => {
         const headTime = parseFloat(el.dataset.time);
         const length = parseFloat(el.dataset.length);
@@ -4852,6 +4858,10 @@ noteElements.forEach(el => {
         if (el.parentNode && (tailProgressTime <= -200 || headY + height < -50)) {
             el.remove();
         }
+        } catch (noteError) {
+        alert("NOTE LOOP CRASH: " + noteError.message + "\nStack: " + noteError.stack);
+        console.error(noteError);
+    }
     });
 
     alert("Step 4");
