@@ -4636,8 +4636,7 @@ function updateRhythmLoop(rSId) {
         return;
     }
     
-    alert("Step 1");
-
+    try {
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
 
@@ -4714,6 +4713,11 @@ function updateRhythmLoop(rSId) {
     
     while (_activeSong.playerNotes.length > 0 && _activeSong.playerNotes[0][0] < currentTime + 2000) {
         createNoteElement(_activeSong.playerNotes.shift(), true);
+    }
+
+    } catch (crashError) {
+        alert("CRASH DETECTED: " + crashError.message + "\nStack: " + crashError.stack);
+        console.error(crashError);
     }
 
     alert("Step 2");
