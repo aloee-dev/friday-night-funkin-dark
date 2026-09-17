@@ -5350,8 +5350,10 @@ function showResults() {
 
 let _opponentAnimState = "idle";
 let _speakerAnimState = "idle";
+let _opponent2AnimState = "idle";
 let _opponentAnimTimer = 0;
 let _speakerAnimTimer = 0;
+let _opponent2AnimTimer = 0;
 let _playerAnimationTimer = 0;
 let _lastPressedPlayerKey = null;
 let _playerMissAnimState = null; 
@@ -5423,6 +5425,25 @@ let _playerMissAnimState = null;
     }
 
     drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, tick, holdTicks);
+
+    
+    let opponent2State = "idle";
+
+    if (_specialTarget === "opponent2" && _specialAnimation) {
+        opponent2State = _specialAnimation;
+    } 
+    else if (_opponent2AnimTimer > 0) {
+        opponent2State = _opponent2AnimState;
+        _opponent2AnimTimer -= 16.6;
+        
+        if (_opponent2AnimTimer <= 0) {
+            _opponent2AnimState = "idle";
+        }
+    }
+
+    if (_opponent2Char && _opponent2Ctx) {
+        drawCharacterFrame(_opponent2Ctx, _opponent2Char, opponent2State, tick, holdTicks);
+    }
 
     let speakerState = "idle";
 
