@@ -3750,7 +3750,7 @@ window.addEventListener("keydown", (e) => {
 
         const noteType = parseInt(closestNote.dataset.type) || 0;
         if (noteType === 1) {
-            applyPoison();
+            applyPoison(currentTime);
             closestNote.dataset.hit = "true";
             closestNote.remove();
             combo = 0;
