@@ -3614,7 +3614,12 @@ let isPaused = false;
 
 let hpDraining = false;
 let hpDrainInterval = null;
-
+let isPoisoned = false;
+let poisonInterval = null;
+let _poisonAnimTimer = 0;
+let _poisonAnimState = null;
+let poisonTicksRemaining = 0;
+    
 let timing = { 
     sick: 45,
     good: 90,
@@ -3742,6 +3747,17 @@ window.addEventListener("keydown", (e) => {
         validHit = true;
         _playerMissAnimState = null;
         _player2MissAnimState = null;
+
+        const noteType = parseInt(closestNote.dataset.type) || 0;
+        if (noteType === 1) {
+            applyPoison();
+            closestNote.dataset.hit = "true";
+            closestNote.remove();
+            combo = 0;
+            misses++;
+            updateHPBar(currentTime);
+            return;
+        }
 
         const noteTarget = parseInt(closestNote.dataset.target) || 0;
 
@@ -4577,12 +4593,43 @@ function updateCamera() {
 let _lastPlayerSyncTime = 0;
 let _lastOpponentSyncTime = 0;
 
+function applyPoison(currentTime) {
+    _poisonAnimState = "poisoned";
+    _poisonAnimTimer = 500; 
+
+    if (poisonInterval) clearInterval(poisonInterval);
+
+    isPoisoned = true;
+    poisonTicksRemaining = 6;
+    poisonInterval = setInterval(() => {
+        hp = Math.max(1, hp - 8); 
+        updateHPBar(_inst ? _inst.currentTime * 1000 : currentTime);
+
+        poisonTicksRemaining--;
+        
+        if (poisonTicksRemaining <= 0) {
+            clearInterval(poisonInterval);
+            isPoisoned = false;
+            poisonInterval = null;
+        }
+    }, 500);
+}
+
+
+    
 function endIntervals() {
     if (hpDrainInterval) {
-    clearInterval(hpDrainInterval);
-    hpDrainInterval = null;
-}
+        clearInterval(hpDrainInterval);
+        hpDrainInterval = null;
+    }
     hpDraining = false;
+
+    if (poisonInterval) {
+        clearInterval(poisonInterval);
+        poisonInterval = null;
+    }
+    isPoisoned = false;
+    poisonTicksRemaining = 0;
 }
 
 function pauseIntervals() {
@@ -4590,8 +4637,12 @@ function pauseIntervals() {
         clearInterval(hpDrainInterval);
         hpDrainInterval = null;
     }
-}
 
+    if (poisonInterval) {
+        clearInterval(poisonInterval); 
+        poisonInterval = null;
+    }
+}
 function resumeIntervals() {
     if (hpDraining && !hpDrainInterval) {
         hpDrainInterval = setInterval(() => {
@@ -4600,6 +4651,21 @@ function resumeIntervals() {
                 updateHPBar(_inst ? _inst.currentTime * 1000 : 0);
             }
         }, 100);
+    }
+
+    if (isPoisoned && !poisonInterval && poisonTicksRemaining > 0) {
+        poisonInterval = setInterval(() => {
+            hp = Math.max(1, hp - 8); 
+            updateHPBar(_inst ? _inst.currentTime * 1000 : 0);
+
+            poisonTicksRemaining--;
+            
+            if (poisonTicksRemaining <= 0) {
+                clearInterval(poisonInterval);
+                isPoisoned = false;
+                poisonInterval = null;
+            }
+        }, 500);
     }
 }
 
@@ -4740,6 +4806,8 @@ noteElements.forEach(el => {
             const centerTimeOffset = 75 / speed;
             if (diff < -350 + centerTimeOffset) {
                 if (!el.dataset.hit) {
+                    const noteType = parseInt(el.dataset.type) || 0;
+                    if (noteType !== 1) {
                     hp = Math.max(0, hp - 10);
                     misses++;
                     combo = 0;
@@ -4753,6 +4821,7 @@ noteElements.forEach(el => {
                         _playerAnimationTimer = 250; 
                     }
                 }
+            }
                 el.remove();
             }
         } 
@@ -5050,8 +5119,9 @@ function createNoteElement(n, isPlayer) {
     note.style.backgroundImage = `url('assets/final/notes/notestyles/arrow_${lane}.png')`;
     laneContainer.appendChild(note);
 
-    //if (type === 1) {
-    //}
+    if (type === 1) {
+        note.style.backgroundImage = `url('assets/final/notes/notestyles/arrow-poison.png')`;
+    }
 
     if (length > 0) {
 
@@ -5399,10 +5469,6 @@ function showResults() {
   setTimeout(() => { rankContainer.classList.add('slide-right'); }, 1700);
 }
 
-
-
-
-
     function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
     const animFrames = charData.animations[actionState];
     const activeFrames = (animFrames && animFrames.length > 0) ? animFrames : charData.animations["idle"];
@@ -5473,6 +5539,14 @@ let _lastPressedPlayer2Key = null;
     if (_specialTarget === "player" && _specialAnimation) {
         playerState = _specialAnimation;
     } 
+    else if (_poisonAnimTimer > 0 && _poisonAnimState) {
+        playerState = _poisonAnimState;
+        
+        _poisonAnimTimer -= 16.6;
+        if (_poisonAnimTimer <= 0) {
+            _poisonAnimState = null;
+        }
+    }
     else if (_playerAnimationTimer > 0 && _playerMissAnimState) {
         playerState = _playerMissAnimState;
         
