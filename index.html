@@ -5304,6 +5304,16 @@ function doPauseAction() {
     sId++;
     const mySId = sId;
     _rhythmStarted = false;
+    blueBalled = false;
+
+    if (typeof _gameOverLoop !== 'undefined' && _gameOverLoop) {
+        _gameOverLoop.pause();
+        _gameOverLoop = null;
+    }
+    if (typeof _deathTimeout !== 'undefined' && _deathTimeout) {
+        clearTimeout(_deathTimeout);
+        _deathTimeout = null;
+    }
 
         for (let i = 0; i < 4; i++) {
         _playerLaneHitTimes[i] = -1;
@@ -5313,7 +5323,7 @@ function doPauseAction() {
     if (typeof _playerKey !== 'undefined') _playerKey = null;
     if (typeof _lastPressedPlayerKey !== 'undefined') _lastPressedPlayerKey = null;
 
-    document.querySelectorAll('.note').forEach(note => note.remove());
+   document.querySelectorAll('.note, .sustain-body, .sustain-end').forEach(note => note.remove());
 
     if (typeof _inst !== 'undefined' && _inst) { _inst.pause(); _inst.src = ""; }
     if (typeof _voicePlayer !== 'undefined' && _voicePlayer) { _voicePlayer.pause(); _voicePlayer.src = ""; }
@@ -5493,6 +5503,47 @@ function showResults() {
   setTimeout(() => { scorePanel.classList.add('slide-left'); }, 1450);
   setTimeout(() => { rankContainer.classList.add('slide-right'); }, 1700);
 }
+    
+const micDrop = new Audio('sfx/finaldeath.mp3');
+
+//const gameOver = new Audio('assets/final/pause/breakfast-pico.mp3');
+//const gameOverBF = new Audio('assets/final/pause/breakfast-pico.mp3');
+
+let _gameOverLoop = null;
+let _deathTimeout = null;
+let blueBalled = false;
+
+function gameOver() {
+    blueBalled = true;
+    
+    if (_inst) _inst.pause();
+    if (_voicePlayer) _voicePlayer.pause();
+    if (_voiceOpponent) _voiceOpponent.pause();
+    
+    endIntervals(); 
+
+    document.querySelectorAll(".note").forEach(el => el.remove());
+    document.querySelectorAll(".sustain-body").forEach(el => el.remove());
+    document.querySelectorAll(".sustain-end").forEach(el => el.remove());
+    
+    micDrop.currentTime = 0;
+    micDrop.play();
+
+    if (_deathTimeout) clearTimeout(_deathTimeout);
+
+    _deathTimeout = setTimeout(() => {
+        if (_activeSong.player === "pico") {
+            _gameOverLoop = gameOverPico;
+        } else {
+            _gameOverLoop = gameOverBF;
+        }
+
+        _gameOverLoop.loop = true;
+        _gameOverLoop.currentTime = 0;
+        _gameOverLoop.play();
+    }, 2500);
+}
+
 
     function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
     const animFrames = charData.animations[actionState];
