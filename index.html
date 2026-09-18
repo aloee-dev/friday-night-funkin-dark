@@ -599,6 +599,18 @@ a,
     margin-left: 60px;
     font-weight: bold;
 }
+    #freeplay-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    transition: background-image 0.3s ease-in-out; 
+}
+
 
     #room-content {
     display: none;
@@ -1537,13 +1549,12 @@ a,
     </div>
 </div>
 
-    <div id="freeplay-menu">
-    <div id="chapter-navigation">
-        <h1 id="chapter-header">Additional Content</h1>
-    </div>
-    <div id="scene-list">
-    </div>
+<div id="freeplay-bg"></div>
+<div id="freeplay-content-overlay">
+    <h1 id="chapter-header"></h1>
+    <div id="scene-list"></div>
 </div>
+
 
     <div id="room-content" style="width: 100%; height: 100%; position: relative;"></div>
     <div id="point-click-text-overlay"></div>
@@ -2223,10 +2234,12 @@ document.addEventListener('keydown', async (e) => {
     const titleButtonsZ = window.getComputedStyle(titleButtons).display;
     const freePlay = document.getElementById("freeplay-menu");
     const curtain = document.getElementById("black-curtain");
+    const freeplayBg = document.getElementById("freeplay-bg");
       
       if (titleButtonsZ === "flex" || titleButtonsZ === "block") {
         inMenu = true;
-        }
+      }
+      
       if (inMenu) {
         curtain.style.transform = "translateY(100%)";
         transition = true;
@@ -2238,10 +2251,10 @@ document.addEventListener('keydown', async (e) => {
         renderScenes();
         await new Promise(r => setTimeout(r, 1500));
 
-          curtain.style.transform = "translateY(0%)";
-          transition = false;
-          inMenu = false;
-          inFreeplay = true;
+        curtain.style.transform = "translateY(0%)";
+        transition = false;
+        inMenu = false;
+        inFreeplay = true;
       }
      else if (inFreeplay) {
         curtain.style.transform = "translateY(100%)";
@@ -2249,14 +2262,18 @@ document.addEventListener('keydown', async (e) => {
 
         await new Promise(r => setTimeout(r, 300));
 
+        if (freeplayBg) {
+            freeplayBg.style.backgroundImage = "none";
+        }
+
         titleButtons.style.display = "flex";
         freePlay.style.display = "none";
         await new Promise(r => setTimeout(r, 1500));
 
-          curtain.style.transform = "translateY(0%)";
-          transition = false;
-          inMenu = true;
-          inFreeplay = false;
+        curtain.style.transform = "translateY(0%)";
+        transition = false;
+        inMenu = true;
+        inFreeplay = false;
       }
   }
 });
@@ -2267,6 +2284,7 @@ document.addEventListener('keydown', async (e) => {
 const freeplayData = [
     {
         chapterName: "Additional Content",
+        bg: "backgrounds/title.png",
         scenes: [
             { label: "This does nothing", file: "finaltest.json" },
             { label: "Ill edit later", file: "test" }
@@ -2395,9 +2413,15 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
     function renderScenes() {
     const chapterHeader = document.getElementById("chapter-header");
     const sceneList = document.getElementById("scene-list");
+    const freeplayBg = document.getElementById("freeplay-bg");
 
     const currentChapter = freeplayData[chapterIndex];
     chapterHeader.innerText = currentChapter.chapterName;
+    
+    if (freeplayBg && currentChapter.bg) {
+        freeplayBg.style.backgroundImage = `url('${currentChapter.bg}')`;
+    }
+
     sceneList.innerHTML = "";
 
     currentChapter.scenes.forEach((sceneName, index) => {
@@ -2414,7 +2438,6 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
         sceneList.appendChild(scene);
     });
 }
-
     
 let inventory = new Map();
 
