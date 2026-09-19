@@ -2227,6 +2227,7 @@ requestAnimationFrame(updateFPS);
 
 let inMenu = false;
 let inFreeplay = false;
+let inDialogue = false;
 let transition = false;
 let chapterIndex = 0;
 let sceneIndex = 0;
@@ -2455,6 +2456,9 @@ function playSongPreview(songId) {
     hoverSfx.play();
   } 
     else if (e.key === 'Enter') {
+    const box = document.getElementById("dialog-box");
+    const inDialogue = window.getComputedStyle(box).display === "block";
+        if (inDialogue) return; 
     const currentChapter = freeplayData[chapterIndex];
     const selectedScene = currentChapter.scenes[sceneIndex];
     playSfx.play();
