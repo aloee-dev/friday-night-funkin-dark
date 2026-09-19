@@ -1139,7 +1139,7 @@ a,
     .rating-popup {
     position: absolute;
     left: 50%;
-    top: 45%;
+    top: 42%;
     transform: translate(-50%, -50%);
     z-index: 100;
     pointer-events: none;
@@ -1164,6 +1164,22 @@ a,
     width: 106px;
     height: 150px;
     margin: 0 -18px;
+    animation: comboGravity 0.95s linear forwards;
+}
+
+    @keyframes comboGravity {
+    0% {
+        transform: translate(0px, 0px);
+    }
+    25% {
+        transform: translate(0px, 0px);
+    }
+    37.5% {
+        transform: translate(0px, 0px);
+    }
+    100% {
+        transform: translate(var(--drift-x), var(--grav-y));
+    }
 }
 
 
@@ -1860,7 +1876,10 @@ function preloadAsset(src) {
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
-            audio.oncanplaythrough = () => resolve(audio);
+            audio.oncanplaythrough = () => {
+                assetCache[src] = audio;
+                resolve(audio);
+            };
             audio.src = src;
             audio.load();
             return;
@@ -4209,17 +4228,22 @@ function triggerSpecial(target, animName, holdTicks) {
 }
 
     function spawnCombo(combo) {
-    // if (combo < 10) return;
-
     const comboContainer = document.createElement("div");
     comboContainer.className = "combo-popup";
     
     const digits = String(combo).padStart(3, "0").split("");
     
-    digits.forEach(digit => {
+    digits.forEach((digit, index) => {
         const digitImg = document.createElement("img");
         digitImg.src = `assets/final/combo/${digit}.png`;
         digitImg.className = "combo-digit";
+        
+        const driftX = (Math.random() * 30 - 15).toFixed(1) + "px";
+        const grav = (Math.random() * 35 + 10).toFixed(1) + "px";
+        
+        digitImg.style.setProperty('--drift-x', driftX);
+        digitImg.style.setProperty('--grav', grav);
+        
         comboContainer.appendChild(digitImg);
     });
         
