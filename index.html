@@ -2264,6 +2264,16 @@ document.addEventListener('keydown', async (e) => {
         curtain.style.transform = "translateY(100%)";
         transition = true;
 
+    if (previewTimeout) clearTimeout(previewTimeout);
+    if (previewFadeInterval) clearInterval(previewFadeInterval);
+    if (previewAudio) {
+        previewAudio.pause();
+        previewAudio = null;
+    }
+    if (typeof menuMusic !== 'undefined' && menuMusic) {
+        menuMusic.volume = 0.1;
+    }
+
         await new Promise(r => setTimeout(r, 300));
 
         if (freeplayBg) {
@@ -2366,7 +2376,56 @@ const freeplayData = [
 ];
     
 const hoverSfx = new Audio("sfx/scrollMenu.mp3");
-const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
+const playSfx = new Audio("sfx/confirmMenu.mp3");
+
+let previewTimeout = null;
+let previewAudio = null;
+let previewFadeInterval = null;
+
+function playSongPreview(songId) {
+    if (typeof menuMusic !== 'undefined' && menuMusic) {
+        menuMusic.volume = 0; 
+    }
+
+    const audioPath = `assets/final/songs/${songId}/Inst.mp3`;
+    previewAudio = new Audio(audioPath);
+    previewAudio.volume = 1.0;
+    
+    let isFadingOut = false;
+
+    previewAudio.addEventListener("timeupdate", () => {
+        if (!previewAudio) return;
+
+        if (previewAudio.currentTime >= 17.5 && !isFadingOut) {
+            isFadingOut = true;
+            
+            previewFadeInterval = setInterval(() => {
+                if (previewAudio && previewAudio.volume > 0.05) {
+                    previewAudio.volume = Math.max(0, previewAudio.volume - 0.1);
+                } else {
+                    clearInterval(previewFadeInterval);
+                    if (previewAudio) {
+                        previewAudio.currentTime = 0;
+                        previewAudio.volume = 1.0;
+                        isFadingOut = false;
+                    }
+                }
+            }, 100);
+        }
+
+        if (previewAudio.currentTime >= 20.0) {
+            clearInterval(previewFadeInterval);
+            previewAudio.currentTime = 0;
+            previewAudio.volume = 1.0;
+            isFadingOut = false;
+        }
+    });
+
+    previewAudio.play().catch(err => {
+        console.warn("Audio playback blocked or file not found:", err);
+    });
+}
+
 
     document.addEventListener('keydown', async (e) => {
   if (!inFreeplay || transition) return;
@@ -2395,13 +2454,25 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
     hoverSfx.currentTime = 0;
     hoverSfx.play();
   } 
-  else if (e.key === 'Enter') {
-      const currentChapter = freeplayData[chapterIndex];
+    else if (e.key === 'Enter') {
+    const currentChapter = freeplayData[chapterIndex];
     const selectedScene = currentChapter.scenes[sceneIndex];
-      playSfx.play();
-      
-      await new Promise(r => setTimeout(r, 1000));
-    startFreeScene(selectedScene.file);
+    playSfx.play();
+    
+    await new Promise(r => setTimeout(r, 1000));
+
+    if (chapterIndex === 10) {
+        //document.getElementById("freeplay-menu").style.display = "none";
+        //const freeplayBg = document.getElementById("freeplay-bg");
+        //if (freeplayBg) freeplayBg.style.backgroundImage = "none";
+        
+        menuMusic.pause();
+        menuMusic.currentTime = 0;
+
+        startSong(selectedScene.file);
+    } else {
+        startFreeScene(selectedScene.file);
+    }
   }
 });
 
@@ -2426,6 +2497,13 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
     const currentChapter = freeplayData[chapterIndex];
     chapterHeader.innerText = currentChapter.chapterName;
     
+    if (previewTimeout) clearTimeout(previewTimeout);
+    if (previewFadeInterval) clearInterval(previewFadeInterval);
+    if (previewAudio) {
+        previewAudio.pause();
+        previewAudio = null;
+    }
+
     if (freeplayBg) {
         if (currentChapter.bg) {
             freeplayBg.style.backgroundImage = `url('${currentChapter.bg}')`;
@@ -2446,6 +2524,13 @@ const playSfx = new Audio("sfx/confirmMenu.mp3"); //fucking idiot
             setTimeout(() => {
                 scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 0);
+
+            if (chapterIndex === 10) {
+                const selectedSongFile = sceneName.file;
+                previewTimeout = setTimeout(() => {
+                    playSongPreview(selectedSongFile);
+                }, 3000);
+            }
         }
         sceneList.appendChild(scene);
     });
