@@ -1246,7 +1246,7 @@ a,
     color: #ffffff;
     pointer-events: none;
     z-index: 501; 
-    animation: BREAKINGNEWS 10s linear forwards;
+    animation: BREAKINGNEWS linear forwards;
 }
 
 @keyframes BREAKINGNEWS {
@@ -3900,7 +3900,7 @@ let currentTickerEl = null;
 
 async function loadNewsData() {
     try {
-        const response = await fetch('pausetext.json');
+        const response = await fetch('assets/final/pause/text.json');
         const data = await response.json();
         NEWS = data;
     } catch (err) {
@@ -3924,6 +3924,9 @@ function spawnTickerMessage() {
     ticker.className = "pause-ticker-text";
     ticker.textContent = chosenPhrase;
     currentTickerEl = ticker;
+
+    const dynamicSeconds = 6 + (chosenPhrase.length * 0.1);
+    ticker.style.animationDuration = dynamicSeconds + "s";
 
     overlay.appendChild(ticker);
 
