@@ -1233,6 +1233,31 @@ a,
     height: 1101px;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 501;
+    overflow: hidden;
+}
+
+.pause-ticker-text {
+    position: absolute;
+    bottom: 35px;
+    right: 100%;
+    white-space: nowrap;
+    font-family: 'PhantomMuff', sans-serif;
+    font-size: 22px; 
+    color: #ffffff;
+    pointer-events: none;
+    z-index: 501; 
+    animation: BREAKINGNEWS 10s linear forwards;
+}
+
+@keyframes BREAKINGNEWS {
+    0% {
+        right: 100%;
+        transform: translateX(0%);
+    }
+    100% {
+        right: 0%;
+        transform: translateX(100%);
+    }
 }
 
 #pause-menu {
@@ -3869,6 +3894,60 @@ function playMiss() {
   }
 }
 
+let NEWS = [];
+let tickerTimeout = null;
+let currentTickerEl = null;
+
+async function loadNewsData() {
+    try {
+        const response = await fetch('pausetext.json');
+        const data = await response.json();
+        NEWS = data;
+    } catch (err) {
+        console.warn("Failed to load json", err);
+        NEWS = [{ "text": "PAUSED" }, { "text": "n00b" }];
+    }
+}
+    
+loadNewsData();
+
+function spawnTickerMessage() {
+    if (!isPaused || !NEWS.length) return;
+
+    const randomIndex = Math.floor(Math.random() * NEWS.length);
+    const chosenPhrase = NEWS[randomIndex].text;
+
+    const overlay = document.getElementById('pause-overlay');
+    if (!overlay) return;
+
+    const ticker = document.createElement("div");
+    ticker.className = "pause-ticker-text";
+    ticker.textContent = chosenPhrase;
+    currentTickerEl = ticker;
+
+    overlay.appendChild(ticker);
+
+    ticker.addEventListener('animationend', () => {
+        ticker.remove();
+        if (currentTickerEl === ticker) currentTickerEl = null;
+
+        if (isPaused) {
+            tickerTimeout = setTimeout(spawnTickerMessage, 3000);
+        }
+    });
+}
+
+function clearPauseTicker() {
+    if (tickerTimeout) {
+        clearTimeout(tickerTimeout);
+        tickerTimeout = null;
+    }
+    if (currentTickerEl) {
+        currentTickerEl.remove();
+        currentTickerEl = null;
+    }
+}
+
 function getLane(lane) {
     const maps = [
         { arrow: "ARROWLEFT",  letter: "D" },
@@ -5408,6 +5487,9 @@ function pause() {
     breakfastPico.loop = true;
 
     document.getElementById('pause-overlay').style.display = 'block';
+    clearPauseTicker(); 
+    spawnTickerMessage();
+    canPause = false;
     
     setTimeout(() => {
         document.getElementById('pause-menu').classList.add('active');
@@ -5434,6 +5516,7 @@ function selectPauseBtn() {
     
 function doPauseAction() {
     breakfastPico.pause();
+    clearPauseTicker();
     if (pauseIndex === 0) {
         resume();
     } 
@@ -5465,6 +5548,7 @@ function doPauseAction() {
         if (_voicePlayer) _voicePlayer.play().catch(() => {});
         if (_voiceOpponent) _voiceOpponent.play().catch(() => {});
     }, 300);
+        canPause = true;
 }
 
     function restartSong() {
