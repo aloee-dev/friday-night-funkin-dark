@@ -1178,7 +1178,7 @@ a,
         transform: translate(0px, 0px);
     }
     100% {
-        transform: translate(var(--drift-x), var(--grav));
+        transform: translate(var(--grav));
     }
 }
 
@@ -1260,7 +1260,7 @@ a,
 }
 
 #btn-resume {
-    top: 40px; 
+    top: 30px; 
     left: 0px;
     background-image: url('assets/final/pause/resume.png');
 }
@@ -1270,7 +1270,7 @@ a,
 }
 
 #btn-restart {
-    top: 350px;
+    top: 370px;
     left: 0px;
     background-image: url('assets/final/pause/restart.png');
 }
@@ -4238,11 +4238,8 @@ function triggerSpecial(target, animName, holdTicks) {
         const digitImg = document.createElement("img");
         digitImg.src = `assets/final/combo/${digit}.png`;
         digitImg.className = "combo-digit";
-        
-        const driftX = (Math.random() * 30 - 15).toFixed(1) + "px";
+    
         const grav = (Math.random() * 35 + 10).toFixed(1) + "px";
-        
-        digitImg.style.setProperty('--drift-x', driftX);
         digitImg.style.setProperty('--grav', grav);
         
         comboContainer.appendChild(digitImg);
@@ -4791,7 +4788,7 @@ function applyPoison(currentTime) {
         
         setTimeout(() => {
             poisonScreen.classList.remove("flash");
-        }, 250);
+        }, 150);
     }
 
     if (poisonInterval) clearInterval(poisonInterval);
