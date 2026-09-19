@@ -1173,11 +1173,11 @@ a,
         opacity: 1;
     }
     37.5% {
-        transform: translate(-50%, -55%);
+        transform: translate(-50%, -60%);
         opacity: 1;
     }
     56.25% {
-        transform: translate(-50%, -55%);
+        transform: translate(-50%, -60%);
         opacity: 1;
     }
     100% {
@@ -1192,11 +1192,11 @@ a,
         opacity: 1;
     }
     25% {
-        transform: translate(-50%, -55%);
+        transform: translate(-50%, -60%);
         opacity: 1;
     }
     37.5% {
-        transform: translate(-50%, -55%);
+        transform: translate(-50%, -60%);
         opacity: 1;
     }
     100% {
@@ -1435,7 +1435,14 @@ a,
     height: 100%;
     pointer-events: none;
     z-index: 999;
-    background: radial-gradient(circle, rgba(255,255,255,0) 35%, rgba(120,165,125,0.75) 100%);
+    background: radial-gradient(
+        circle, 
+        rgba(255, 255, 255, 0) 55%, 
+        rgba(157, 178, 155, 0.25) 85%, 
+        rgba(132, 155, 130, 0.6) 100%
+    );
+    
+    mix-blend-mode: multiply; 
     opacity: 0;
     transition: opacity 0.4s ease-out;
 }
@@ -4757,7 +4764,7 @@ function applyPoison(currentTime) {
         
         setTimeout(() => {
             poisonScreen.classList.remove("flash");
-        }, 50);
+        }, 250);
     }
 
     if (poisonInterval) clearInterval(poisonInterval);
