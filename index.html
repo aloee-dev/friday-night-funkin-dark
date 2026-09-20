@@ -5514,7 +5514,9 @@ function pause() {
 
     document.getElementById('pause-overlay').style.display = 'block';
     clearPauseTicker(); 
-    spawnTickerMessage();
+    tickerTimeout = setTimeout(() => {
+        spawnTickerMessage();
+    }, 3000);
     canPause = false;
     
     setTimeout(() => {
