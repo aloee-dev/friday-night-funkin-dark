@@ -3938,7 +3938,7 @@ function spawnTickerMessage() {
         ticker.style.cursor = "pointer";
         
         ticker.addEventListener('click', () => {
-            window.location.href = chosenNewsItem.url;
+            window.open(chosenNewsItem.url, '_blank');
         });
     }
     const dynamicSeconds = 6 + (chosenPhrase.length * 0.1);
