@@ -4958,7 +4958,8 @@ function updateRhythmLoop(rSId) {
         if (_inst && _inst.ended && _rhythmStarted) {
         endIntervals();
         
-        _rhythmStarted = false; 
+        _rhythmStarted = false;
+        canPause = false;
 
         camera.manualCamera = true;
         camera.targetX = camera.x; 
@@ -5474,6 +5475,15 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
+
+    document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        if (canPause) {
+            pause();
+        }
+    }
+});
+
 
 function pause() {
     isPaused = true;
