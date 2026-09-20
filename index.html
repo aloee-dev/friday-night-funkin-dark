@@ -4327,6 +4327,9 @@ function triggerSpecial(target, animName, holdTicks) {
 }
 
     function spawnCombo(combo) {
+        if (combo > 0 && combo % 50 === 0) {
+        triggerSpecial("speaker", "cheer", 5);
+    }
     const comboContainer = document.createElement("div");
     comboContainer.className = "combo-popup";
     
