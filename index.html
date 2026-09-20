@@ -1899,6 +1899,16 @@ const menuMusic = new Audio('assets/music/menu.m4a');
 let loaded = 0;
 const assetCache = {};
 
+async function storeAssets() {
+    try {
+        const cache = await caches.open('ACE-engine-v' + version);
+        await cache.addAll(assets);
+        console.log("Loaded all assets.");
+    } catch (e) {
+        console.error("fail:", e);
+    }
+}
+
 function preloadAsset(src) {
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
@@ -1930,6 +1940,7 @@ function preloadAsset(src) {
 }
 
 async function preloadAll() {
+    await storeAssets();
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
 
