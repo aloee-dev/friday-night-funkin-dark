@@ -5004,29 +5004,33 @@ function updateRhythmLoop(rSId) {
         }, 800);
         return;
     }
-    
+
     const currentTime = _inst.currentTime * 1000;
     const speed = _activeSong.scrollSpeed;
 
     const masterTime = _inst.currentTime;
-    const maxDelay = 0.02; 
+    const maxDelay = 0.02;
 
     if (_voicePlayer && !_voicePlayer.paused) {
-        const playerDelay = Math.abs(_voicePlayer.currentTime - masterTime);
-        if (playerDelay > maxDelay) {
-            _voicePlayer.muted = true; 
-            _voicePlayer.currentTime = masterTime;
-            
-            requestAnimationFrame(() => { if (_voicePlayer) _voicePlayer.muted = false; });
+        const diff = _voicePlayer.currentTime - masterTime;
+
+        if (diff < -maxDelay) {
+            _voicePlayer.playbackRate = 1.02;
+        } else if (diff > maxDelay) {
+            _voicePlayer.playbackRate = 0.98;
+        } else {
+            _voicePlayer.playbackRate = 1.0;
         }
     }
-
     if (_voiceOpponent && !_voiceOpponent.paused) {
-        const opponentDelay = Math.abs(_voiceOpponent.currentTime - masterTime);
-        if (opponentDelay > maxDelay) {
-            _voiceOpponent.muted = true;
-            _voiceOpponent.currentTime = masterTime;
-            requestAnimationFrame(() => { if (_voiceOpponent) _voiceOpponent.muted = false; });
+        const diff = _voiceOpponent.currentTime - masterTime;
+
+        if (diff < -maxDelay) {
+            _voiceOpponent.playbackRate = 1.02;
+        } else if (diff > maxDelay) {
+            _voiceOpponent.playbackRate = 0.98;
+        } else {
+            _voiceOpponent.playbackRate = 1.0;
         }
     }
 
