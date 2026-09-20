@@ -3777,10 +3777,6 @@ function processNextQueueLine() {
     }
 }
 
-
-
-
-
     
 let hp = 100;
 const maxHP = 200;
@@ -3927,7 +3923,8 @@ function spawnTickerMessage() {
     if (!isPaused || !NEWS.length) return;
 
     const randomIndex = Math.floor(Math.random() * NEWS.length);
-    const chosenPhrase = NEWS[randomIndex].text;
+    const chosenNewsItem = NEWS[randomIndex]; 
+    const chosenPhrase = chosenNewsItem.text;
 
     const overlay = document.getElementById('pause-overlay');
     if (!overlay) return;
@@ -3936,6 +3933,14 @@ function spawnTickerMessage() {
     ticker.className = "pause-ticker-text";
     ticker.textContent = chosenPhrase;
     currentTickerEl = ticker;
+
+    if (chosenNewsItem.url) {
+        ticker.style.cursor = "pointer";
+        
+        ticker.addEventListener('click', () => {
+            window.location.href = chosenNewsItem.url;
+        });
+    }
 
     const dynamicSeconds = 6 + (chosenPhrase.length * 0.1);
     ticker.style.animationDuration = dynamicSeconds + "s";
