@@ -3943,6 +3943,10 @@ function spawnTickerMessage() {
         });
     }
 
+    ticker.addEventListener('click', () => {
+            alert("clicked the ticker");
+        });
+
     const dynamicSeconds = 6 + (chosenPhrase.length * 0.1);
     ticker.style.animationDuration = dynamicSeconds + "s";
 
