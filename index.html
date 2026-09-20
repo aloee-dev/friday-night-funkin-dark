@@ -1244,14 +1244,13 @@ a,
     font-family: 'PhantomMuff', sans-serif;
     font-size: 22px; 
     color: #ffffff;
-    pointer-events: none;
     z-index: 501; 
     animation: BREAKINGNEWS linear forwards;
 }
 
 @keyframes BREAKINGNEWS {
     0% {
-        left: 100%
+        left: 100%;
         transform: translateX(0%);
     }
     100% {
@@ -3942,11 +3941,6 @@ function spawnTickerMessage() {
             window.location.href = chosenNewsItem.url;
         });
     }
-
-    ticker.addEventListener('click', () => {
-            alert("clicked the ticker");
-        });
-
     const dynamicSeconds = 6 + (chosenPhrase.length * 0.1);
     ticker.style.animationDuration = dynamicSeconds + "s";
 
