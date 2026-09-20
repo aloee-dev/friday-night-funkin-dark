@@ -40,8 +40,6 @@ a,
     outline: none;
 }
 
-
-
 #game-viewport {
     position: absolute;
     width: 1595px;
@@ -52,7 +50,17 @@ a,
     transform-origin: center;
     overflow: hidden;
 }
-
+#game-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1595px;
+    height: 1099px;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    z-index: 9999; 
+    pointer-events: none; 
+}
     @font-face {
     font-family: "Blue Winter";
     src: url("fonts/Blue-Winter.ttf") format("truetype");
@@ -1763,7 +1771,8 @@ a,
     
       <div id="fade-overlay"></div>
     <div id="black-curtain"></div>
-
+    
+<div id="game-frame"></div>
     
 <div id="dialog-background"></div>
 
@@ -1909,32 +1918,40 @@ async function storeAssets() {
     }
 }
 
-function preloadAsset(src) {
+async function preloadAsset(src) {
+    const cache = await caches.open('ACE-engine-v' + version).catch(() => null);
+    let blobUrl = src;
+
+    if (cache) {
+        const cachedResponse = await cache.match(src);
+        if (cachedResponse) {
+            const blob = await cachedResponse.blob();
+            blobUrl = URL.createObjectURL(blob);
+        }
+    }
+
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
-            audio.oncanplaythrough = () => {
+            audio.addEventListener('canplaythrough', () => {
                 assetCache[src] = audio;
                 resolve(audio);
-            };
-            audio.src = src;
+            }, { once: true });
+            audio.src = blobUrl;
             audio.load();
+            if (audio.readyState >= 3) {
+                assetCache[src] = audio;
+                resolve(audio);
+            }
             return;
         }
-
         const img = new Image();
-        img.src = src;
+        img.src = blobUrl;
 
         img.onload = () => {
             img.decode()
-                .then(() => {
-                    assetCache[src] = img;
-                    resolve(img);
-                })
-                .catch(() => {
-                    assetCache[src] = img;
-                    resolve(img);
-                });
+                .then(() => { assetCache[src] = img; resolve(img); })
+                .catch(() => { assetCache[src] = img; resolve(img); });
         };
     });
 }
