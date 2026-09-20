@@ -54,12 +54,13 @@ a,
     position: absolute;
     top: 0;
     left: 0;
-    width: 1595px;
-    height: 1099px;
+    width: 1596px;
+    height: 1100px;
     box-sizing: border-box;
-    border: 1px solid #000000;
+    border: 3px solid #000000;
     z-index: 9999; 
     pointer-events: none; 
+    opacity: 0;
 }
     @font-face {
     font-family: "Blue Winter";
@@ -2034,6 +2035,7 @@ let disclaimerActive = false;
 async function showDisclaimer() {
     loadSettings();
     const d = document.getElementById("disclaimer-screen");
+    document.getElementById("game-frame").style.opacity = 1;
     d.style.opacity = 1;
     d.style.pointerEvents = "auto";
     disclaimerActive = true;
