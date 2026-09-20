@@ -1238,8 +1238,8 @@ a,
 
 .pause-ticker-text {
     position: absolute;
-    bottom: 35px;
-    right: 100%;
+    bottom: 50px;
+    left: 100%;
     white-space: nowrap;
     font-family: 'PhantomMuff', sans-serif;
     font-size: 22px; 
@@ -1251,14 +1251,15 @@ a,
 
 @keyframes BREAKINGNEWS {
     0% {
-        right: 100%;
+        left: 100%
         transform: translateX(0%);
     }
     100% {
-        right: 0%;
-        transform: translateX(100%);
+        left: 0%;
+        transform: translateX(-100%);
     }
 }
+
 
 #pause-menu {
     position: absolute;
