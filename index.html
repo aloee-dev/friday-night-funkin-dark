@@ -4154,7 +4154,6 @@ const CHARACTER_DATA = {
         src: "assets/final/bf-sprit.png",
         xml: "assets/final/bf-sprit.xml",
         healthbar: "assets/final/healthbar-blue.png",
-        playable: true,
         imageObj: new Image(),
         animations: {}
     },
@@ -4162,7 +4161,6 @@ const CHARACTER_DATA = {
         src: "assets/final/sprites/true-boyfriend.png",
         xml: "assets/final/sprites/true-boyfriend.xml",
         healthbar: "assets/final/healthbar-blue.png",
-        playable: true,
         imageObj: new Image(),
         animations: {}
     },
@@ -4170,7 +4168,6 @@ const CHARACTER_DATA = {
         src: "assets/final/pico-sprite.png",
         xml: "assets/final/pico-sprite.xml",
         healthbar: "assets/final/health-green.png",
-        playable: true,
         imageObj: new Image(),
         animations: {}
     },
@@ -4178,7 +4175,6 @@ const CHARACTER_DATA = {
         src: "assets/final/gf-sprite.png",
         xml: "assets/final/gf-sprite.xml",
         healthbar: "assets/final/healthbar-gf.png",
-        playable: false,
         imageObj: new Image(),
         animations: {}
     }
@@ -5733,7 +5729,10 @@ function doPauseAction() {
     });
 }
 
+let canExitResults = false;
+
 function showResults() {
+    canExitResults = false;
   const screen = document.querySelector('.results-screen');
   const displayBoard = document.querySelector('.results-display');
   const titleBanner = document.querySelector('.title-banner');
@@ -5779,6 +5778,7 @@ function showResults() {
   setTimeout(() => { missesRow.classList.add('slide-left'); }, 1200);
   setTimeout(() => { scorePanel.classList.add('slide-left'); }, 1450);
   setTimeout(() => { rankContainer.classList.add('slide-right'); }, 1700);
+  canExitResults = true;
 }
     
 const micDrop = new Audio('sfx/final-death.mp3');
