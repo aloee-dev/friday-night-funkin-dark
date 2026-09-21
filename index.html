@@ -2340,6 +2340,8 @@ document.addEventListener('keydown', async (e) => {
         }
 
         titleButtons.style.display = "flex";
+        if (scoreText) scoreText.style.display = "none";
+        if (scoreGraphic) scoreGraphic.style.display = "none";
         freePlay.style.display = "none";
         await new Promise(r => setTimeout(r, 1500));
 
