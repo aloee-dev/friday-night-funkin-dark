@@ -1806,13 +1806,6 @@ a,
     // game over
     // plotting out how the point and click section will go out
     // "delay" feature idk what that means but i wrote that in my google doc a month ago
-    // two player/opponent
-
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log("Active"))
-        .catch(err => console.error("SW failed:", err));
-}
 
 const version = "0.0.0";
    
@@ -1919,36 +1912,61 @@ const assets = [
 
 const menuMusic = new Audio('assets/music/menu.m4a');
     
-async function preloadAll() {
-    try {
-        const cache = await caches.open('ACE-engine-v' + version);
-        await cache.addAll(assets);
-        console.log("All 100+ assets instantly cached.");
-    } catch (e) {
-        console.error("Cache download failed, falling back to live network:", e);
-    }
+let loaded = 0;
+const assetCache = {};
 
-    const progressBar = document.getElementById("progress-bar");
-    if (!assets || assets.length === 0) return;
-
-    let loaded = 0;
-    
-    const decodePromises = assets.map(async (src) => {
-        if (src.endsWith(".png") || src.endsWith(".jpg") || src.endsWith(".webp")) {
-            const img = new Image();
-            img.src = src;
-            try {
-                await img.decode();
-            } catch (e) {
-            }
+function preloadAsset(src) {
+    return new Promise((resolve) => {
+        if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
+            const audio = new Audio();
+            audio.oncanplaythrough = () => resolve(audio);
+            audio.src = src;
+            audio.load();
+            return;
         }
 
+        const img = new Image();
+        img.src = src;
+
+        img.onload = () => {
+            img.decode()
+                .then(async () => {
+                    assetCache[src] = img;
+                    const cache = await caches.open('ACE-engine-v' + version).catch(() => null);
+                    if (cache) cache.add(src).catch(() => null);
+
+                    resolve(img);
+                })
+                .catch(() => {
+                    assetCache[src] = img;
+                    resolve(img);
+                });
+        };
+    });
+}
+
+async function preloadAll() {
+    const progressBar = document.getElementById("progress-bar");
+    const gameViewport = document.getElementById("game-viewport");
+
+    const promises = assets.map(async (src) => {
+        const element = await preloadAsset(src);
+        
         loaded++;
         const percent = Math.floor((loaded / assets.length) * 100);
-        if (progressBar) progressBar.style.width = percent + "%";
+        progressBar.style.width = percent + "%";
+
+        if (src.includes("sprites/")) {
+            const id = src.split('/').pop().split('.')[0]; 
+            element.id = id; 
+            element.className = "char"; 
+            gameViewport.appendChild(element);
+        }
+
+        return element;
     });
 
-    await Promise.all(decodePromises);
+    await Promise.all(promises);
 
     document.getElementById("loading-text").textContent = "LOADED!";
     await new Promise(r => setTimeout(r, 1000));
