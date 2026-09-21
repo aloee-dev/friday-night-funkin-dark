@@ -1808,6 +1808,12 @@ a,
     // "delay" feature idk what that means but i wrote that in my google doc a month ago
     // two player/opponent
 
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log("Active"))
+        .catch(err => console.error("SW failed:", err));
+}
+
 const version = "0.0.0";
    
 const assets = [
