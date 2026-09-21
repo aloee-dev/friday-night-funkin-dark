@@ -2647,7 +2647,7 @@ function playSongPreview(songId) {
                 scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 0);
             if (chapterIndex === 10) {
-                const savedScore = highScoreRecords[sceneName.file] || 0;
+                const savedScore = highScoreRecord[sceneName.file] || 0;
                 if (scoreText) {
                     scoreText.innerText = `SCORE: ${savedScore.toLocaleString()}`;
                 }
