@@ -2632,7 +2632,7 @@ function playSongPreview(songId) {
             if (chapterIndex === 10) {
                 if (scoreBox) scoreBox.style.display = "block";
 
-                const savedScore = HIGH_SCORES_RECORD[sceneName.file] || 0;
+                const savedScore = highScoreRecord[sceneName.file] || 0;
                 if (scoreBox) {
                     scoreBox.innerText = `SCORE: ${savedScore.toLocaleString()}`;
                 }
