@@ -2624,41 +2624,43 @@ function playSongPreview(songId) {
 
     sceneList.innerHTML = "";
 
-const scoreText = document.getElementById("freeplay-high-score");
-const scoreGraphic = document.getElementById("freeplay-score-graphic");
+    const scoreText = document.getElementById("freeplay-high-score");
+    const scoreGraphic = document.getElementById("freeplay-score-graphic");
 
-currentChapter.scenes.forEach((sceneName, index) => {
-    const scene = document.createElement("div");
-    scene.innerText = sceneName.label;
-    scene.className = "scene-item";
-
-    if (index === sceneIndex) {
-        scene.classList.add("selected");
-        
-        setTimeout(() => {
-            scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 0);
-
-        if (chapterIndex === 10) {
-            if (scoreText) scoreText.style.display = "block";
-            if (scoreGraphic) scoreGraphic.style.display = "block";
-
-            const savedScore = highScoreRecords[sceneName.file] || 0;
-            if (scoreText) {
-                scoreText.innerText = `SCORE: ${savedScore.toLocaleString()}`;
-            }
-
-            const selectedSongFile = sceneName.file;
-            previewTimeout = setTimeout(() => {
-                playSongPreview(selectedSongFile);
-            }, 3000);
-        } else {
-            if (scoreText) scoreText.style.display = "none";
-            if (scoreGraphic) scoreGraphic.style.display = "none";
-        }
+    if (chapterIndex === 10) {
+        if (scoreText) scoreText.style.display = "block";
+        if (scoreGraphic) scoreGraphic.style.display = "block";
+    } else {
+        if (scoreText) scoreText.style.display = "none";
+        if (scoreGraphic) scoreGraphic.style.display = "none";
     }
-    sceneList.appendChild(scene);
-});
+
+    currentChapter.scenes.forEach((sceneName, index) => {
+        const scene = document.createElement("div");
+        scene.innerText = sceneName.label;
+        scene.className = "scene-item";
+
+        if (index === sceneIndex) {
+            scene.classList.add("selected");
+            
+            setTimeout(() => {
+                scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 0);
+
+            if (chapterIndex === 10) {
+                const savedScore = highScoreRecords[sceneName.file] || 0;
+                if (scoreText) {
+                    scoreText.innerText = `SCORE: ${savedScore.toLocaleString()}`;
+                }
+
+                const selectedSongFile = sceneName.file;
+                previewTimeout = setTimeout(() => {
+                    playSongPreview(selectedSongFile);
+                }, 3000);
+            }
+        }
+        sceneList.appendChild(scene);
+    });
 }
     
 let inventory = new Map();
