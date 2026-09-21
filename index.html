@@ -604,9 +604,17 @@ a,
     font-weight: bold;
     color: #ffffff;
     letter-spacing: 2px;
-    font-family: "Doiscallme";
+    font-family: "Docallisme";
     z-index: 5;
 }
+
+#freeplay-score-graphic {
+    position: absolute;
+    width: 1595px;
+    height: 1099px;
+    z-index: 4;
+}
+
     #freeplay-bg {
     position: fixed;
     top: -99.5px;
@@ -1616,6 +1624,7 @@ a,
 </div>
 
 <div id="freeplay-high-score" style="display: none;">SCORE: 0</div>
+<img id="freeplay-score-graphic" src="assets/graphic.png" style="display: none;">
 
 <div id="freeplay-menu" style="display: none;"> 
     <div id="freeplay-bg"></div>
@@ -1625,8 +1634,6 @@ a,
     </div>
 
 </div>
-
-
 
     <div id="room-content" style="width: 100%; height: 100%; position: relative;"></div>
     <div id="point-click-text-overlay"></div>
@@ -2616,38 +2623,41 @@ function playSongPreview(songId) {
 
     sceneList.innerHTML = "";
 
-    const scoreBox = document.getElementById("freeplay-high-score");
+const scoreText = document.getElementById("freeplay-high-score");
+const scoreGraphic = document.getElementById("freeplay-score-graphic");
 
-    currentChapter.scenes.forEach((sceneName, index) => {
-        const scene = document.createElement("div");
-        scene.innerText = sceneName.label;
-        scene.className = "scene-item";
+currentChapter.scenes.forEach((sceneName, index) => {
+    const scene = document.createElement("div");
+    scene.innerText = sceneName.label;
+    scene.className = "scene-item";
 
-        if (index === sceneIndex) {
-            scene.classList.add("selected");
-            
-            setTimeout(() => {
-                scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 0);
+    if (index === sceneIndex) {
+        scene.classList.add("selected");
+        
+        setTimeout(() => {
+            scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 0);
 
-            if (chapterIndex === 10) {
-                if (scoreBox) scoreBox.style.display = "block";
+        if (chapterIndex === 10) {
+            if (scoreText) scoreText.style.display = "block";
+            if (scoreGraphic) scoreGraphic.style.display = "block";
 
-                const savedScore = highScoreRecord[sceneName.file] || 0;
-                if (scoreBox) {
-                    scoreBox.innerText = `SCORE: ${savedScore.toLocaleString()}`;
-                }
-
-                const selectedSongFile = sceneName.file;
-                previewTimeout = setTimeout(() => {
-                    playSongPreview(selectedSongFile);
-                }, 3000);
-            } else {
-                if (scoreBox) scoreBox.style.display = "none";
+            const savedScore = highScoreRecords[sceneName.file] || 0;
+            if (scoreText) {
+                scoreText.innerText = `SCORE: ${savedScore.toLocaleString()}`;
             }
+
+            const selectedSongFile = sceneName.file;
+            previewTimeout = setTimeout(() => {
+                playSongPreview(selectedSongFile);
+            }, 3000);
+        } else {
+            if (scoreText) scoreText.style.display = "none";
+            if (scoreGraphic) scoreGraphic.style.display = "none";
         }
-        sceneList.appendChild(scene);
-    });
+    }
+    sceneList.appendChild(scene);
+});
 }
     
 let inventory = new Map();
