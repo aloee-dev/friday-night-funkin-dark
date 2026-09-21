@@ -1918,80 +1918,37 @@ const assets = [
 
 
 const menuMusic = new Audio('assets/music/menu.m4a');
-let loaded = 0;
-const assetCache = {};
-
-async function storeAssets() {
+    
+async function preloadAll() {
     try {
         const cache = await caches.open('ACE-engine-v' + version);
         await cache.addAll(assets);
-        console.log("Loaded all assets.");
+        console.log("All 100+ assets instantly cached.");
     } catch (e) {
-        console.error("fail:", e);
-    }
-}
-
-async function preloadAsset(src) {
-    const cache = await caches.open('ACE-engine-v' + version).catch(() => null);
-    let blobUrl = src;
-
-    if (cache) {
-        const cachedResponse = await cache.match(src);
-        if (cachedResponse) {
-            const blob = await cachedResponse.blob();
-            blobUrl = URL.createObjectURL(blob);
-        }
+        console.error("Cache download failed, falling back to live network:", e);
     }
 
-    return new Promise((resolve) => {
-        if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
-            const audio = new Audio();
-            audio.addEventListener('canplaythrough', () => {
-                assetCache[src] = audio;
-                resolve(audio);
-            }, { once: true });
-            audio.src = blobUrl;
-            audio.load();
-            if (audio.readyState >= 3) {
-                assetCache[src] = audio;
-                resolve(audio);
-            }
-            return;
-        }
-        const img = new Image();
-        img.src = blobUrl;
-
-        img.onload = () => {
-            img.decode()
-                .then(() => { assetCache[src] = img; resolve(img); })
-                .catch(() => { assetCache[src] = img; resolve(img); });
-        };
-    });
-}
-
-async function preloadAll() {
-    await storeAssets();
     const progressBar = document.getElementById("progress-bar");
-    const gameViewport = document.getElementById("game-viewport");
+    if (!assets || assets.length === 0) return;
 
-    const promises = assets.map(async (src) => {
-        const element = await preloadAsset(src);
-        
+    let loaded = 0;
+    
+    const decodePromises = assets.map(async (src) => {
+        if (src.endsWith(".png") || src.endsWith(".jpg") || src.endsWith(".webp")) {
+            const img = new Image();
+            img.src = src;
+            try {
+                await img.decode();
+            } catch (e) {
+            }
+        }
+
         loaded++;
         const percent = Math.floor((loaded / assets.length) * 100);
-        progressBar.style.width = percent + "%";
-
-        if (src.includes("sprites/")) {
-            const id = src.split('/').pop().split('.')[0]; 
-            element.id = id; 
-            element.className = "char"; 
-            gameViewport.appendChild(element);
-        }
-
-        return element;
+        if (progressBar) progressBar.style.width = percent + "%";
     });
 
-    await Promise.all(promises);
+    await Promise.all(decodePromises);
 
     document.getElementById("loading-text").textContent = "LOADED!";
     await new Promise(r => setTimeout(r, 1000));
@@ -1999,7 +1956,6 @@ async function preloadAll() {
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
 }
-
 
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
