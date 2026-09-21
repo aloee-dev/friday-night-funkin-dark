@@ -596,6 +596,16 @@ a,
     margin-left: 60px;
     font-weight: bold;
 }
+    #freeplay-high-score {
+    position: absolute;
+    top: 55px;
+    right: 12%;
+    font-size: 36px;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 2px;
+    z-index: 5;
+}
     #freeplay-bg {
     position: fixed;
     top: -99.5px;
@@ -1604,6 +1614,8 @@ a,
     </div>
 </div>
 
+    <div id="freeplay-high-score">SCORE: 0</div>
+
 <div id="freeplay-menu" style="display: none;"> 
     <div id="freeplay-bg"></div>
     <div id="freeplay-content-overlay">
@@ -2458,6 +2470,8 @@ const freeplayData = [
         ]
     }
 ];
+
+const highScoreRecord = JSON.parse(localStorage.getItem("fnf_dark_highscores")) || {};
     
 const hoverSfx = new Audio("sfx/scrollMenu.mp3");
 const playSfx = new Audio("sfx/confirmMenu.mp3");
@@ -2601,10 +2615,13 @@ function playSongPreview(songId) {
 
     sceneList.innerHTML = "";
 
+    const scoreBox = document.getElementById("freeplay-high-score");
+
     currentChapter.scenes.forEach((sceneName, index) => {
         const scene = document.createElement("div");
         scene.innerText = sceneName.label;
         scene.className = "scene-item";
+
         if (index === sceneIndex) {
             scene.classList.add("selected");
             
@@ -2613,10 +2630,19 @@ function playSongPreview(songId) {
             }, 0);
 
             if (chapterIndex === 10) {
+                if (scoreBox) scoreBox.style.display = "block";
+
+                const savedScore = HIGH_SCORES_RECORD[sceneName.file] || 0;
+                if (scoreBox) {
+                    scoreBox.innerText = `SCORE: ${savedScore.toLocaleString()}`;
+                }
+
                 const selectedSongFile = sceneName.file;
                 previewTimeout = setTimeout(() => {
                     playSongPreview(selectedSongFile);
                 }, 3000);
+            } else {
+                if (scoreBox) scoreBox.style.display = "none";
             }
         }
         sceneList.appendChild(scene);
@@ -5755,6 +5781,14 @@ let canExitResults = false;
 
 function showResults() {
     canExitResults = false;
+    if (_activeSong && _activeSong.id) {
+        const currentSongKey = _activeSong.id;
+        const existingRecord = highScoreRecord[currentSongKey] || 0;
+        if (score > existingRecord) {
+            highScoreRecord[currentSongKey] = score;
+            localStorage.setItem("fnf_dark_highscores", JSON.stringify(highScoreRecord));
+        }
+    }
   const screen = document.querySelector('.results-screen');
   const displayBoard = document.querySelector('.results-display');
   const titleBanner = document.querySelector('.title-banner');
