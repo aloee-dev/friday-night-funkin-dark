@@ -1909,6 +1909,11 @@ const assets = [
     "sfx/blip2.wav"
 ];
 
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("Active"))
+        .catch(err => console.error("Error:", err));
+}
 
 const menuMusic = new Audio('assets/music/menu.m4a');
     
