@@ -6076,6 +6076,8 @@ function animateGameOver(ctx, charData) {
     const isO1HoldingSustain = Array.from(activeOpponentSustains).some(key => key.endsWith("-0"));
     const isO2HoldingSustain = Array.from(activeOpponentSustains).some(key => key.endsWith("-1"));
 
+    const laneMap = { "LEFT": 0, "DOWN": 1, "UP": 2, "RIGHT": 3 };
+
     let playerState = "idle";
     
     if (_specialTarget === "player" && _specialAnimation) {
@@ -6104,7 +6106,26 @@ function animateGameOver(ctx, charData) {
 
         const activeKey = _lastPressedPlayerKey; 
         if (activeKey) {
-            playerState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
+            const baseState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
+            if (baseState !== "idle" && baseState.startsWith("sing")) {
+                const directionStr = baseState.replace("sing", "");
+                const lane = laneMap[directionStr];
+                const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
+                const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : 0;
+
+                if (isP1HoldingSustain) {
+                    if (timeSinceHit < 100) {
+                        playerState = baseState + "-f1";
+                    } else {
+                        const holdFlicker = Math.floor((timeSinceHit - 100) / 50) % 2;
+                        playerState = holdFlicker === 0 ? baseState + "-f2" : baseState + "-f1";
+                    }
+                } else {
+                    playerState = (timeSinceHit < 100) ? baseState + "-f1" : baseState + "-f2";
+                }
+            } else {
+                playerState = baseState;
+            }
         }
         if (!validHit && _playerAnimationTimer > 0 && !isP1HoldingSustain) {
             _playerAnimationTimer -= 16.6; 
@@ -6133,7 +6154,26 @@ function animateGameOver(ctx, charData) {
 
         const activeKey = _lastPressedPlayer2Key; 
         if (activeKey) {
-            player2State = INPUT_MAP[activeKey.toUpperCase()] || "idle";
+            const baseState = INPUT_MAP[activeKey.toUpperCase()] || "idle";
+            if (baseState !== "idle" && baseState.startsWith("sing")) {
+                const directionStr = baseState.replace("sing", "");
+                const lane = laneMap[directionStr];
+                const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
+                const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : 0;
+
+                if (isP2HoldingSustain) {
+                    if (timeSinceHit < 100) {
+                        player2State = baseState + "-f1";
+                    } else {
+                        const holdFlicker = Math.floor((timeSinceHit - 100) / 50) % 2;
+                        player2State = holdFlicker === 0 ? baseState + "-f2" : baseState + "-f1";
+                    }
+                } else {
+                    player2State = (timeSinceHit < 100) ? baseState + "-f1" : baseState + "-f2";
+                }
+            } else {
+                player2State = baseState;
+            }
         }
         if (!validHit && _player2AnimationTimer > 0 && !isP2HoldingSustain) {
             _player2AnimationTimer -= 16.6; 
@@ -6143,7 +6183,7 @@ function animateGameOver(ctx, charData) {
     if (_player2Char && _player2Ctx) {
         drawCharacterFrame(_player2Ctx, _player2Char, player2State, tick, holdTicks);
     }
-        
+    
     let opponentState = "idle";
 
     if (_specialTarget === "opponent" && _specialAnimation) {
@@ -6154,7 +6194,26 @@ function animateGameOver(ctx, charData) {
             _opponentAnimTimer = 250;
         }
 
-        opponentState = _opponentAnimState;
+        const baseState = _opponentAnimState;
+        if (baseState !== "idle" && baseState.startsWith("sing")) {
+            const directionStr = baseState.replace("sing", "");
+            const lane = laneMap[directionStr];
+            const hasHitHappened = _opponentLaneHitTimes[lane] !== -1;
+            const timeSinceHit = hasHitHappened ? (currentTime - _opponentLaneHitTimes[lane]) : 0;
+
+            if (isO1HoldingSustain) {
+                if (timeSinceHit < 100) {
+                    opponentState = baseState + "-f1";
+                } else {
+                    const holdFlicker = Math.floor((timeSinceHit - 100) / 50) % 2;
+                    opponentState = holdFlicker === 0 ? baseState + "-f2" : baseState + "-f1";
+                }
+            } else {
+                opponentState = (timeSinceHit < 100) ? baseState + "-f1" : baseState + "-f2";
+            }
+        } else {
+            opponentState = baseState;
+        }
         
         if (!isO1HoldingSustain) {
             _opponentAnimTimer -= 16.6;
@@ -6177,7 +6236,26 @@ function animateGameOver(ctx, charData) {
             _opponent2AnimTimer = 250;
         }
 
-        opponent2State = _opponent2AnimState;
+        const baseState = _opponent2AnimState;
+        if (baseState !== "idle" && baseState.startsWith("sing")) {
+            const directionStr = baseState.replace("sing", "");
+            const lane = laneMap[directionStr];
+            const hasHitHappened = _opponentLaneHitTimes[lane] !== -1;
+            const timeSinceHit = hasHitHappened ? (currentTime - _opponentLaneHitTimes[lane]) : 0;
+
+            if (isO2HoldingSustain) {
+                if (timeSinceHit < 100) {
+                    opponent2State = baseState + "-f1";
+                } else {
+                    const holdFlicker = Math.floor((timeSinceHit - 100) / 50) % 2;
+                    opponent2State = holdFlicker === 0 ? baseState + "-f2" : baseState + "-f1";
+                }
+            } else {
+                opponent2State = (timeSinceHit < 100) ? baseState + "-f1" : baseState + "-f2";
+            }
+        } else {
+            opponent2State = baseState;
+        }
 
         if (!isO2HoldingSustain) {
             _opponent2AnimTimer -= 16.6;
