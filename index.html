@@ -5860,23 +5860,39 @@ function gameOver() {
     
     endIntervals(); 
 
-    document.querySelectorAll(".note").forEach(el => el.remove());
-    document.querySelectorAll(".sustain-body").forEach(el => el.remove());
-    document.querySelectorAll(".sustain-end").forEach(el => el.remove());
+    document.querySelectorAll(".note, .sustain-body, .sustain-end").forEach(el => el.remove());
     
     micDrop.currentTime = 0;
     micDrop.play();
 
+    if (_activeSong && _activeSong.playerPosition && _playerCtx) {
+        const playerX = _activeSong.playerPosition.x;
+        const playerY = _activeSong.playerPosition.y;
+        
+        const charWidth = _playerCtx.canvas.width;
+        const charHeight = _playerCtx.canvas.height;
+
+        const panTargetX = (playerX + charWidth / 2) - (camera.viewport.width / 2);
+        const panTargetY = (playerY + charHeight / 2) - (camera.viewport.height / 2);
+
+        triggerCameraEvent(
+            "MANUAL_PAN", 
+            panTargetX, 
+            panTargetY, 
+            1.2,
+            0.06
+        );
+    }
+
     if (_deathTimeout) clearTimeout(_deathTimeout);
 
     _deathTimeout = setTimeout(() => {
-        
         const currentPlayer = (_activeSong && _activeSong.player) ? _activeSong.player.toLowerCase() : "bf";
 
         if (currentPlayer === "pico") {
             _gameOverLoop = gameOver;
         } else {
-            _gameOverLoop = gameOverBF;
+            _gameOverLoop = gameOverBF; 
         }
 
         if (_gameOverLoop) {
@@ -5886,7 +5902,6 @@ function gameOver() {
         }
     }, 2500);
 }
-
 
     window.addEventListener("keydown", (e) => {
     if (blueBalled && e.key === "Enter") {
