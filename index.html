@@ -2646,7 +2646,6 @@ function playSongPreview(songId) {
             setTimeout(() => {
                 scene.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 0);
-
             if (chapterIndex === 10) {
                 const savedScore = highScoreRecords[sceneName.file] || 0;
                 if (scoreText) {
@@ -2659,6 +2658,7 @@ function playSongPreview(songId) {
                 }, 3000);
             }
         }
+        
         sceneList.appendChild(scene);
     });
 }
