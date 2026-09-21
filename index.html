@@ -5596,6 +5596,11 @@ function doPauseAction() {
     _rhythmStarted = false;
     blueBalled = false;
 
+    const fadeOverlay = document.getElementById("fade-overlay");
+    if (fadeOverlay) {
+        fadeOverlay.classList.remove("is-active");
+    }
+
     if (typeof _gameOverLoop !== 'undefined' && _gameOverLoop) {
         _gameOverLoop.pause();
         _gameOverLoop = null;
@@ -5809,7 +5814,16 @@ let blueBalled = false;
 
 function gameOver() {
     blueBalled = true;
+    deathPhase = "intro"; 
+    deathTick = 0;        
     
+    _playerAnimationTimer = 0;
+    _playerMissAnimState = null;
+    _poisonAnimTimer = 0;
+    _poisonAnimState = null;
+    _specialTarget = null;
+    _specialAnimation = null;
+
     if (_inst) _inst.pause();
     if (_voicePlayer) _voicePlayer.pause();
     if (_voiceOpponent) _voiceOpponent.pause();
@@ -5826,17 +5840,48 @@ function gameOver() {
     if (_deathTimeout) clearTimeout(_deathTimeout);
 
     _deathTimeout = setTimeout(() => {
-        if (_activeSong.player === "pico") {
-            _gameOverLoop = gameOverPico;
+        
+        const currentPlayer = (_activeSong && _activeSong.player) ? _activeSong.player.toLowerCase() : "bf";
+
+        if (currentPlayer === "pico") {
+            _gameOverLoop = gameOver;
         } else {
             _gameOverLoop = gameOverBF;
         }
 
-        _gameOverLoop.loop = true;
-        _gameOverLoop.currentTime = 0;
-        _gameOverLoop.play();
+        if (_gameOverLoop) {
+            _gameOverLoop.loop = true;
+            _gameOverLoop.currentTime = 0;
+            _gameOverLoop.play();
+        }
     }, 2500);
 }
+
+
+    window.addEventListener("keydown", (e) => {
+    if (blueBalled && e.key === "Enter") {
+        if (deathPhase === "loop") {
+            deathPhase = "confirm";
+            deathTick = 0; 
+            
+            if (_gameOverLoop) {
+                _gameOverLoop.pause();
+                _gameOverLoop = null;
+            }
+
+            const confirmSFX = new Audio("assets/final/idk.mp3");
+            confirmSFX.play().catch(() => {});
+
+            const fadeOverlay = document.getElementById("fade-overlay");
+            if (fadeOverlay) {
+                fadeOverlay.classList.add("is-active");
+                fadeOverlay.addEventListener("transitionend", () => {
+                    restartSong();
+                }, { once: true });
+            }
+        }
+    }
+});
 
 
     function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
@@ -5868,10 +5913,27 @@ let _playerMissAnimState = null;
 let _player2MissAnimState = null;
 let _lastPressedPlayer2Key = null;
 
+let deathPhase = "intro";
+let deathTick = 0;        
+const DEATH_HOLD = 4;     
 
-
+function animateGameOver(ctx, charData) {
+    
+}
+    
     function animateCharacters(currentTime) {
     if (!_activeSong || !_playerChar || !_opponentChar) return;
+
+    if (blueBalled) {
+        _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
+        
+        if (_player2Ctx) {
+            _player2Ctx.clearRect(0, 0, _player2Ctx.canvas.width, _player2Ctx.canvas.height);
+        }
+
+        animateGameOver(_playerCtx, _playerChar);
+        return;
+    }
 
     const bpm = _activeSong.bpm;
     const ticksPerBeat = 10;
