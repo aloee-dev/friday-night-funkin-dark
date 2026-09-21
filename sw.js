@@ -8,6 +8,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.match(event.request).then((cachedResponse) => {
+
                 if (cachedResponse) {
                     return cachedResponse;
                 }
