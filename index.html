@@ -1808,6 +1808,60 @@ a,
     // "delay" feature idk what that means but i wrote that in my google doc a month ago
 
 const version = "0.0.0";
+
+(function() {
+    const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+    const originalSetProperty = CSSStyleDeclaration.prototype.setProperty;
+
+    function getCleanKey(value) {
+        if (!value) return '';
+        const absoluteUrl = new URL(value, window.location.href).href;
+        return absoluteUrl.replace(window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1), '');
+    }
+
+    Object.defineProperty(HTMLImageElement.prototype, 'src', {
+        set: function(value) {
+            if (!value) return originalSrcDescriptor.set.call(this, value);
+            const key = getCleanKey(value);
+            
+            if (typeof assetCache !== 'undefined' && assetCache[key]) {
+                originalSrcDescriptor.set.call(this, assetCache[key].src);
+                return;
+            }
+            originalSrcDescriptor.set.call(this, value);
+        },
+        get: function() { return originalSrcDescriptor.get.call(this); }
+    });
+
+    Object.defineProperty(CSSStyleDeclaration.prototype, 'backgroundImage', {
+        set: function(value) {
+            if (value && value.includes('url(')) {
+                const match = value.match(/url\(['"]?([^'"]+)['"]?\)/);
+                if (match && match[1]) {
+                    const key = getCleanKey(match[1]);
+                    if (typeof assetCache !== 'undefined' && assetCache[key]) {
+                        return originalSetProperty.call(this, 'background-image', `url("${assetCache[key].src}")`, '');
+                    }
+                }
+            }
+            return originalSetProperty.call(this, 'background-image', value, '');
+        },
+        get: function() { return this.getPropertyValue('background-image'); }
+    });
+
+    CSSStyleDeclaration.prototype.setProperty = function(property, value, priority) {
+        if (property === 'background-image' && value && value.includes('url(')) {
+            const match = value.match(/url\(['"]?([^'"]+)['"]?\)/);
+            if (match && match[1]) {
+                const key = getCleanKey(match[1]);
+                if (typeof assetCache !== 'undefined' && assetCache[key]) {
+                    return originalSetProperty.call(this, property, `url("${assetCache[key].src}")`, priority || 'important');
+                }
+            }
+        }
+        return originalSetProperty.call(this, property, value, priority);
+    };
+})();
    
 const assets = [
     "backgrounds/title.png",
@@ -1916,7 +1970,8 @@ const assets = [
 }
 
 const menuMusic = new Audio('assets/music/menu.m4a');
-    
+
+
 let loaded = 0;
 const assetCache = {};
 
@@ -1937,6 +1992,7 @@ function preloadAsset(src) {
             img.decode()
                 .then(async () => {
                     assetCache[src] = img;
+                    
                     const cache = await caches.open('ACE-engine-v' + version).catch(() => null);
                     if (cache) cache.add(src).catch(() => null);
 
