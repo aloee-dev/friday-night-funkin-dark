@@ -5948,7 +5948,38 @@ let deathTick = 0;
 const DEATH_HOLD = 4;     
 
 function animateGameOver(ctx, charData) {
+    deathTick++; 
     
+    const playerPrefix = (_activeSong && _activeSong.player) ? _activeSong.player.toLowerCase() : "pico";
+
+    let actionState = `${playerPrefix} death intro`; 
+
+    if (deathPhase === "intro") {
+        actionState = `${playerPrefix} death intro`; 
+        
+        const totalIntroFrames = charData.animations[actionState]?.length || 0;
+        const currentFrame = Math.floor(deathTick / DEATH_HOLD);
+        
+        if (currentFrame >= totalIntroFrames) {
+            deathPhase = "loop";  
+            deathTick = 0;        
+        }
+    } 
+    else if (deathPhase === "loop") {
+        actionState = `${playerPrefix} death loop`; 
+    } 
+    else if (deathPhase === "confirm") {
+        actionState = `${playerPrefix} death confirm`; 
+        
+        const totalConfirmFrames = charData.animations[actionState]?.length || 0;
+        const currentFrame = Math.floor(deathTick / DEATH_HOLD);
+        
+        if (currentFrame >= totalConfirmFrames) {
+            restartSong(); 
+        }
+    }
+
+    drawCharacterFrame(ctx, charData, actionState, deathTick, DEATH_HOLD);
 }
     
     function animateCharacters(currentTime) {
