@@ -1808,13 +1808,6 @@ a,
     // "delay" feature idk what that means but i wrote that in my google doc a month ago
 
 const version = "0.0.0";
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-        .then(() => console.log("Active."))
-        .catch(err => console.error("Error:", err));
-}
-
    
 const assets = [
     "backgrounds/title.png",
