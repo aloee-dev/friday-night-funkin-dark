@@ -1,18 +1,19 @@
 const CACHE_NAME = 'ACE-engine-v0.0.0';
 
 self.addEventListener('fetch', (event) => {
-    if (event.request.cache === 'only-if-cached' || event.request.mode === 'navigate') {
+    if (
+        event.request.cache === 'only-if-cached' || 
+        event.request.mode === 'navigate' ||
+        event.request.destination === 'image' || 
+        event.request.destination === 'audio'
+    ) {
         return;
     }
 
     event.respondWith(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.match(event.request).then((cachedResponse) => {
-
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                return fetch(event.request);
+                return cachedResponse || fetch(event.request);
             });
         })
     );
