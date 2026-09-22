@@ -1922,7 +1922,7 @@ const assetCache = {};
 
 async function preloadAsset(src) {
     const cacheName = 'ACE-engine-v0.0.0';
-    
+
     if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
         return new Promise((resolve) => {
             const audio = new Audio();
@@ -1933,20 +1933,17 @@ async function preloadAsset(src) {
     }
 
     try {
-        const response = await fetch(src, { mode: 'cors' });
-        if (!response.ok) throw new Error("Network response failed");
-        
+        const response = await fetch(src);
+        if (!response.ok) throw new Error("Fetch failed");
         const blob = await response.blob();
-        
+
         const cache = await caches.open(cacheName).catch(() => null);
         if (cache) {
             await cache.put(src, new Response(blob.clone())).catch(() => null);
         }
-
         return new Promise((resolve) => {
             const img = new Image();
-            const blobUrl = URL.createObjectURL(blob);
-            img.src = blobUrl;
+            img.src = src;
 
             img.onload = () => {
                 img.decode()
@@ -1959,20 +1956,14 @@ async function preloadAsset(src) {
                         resolve(img);
                     });
             };
-            img.onerror = () => {
-                assetCache[src] = img;
-                resolve(img);
-            };
+            img.onerror = () => resolve(img);
         });
+
     } catch (e) {
-        console.warn("Storage fetch bypassed, falling back to legacy load:", src, e);
         return new Promise((resolve) => {
             const img = new Image();
             img.src = src;
-            img.onload = () => {
-                assetCache[src] = img;
-                resolve(img);
-            };
+            img.onload = () => { assetCache[src] = img; resolve(img); };
             img.onerror = () => resolve(img);
         });
     }
