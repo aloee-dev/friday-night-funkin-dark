@@ -1,12 +1,7 @@
 const CACHE_NAME = 'ACE-engine-v0.0.0';
 
 self.addEventListener('fetch', (event) => {
-    if (
-        event.request.cache === 'only-if-cached' || 
-        event.request.mode === 'navigate' ||
-        event.request.destination === 'image' || 
-        event.request.destination === 'audio'
-    ) {
+    if (event.request.cache === 'only-if-cached' || event.request.mode === 'navigate') {
         return;
     }
 
