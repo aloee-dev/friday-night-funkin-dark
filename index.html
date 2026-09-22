@@ -1935,27 +1935,14 @@ function preloadAsset(src) {
 
         img.onload = () => {
             img.decode()
-                .then(async () => {
+                .then(() => {
                     assetCache[src] = img;
-
-                    try {
-                        const response = await fetch(src, { cache: 'force-cache' });
-                        const cache = await caches.open('ACE-engine-v0.0.0');
-                        if (cache && response.ok) {
-                            await cache.put(src, response); 
-                        }
-                    } catch (e) {
-                    }
-
                     resolve(img);
                 })
                 .catch(() => {
                     assetCache[src] = img;
                     resolve(img);
                 });
-        };
-        img.onerror = () => {
-            resolve(img);
         };
     });
 }
@@ -1969,7 +1956,7 @@ async function preloadAll() {
         
         loaded++;
         const percent = Math.floor((loaded / assets.length) * 100);
-        if (progressBar) progressBar.style.width = percent + "%";
+        progressBar.style.width = percent + "%";
 
         if (src.includes("sprites/")) {
             const id = src.split('/').pop().split('.')[0]; 
@@ -1989,6 +1976,21 @@ async function preloadAll() {
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
 }
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        Object.keys(assetCache).forEach((key) => {
+            const asset = assetCache[key];
+            
+            if (asset instanceof HTMLImageElement) {
+                asset.decode().catch(() => null); 
+            } else if (asset instanceof HTMLAudioElement) {
+                asset.load(); 
+            }
+        });
+    }
+});
+
 
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
