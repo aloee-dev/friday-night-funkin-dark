@@ -2002,7 +2002,17 @@ function preloadAsset(src) {
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
-            audio.oncanplaythrough = () => resolve(audio);
+            
+            audio.oncanplaythrough = () => {
+                assetCache[src] = audio; 
+                resolve(audio);
+            };
+            
+            audio.onerror = () => {
+                console.error("Audio failed to load: " + src);
+                resolve(null);
+            };
+            
             audio.src = src;
             audio.load();
             return;
@@ -2030,7 +2040,10 @@ function preloadAsset(src) {
             .catch(() => {
                 const img = new Image();
                 img.src = src;
-                img.onload = () => resolve(img);
+                img.onload = () => {
+                    assetCache[src] = img;
+                    resolve(img);
+                };
                 img.onerror = () => resolve(null);
             });
     });
@@ -2041,6 +2054,7 @@ async function preloadAll() {
 
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
+    const vramAnchor = document.getElementById("vram-anchor"); 
 
     const promises = assets.map(async (src) => {
         const element = await preloadAsset(src);
@@ -2049,6 +2063,14 @@ async function preloadAll() {
             loaded++;
             const percent = Math.floor((loaded / assets.length) * 100);
             progressBar.style.width = percent + "%";
+
+            if (element instanceof HTMLImageElement && !src.includes("sprites/")) {
+                const vramClone = element.cloneNode(true);
+                vramClone.style.width = "auto";
+                vramClone.style.height = "auto";
+                vramClone.style.display = "block";
+                vramAnchor.appendChild(vramClone);
+            }
 
             if (src.includes("sprites/")) {
                 const id = src.split('/').pop().split('.')[0]; 
@@ -2069,7 +2091,7 @@ async function preloadAll() {
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
 }
-
+    
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
     hoverSfx.preload = "auto";
