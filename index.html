@@ -78,6 +78,10 @@ a,
     font-family: "Youth";
     src: url("fonts/GraffitiYouth-Regular.otf") format("truetype");
 }
+    @font-face {
+    font-family: "cwisdom";
+    src: url("fonts/cwisdom.ttf") format("truetype");
+}
     .gradient-text {
     background: linear-gradient(90deg, #ff4d4d, #ffa64d, #ffff4d);
     -webkit-background-clip: text;
@@ -586,16 +590,55 @@ a,
 }
 
 .scene-item {
+    font-family: 'cwisdom', sans-serif;
     font-size: 50px;
-    transition: margin-left 0.2s ease;
-    margin-left: 0px;
+    color: white;
+    text-transform: uppercase;
+    position: relative;
+    padding: 10px 40px 10px 60px;
+    margin-bottom: 15px;
+    width: fit-content;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s ease;
     flex-shrink: 0;
 }
-    
-.selected {
-    margin-left: 60px;
-    font-weight: bold;
+
+.scene-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    z-index: 1;
+    clip-path: polygon(0% 0%, 90% 0%, 78% 100%, 0% 100%);
 }
+
+.scene-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 6px); 
+    height: 100%;
+    background-color: black;
+    z-index: 2;
+    clip-path: polygon(0% 0%, 89% 0%, 77% 100%, 0% 100%);
+}
+
+.scene-item span, 
+.scene-item {
+    position: relative;
+    z-index: 3; 
+}
+
+.selected {
+    transform: translateX(40px);
+}
+    
     #freeplay-high-score {
     position: absolute;
     top: 55px;
@@ -2649,9 +2692,10 @@ function playSongPreview(songId) {
     }
 
     currentChapter.scenes.forEach((sceneName, index) => {
-        const scene = document.createElement("div");
-        scene.innerText = sceneName.label;
-        scene.className = "scene-item";
+    const scene = document.createElement("div");
+    scene.innerHTML = `<span>${sceneName.label}</span>`; 
+    
+    scene.className = "scene-item";
 
         if (index === sceneIndex) {
             scene.classList.add("selected");
