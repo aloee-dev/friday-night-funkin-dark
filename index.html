@@ -1603,6 +1603,25 @@ a,
   color: #666;
   font-size: 12px;
 }
+
+    #vram-anchor {
+    position: fixed;
+    top: 2000px;
+    left: 2000px;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    pointer-events: none; 
+    z-index: -9999;
+}
+
+#vram-anchor img {
+    width: auto;
+    height: auto;
+    display: block;
+    opacity: 1;
+}
+
     
 </style>
 </head>
@@ -1859,7 +1878,8 @@ a,
 </div>
 </div>
 
-    <div id="vram-anchor" style="position: fixed; bottom: 0; right: 0; width: 1px; height: 1px; opacity: 0.01; overflow: hidden; pointer-events: none; z-index: -9999;"></div>
+   <div id="vram-anchor"></div>
+
 
 
 
@@ -2071,7 +2091,6 @@ async function preloadAll() {
                 gameViewport.appendChild(element);
             } 
             else if (element instanceof HTMLImageElement) {
-                element.style.display = "block";
                 vramAnchor.appendChild(element);
             }
         }
@@ -2079,7 +2098,6 @@ async function preloadAll() {
     });
 
     await Promise.all(promises);
-    vramAnchor.innerHTML = ""; 
 
     document.getElementById("loading-text").textContent = "LOADED!";
     gameViewport.style.display = "block";
