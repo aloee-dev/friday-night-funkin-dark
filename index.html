@@ -1977,6 +1977,19 @@ const assets = [
     "sfx/blip2.wav"
 ];
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then((registration) => {
+                console.log('ACE Engine SW registered successfully with scope: ', registration.scope);
+            })
+            .catch((error) => {
+                console.error('ACE Engine SW registration failed: ', error);
+            });
+    });
+}
+
+
 const menuMusic = new Audio('assets/music/menu.m4a');
 let loaded = 0;
 const assetCache = {};
@@ -1984,26 +1997,26 @@ const assetCache = {};
 function preloadAsset(src) {
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
-            const audio = new Audio();
-            audio.oncanplaythrough = () => resolve(audio);
-            audio.src = src;
-            audio.load();
+            fetch(src)
+                .then(() => {
+                    const audio = new Audio();
+                    audio.src = src;
+                    resolve(audio);
+                })
+                .catch(() => {
+                    const audio = new Audio();
+                    audio.src = src;
+                    resolve(audio);
+                });
             return;
         }
 
         const img = new Image();
         img.src = src;
-
         img.onload = () => {
             img.decode()
-                .then(() => {
-                    assetCache[src] = img;
-                    resolve(img);
-                })
-                .catch(() => {
-                    assetCache[src] = img;
-                    resolve(img);
-                });
+                .then(() => { assetCache[src] = img; resolve(img); })
+                .catch(() => { assetCache[src] = img; resolve(img); });
         };
     });
 }
