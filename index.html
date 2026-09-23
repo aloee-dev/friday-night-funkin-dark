@@ -2003,26 +2003,41 @@ function preloadAsset(src) {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
             audio.oncanplaythrough = () => resolve(audio);
-            audio.src = src; 
+            audio.src = src;
             audio.load();
             return;
         }
 
-        const img = new Image();
-        img.src = src; 
-        img.onload = () => {
-            img.decode()
-                .then(() => { assetCache[src] = img; resolve(img); })
-                .catch(() => { assetCache[src] = img; resolve(img); });
-        };
-        img.onerror = () => resolve(null);
+        fetch(src)
+            .then(response => response.blob())
+            .then(blob => {
+                const objectURL = URL.createObjectURL(blob);
+                const img = new Image();
+                img.src = objectURL;
+                
+                img.decode()
+                    .then(() => { 
+                        assetCache[src] = img; 
+                        resolve(img); 
+                    })
+                    .catch(() => { 
+                        assetCache[src] = img; 
+                        resolve(img); 
+                    });
+            })
+            .catch(() => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+            });
     });
 }
 
 async function preloadAll() {
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
-    const vramAnchor = document.getElementById("vram-anchor"); 
+    const vramAnchor = document.getElementById("vram-anchor");
 
     const promises = assets.map(async (src) => {
         const element = await preloadAsset(src);
@@ -2112,7 +2127,6 @@ async function showDisclaimer() {
         document.getElementById("press-enter").classList.add("fade-in");
     }, 2000);
 }
-
     
     document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && disclaimerActive) {
@@ -2157,8 +2171,6 @@ async function showDisclaimer() {
         { header: "SPRITE ARTISTS", names: ["aloe"] }
     ];
         // add animators, composers, charters to the list
-        // although it will be a visual novel, i plan 2 songs at the finale
-        // maybe different composers for ambience and the songs? unless theyre that good
         // https://www.youtube.com/watch?v=CMNyHBx1gak is what im imagining the menu music should sound like
 
     creditsContent.innerHTML = creditData.map(section => `
