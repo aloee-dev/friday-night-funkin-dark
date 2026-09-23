@@ -2064,19 +2064,17 @@ async function preloadAll() {
             const percent = Math.floor((loaded / assets.length) * 100);
             progressBar.style.width = percent + "%";
 
-            if (element instanceof HTMLImageElement && !src.includes("sprites/")) {
-                const vramClone = element.cloneNode(true);
-                vramClone.style.width = "auto";
-                vramClone.style.height = "auto";
-                vramClone.style.display = "block";
-                vramAnchor.appendChild(vramClone);
-            }
-
             if (src.includes("sprites/")) {
                 const id = src.split('/').pop().split('.')[0]; 
                 element.id = id; 
                 element.className = "char"; 
                 gameViewport.appendChild(element);
+            } 
+            else if (element instanceof HTMLImageElement) {
+                element.style.width = "auto";
+                element.style.height = "auto";
+                element.style.display = "block";
+                vramAnchor.appendChild(element);
             }
         }
         return element;
