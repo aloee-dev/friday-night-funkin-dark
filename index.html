@@ -2001,19 +2001,6 @@ const assets = [
     "sfx/blip2.wav"
 ];
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then((registration) => {
-                console.log('Active ', registration.scope);
-            })
-            .catch((error) => {
-                console.error('Error: ', error);
-            });
-    });
-}
-
-
 const menuMusic = new Audio('assets/music/menu.m4a');
 let loaded = 0;
 const assetCache = {};
@@ -2022,91 +2009,72 @@ function preloadAsset(src) {
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
-            
-            audio.oncanplaythrough = () => {
-                assetCache[src] = audio; 
-                resolve(audio);
-            };
-            
-            audio.onerror = () => {
-                console.error("Audio failed to load: " + src);
-                resolve(null);
-            };
-            
+            audio.oncanplaythrough = () => resolve(audio);
             audio.src = src;
             audio.load();
             return;
         }
 
-        fetch(src)
-            .then(response => {
-                if (!response.ok) throw new Error("Network response error");
-                return response.blob();
-            })
-            .then(blob => {
-                const img = new Image();
-                img.src = URL.createObjectURL(blob);
-                
-                img.decode()
-                    .then(() => {
-                        assetCache[src] = img;
-                        resolve(img);
-                    })
-                    .catch(() => {
-                        assetCache[src] = img;
-                        resolve(img);
-                    });
-            })
-            .catch(() => {
-                const img = new Image();
-                img.src = src;
-                img.onload = () => {
+        const img = new Image();
+        img.src = src;
+
+        img.onload = () => {
+            img.decode()
+                .then(() => {
                     assetCache[src] = img;
                     resolve(img);
-                };
-                img.onerror = () => resolve(null);
-            });
+                })
+                .catch(() => {
+                    assetCache[src] = img;
+                    resolve(img);
+                });
+        };
     });
 }
 
 async function preloadAll() {
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
-    const vramAnchor = document.getElementById("vram-anchor"); 
 
     const promises = assets.map(async (src) => {
         const element = await preloadAsset(src);
         
-        if (element) {
-            loaded++;
-            const percent = Math.floor((loaded / assets.length) * 100);
-            progressBar.style.width = percent + "%";
+        loaded++;
+        const percent = Math.floor((loaded / assets.length) * 100);
+        progressBar.style.width = percent + "%";
 
-            if (src.includes("sprites/")) {
-                const id = src.split('/').pop().split('.')[0]; 
-                element.id = id; 
-                element.className = "char"; 
-                gameViewport.appendChild(element);
-            } 
-            else if (element instanceof HTMLImageElement) {
-                element.style.width = "auto";
-                element.style.height = "auto";
-                element.style.display = "block";
-                vramAnchor.appendChild(element); 
-            }
+        if (src.includes("sprites/")) {
+            const id = src.split('/').pop().split('.')[0]; 
+            element.id = id; 
+            element.className = "char"; 
+            gameViewport.appendChild(element);
         }
+
         return element;
     });
 
     await Promise.all(promises);
 
     document.getElementById("loading-text").textContent = "LOADED!";
-    gameViewport.style.opacity = 1;
-
     await new Promise(r => setTimeout(r, 1000));
+
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
 }
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        Object.keys(assetCache).forEach((key) => {
+            const asset = assetCache[key];
+            
+            if (asset instanceof HTMLImageElement) {
+                asset.decode().catch(() => null); 
+            } else if (asset instanceof HTMLAudioElement) {
+                asset.load(); 
+            }
+        });
+    }
+});
     
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
