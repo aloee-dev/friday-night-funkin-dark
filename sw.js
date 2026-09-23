@@ -1,10 +1,17 @@
 const CACHE_NAME = 'ACE-engine-v0.0.0';
 
 self.addEventListener('install', () => self.skipWaiting());
+
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((names) => Promise.all(names.map(c => c !== CACHE_NAME && caches.delete(c))))
-    ).then(() => self.clients.claim());
+        caches.keys()
+            .then((names) => {
+                return Promise.all(
+                    names.map(c => c !== CACHE_NAME && caches.delete(c))
+                );
+            })
+            .then(() => self.clients.claim())
+    );
 });
 
 self.addEventListener('fetch', (event) => {
