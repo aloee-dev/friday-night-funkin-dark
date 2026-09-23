@@ -1981,10 +1981,10 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
             .then((registration) => {
-                console.log('ACE Engine SW registered successfully with scope: ', registration.scope);
+                console.log('Active ', registration.scope);
             })
             .catch((error) => {
-                console.error('ACE Engine SW registration failed: ', error);
+                console.error('Error: ', error);
             });
     });
 }
@@ -1996,23 +1996,18 @@ const assetCache = {};
 
 function preloadAsset(src) {
     return new Promise((resolve) => {
+        const bypassSrc = src + "?preload=true";
+
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
-            fetch(src)
-                .then(() => {
-                    const audio = new Audio();
-                    audio.src = src;
-                    resolve(audio);
-                })
-                .catch(() => {
-                    const audio = new Audio();
-                    audio.src = src;
-                    resolve(audio);
-                });
+            const audio = new Audio();
+            audio.oncanplaythrough = () => resolve(audio);
+            audio.src = bypassSrc;
+            audio.load();
             return;
         }
 
         const img = new Image();
-        img.src = src;
+        img.src = bypassSrc;
         img.onload = () => {
             img.decode()
                 .then(() => { assetCache[src] = img; resolve(img); })
@@ -2038,32 +2033,26 @@ async function preloadAll() {
             element.className = "char"; 
             gameViewport.appendChild(element);
         }
-
         return element;
     });
 
     await Promise.all(promises);
 
     document.getElementById("loading-text").textContent = "LOADED!";
-    await new Promise(r => setTimeout(r, 1000));
+    
+    if ('caches' in window) {
+        const engineCache = await caches.open('ACE-engine-v0.0.0');
+        assets.forEach(src => {
+            fetch(src).then(res => {
+                if (res.status === 200) engineCache.put(src, res);
+            }).catch(() => {});
+        });
+    }
 
+    await new Promise(r => setTimeout(r, 1000));
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
 }
-
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-        Object.keys(assetCache).forEach((key) => {
-            const asset = assetCache[key];
-            
-            if (asset instanceof HTMLImageElement) {
-                asset.decode().catch(() => null); 
-            } else if (asset instanceof HTMLAudioElement) {
-                asset.load(); 
-            }
-        });
-    }
-});
 
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
