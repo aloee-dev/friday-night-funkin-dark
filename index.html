@@ -2402,6 +2402,7 @@ const freeplayData = [
     {
         chapterName: "Additional Content",
         bg: "backgrounds/title.png",
+        chapterSrc: "assets/freeplay/additional.png",
         scenes: [
             { label: "This does nothing", file: "finaltest.json" },
             { label: "Ill edit later", file: "test" }
@@ -2474,6 +2475,8 @@ const freeplayData = [
     },
     {
         chapterName: "Songs",
+        bg: "backgrounds/title.png",
+        chapterSrc: "assets/freeplay/FUNKY.png",
         scenes: [
             { label: "Stress", file: "song1" },
             { label: "Stress", file: "song1" },
@@ -2633,7 +2636,7 @@ function playSongPreview(songId) {
             chapterGraphic.src = currentChapter.chapterSrc;
             chapterGraphic.style.display = "block";
         } else {
-            chapterGraphic.src = "assets/?.png"; 
+            chapterGraphic.src = "assets/freeplay/?.png"; 
         }
     }
 
