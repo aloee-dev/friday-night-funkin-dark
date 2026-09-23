@@ -1970,20 +1970,6 @@ async function preloadAll() {
     setTimeout(showDisclaimer, 1000);
 }
 
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-        Object.keys(assetCache).forEach((key) => {
-            const asset = assetCache[key];
-            
-            if (asset instanceof HTMLImageElement) {
-                asset.decode().catch(() => null); 
-            } else if (asset instanceof HTMLAudioElement) {
-                asset.load(); 
-            }
-        });
-    }
-});
-
 
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
