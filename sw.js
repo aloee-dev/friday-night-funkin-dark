@@ -10,20 +10,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     if (!event.request.url.startsWith(self.location.origin)) return;
 
-    let targetUrl = event.request.url;
-
-    if (targetUrl.includes('?preload=true')) {
-        targetUrl = targetUrl.replace('?preload=true', '');
-    }
-
-    const isAudio = targetUrl.match(/\.(mp3|m4a|wav)$/i);
-    const requestToProcess = new Request(targetUrl, isAudio ? {} : event.request);
+    const isAudio = event.request.url.match(/\.(mp3|m4a|wav)$/i);
+    const requestToProcess = isAudio ? new Request(event.request.url) : event.request;
 
     event.respondWith(
         caches.match(requestToProcess).then((cachedResponse) => {
             if (cachedResponse) return cachedResponse;
 
-            return fetch(event.request).then((networkResponse) => {
+            return fetch(requestToProcess).then((networkResponse) => {
                 if (!networkResponse || networkResponse.status !== 200) return networkResponse;
 
                 const responseToCache = networkResponse.clone();
