@@ -1917,48 +1917,26 @@ function preloadAsset(src) {
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
-            audio.oncanplaythrough = () => {
-                assetCache[src] = audio;
-                resolve(audio);
-            };
-            audio.onerror = () => resolve(null);
+            audio.oncanplaythrough = () => resolve(audio);
             audio.src = src;
             audio.load();
             return;
         }
 
         const img = new Image();
-        
-        img.onload = () => {
-            assetCache[src] = img; 
+        img.src = src;
 
+        img.onload = () => {
             img.decode()
                 .then(() => {
-                    try {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 1;
-                        canvas.height = 1;
-                        const ctx = canvas.getContext('2d');
-                        if (ctx) {
-                            ctx.drawImage(img, 0, 0, 1, 1);
-                        }
-                    } catch (e) {
-                        console.warn("GPU texture push skipped:", e);
-                    }
+                    assetCache[src] = img;
                     resolve(img);
                 })
-                .catch((err) => {
-                    console.error("Decoding failed for asset:", src, err);
-                    resolve(img); 
+                .catch(() => {
+                    assetCache[src] = img;
+                    resolve(img);
                 });
         };
-
-        img.onerror = () => {
-            console.error(`Failed to fetch asset route: ${src}`);
-            resolve(null);
-        };
-        const cacheBuster = `?t=${Date.now()}`;
-        img.src = src + cacheBuster;
     });
 }
 
@@ -1992,6 +1970,19 @@ async function preloadAll() {
     setTimeout(showDisclaimer, 1000);
 }
 
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        Object.keys(assetCache).forEach((key) => {
+            const asset = assetCache[key];
+            
+            if (asset instanceof HTMLImageElement) {
+                asset.decode().catch(() => null); 
+            } else if (asset instanceof HTMLAudioElement) {
+                asset.load(); 
+            }
+        });
+    }
+});
 
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
