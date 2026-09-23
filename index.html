@@ -2071,8 +2071,6 @@ async function preloadAll() {
                 gameViewport.appendChild(element);
             } 
             else if (element instanceof HTMLImageElement) {
-                element.style.width = "auto";
-                element.style.height = "auto";
                 element.style.display = "block";
                 vramAnchor.appendChild(element);
             }
@@ -2081,6 +2079,7 @@ async function preloadAll() {
     });
 
     await Promise.all(promises);
+    vramAnchor.innerHTML = ""; 
 
     document.getElementById("loading-text").textContent = "LOADED!";
     gameViewport.style.display = "block";
@@ -2089,6 +2088,7 @@ async function preloadAll() {
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
 }
+
     
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
