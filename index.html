@@ -593,7 +593,7 @@ a,
 #scene-list {
     height: 900px;
     margin-left: 10%;
-    margin-top: 90px;
+    margin-top: 80px;
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
@@ -643,7 +643,7 @@ a,
     background-color: white;
     z-index: 2; 
     
-    transform: skewX(-20deg); 
+    transform: skewX(20deg); 
 }
 
 .scene-item span {
@@ -653,7 +653,7 @@ a,
 }
 
 .selected {
-    transform: translateX(70px);
+    transform: translateX(130px);
 }
     #freeplay-high-score {
     position: absolute;
@@ -2700,14 +2700,19 @@ function playSongPreview(songId) {
     const chapterGraphic = document.getElementById("freeplay-chapter-graphic");
 
         if (chapterGraphic) {
-        if (currentChapter.chapterSrc) {
-            chapterGraphic.src = currentChapter.chapterSrc;
-            chapterGraphic.style.display = "block";
-        } else {
-            chapterGraphic.src = "assets/freeplay/?.png"; 
-        }
-    }
+    if (currentChapter.chapterSrc) {
+        chapterGraphic.onerror = function() {
+            chapterGraphic.src = "assets/freeplay/?.png";
+            chapterGraphic.onerror = null; 
+        };
 
+        chapterGraphic.src = currentChapter.chapterSrc;
+        chapterGraphic.style.display = "block";
+    } else {
+        chapterGraphic.src = "assets/freeplay/?.png"; 
+        chapterGraphic.style.display = "block";
+    }
+}
     if (chapterIndex === 10) {
         if (scoreText) scoreText.style.display = "block";
         if (scoreGraphic) scoreGraphic.style.display = "block";
