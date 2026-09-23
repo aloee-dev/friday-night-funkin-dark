@@ -610,7 +610,7 @@ a,
     display: inline-flex; 
     align-items: center;
     width: max-content; 
-    padding: 15px 30px 15px 30px; 
+    padding: 15px 40px 15px 30px; 
     margin-bottom: 15px;
     box-sizing: border-box;
     
@@ -624,20 +624,20 @@ a,
     position: absolute;
     top: 0;
     left: 0;
-    width: calc(100% + 40px); 
+    width: calc(100% + 30px); 
     height: 100%;
     background-color: black;
     z-index: 1; 
-    clip-path: polygon(0% 0%, calc(100% - 40px) 0%, 100% 100%, 0% 100%);
+    clip-path: polygon(0% 0%, calc(100% - 30px) 0%, 100% 100%, 0% 100%);
 }
 
 .scene-item::after {
     content: '';
     position: absolute;
     top: 0;
-    left: calc(100% + 55px); 
+    right: -15px; 
     
-    width: 20px; 
+    width: 15px; 
     height: 100%;
     background-color: white;
     z-index: 2; 
@@ -648,7 +648,6 @@ a,
     position: relative;
     z-index: 3;
     white-space: nowrap;
-    margin-right: 40px; 
 }
 
 .selected {
@@ -1688,8 +1687,8 @@ a,
 </div>
 
 <div id="freeplay-high-score" style="display: none;">SCORE: 0</div>
-<img id="freeplay-chapter-graphic" src="assets/week1.png" style="display: none;">
-<img id="freeplay-score-graphic" src="assets/graphic.png" style="display: none;">
+<img id="freeplay-chapter-graphic" src="assets/freeplay/week-1.png" style="display: none;">
+<img id="freeplay-score-graphic" src="assets/freeplay/graphic.png" style="display: none;">
 
 <div id="freeplay-menu" style="display: none;"> 
     <div id="freeplay-bg"></div>
