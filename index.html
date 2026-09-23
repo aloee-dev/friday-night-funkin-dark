@@ -2101,6 +2101,7 @@ async function preloadAll() {
 
     document.getElementById("loading-text").textContent = "LOADED!";
     gameViewport.style.display = "block";
+    gameViewport.style.opacity = "1";
 
     await new Promise(r => setTimeout(r, 1000));
     document.getElementById("loading-screen").style.opacity = 0;
