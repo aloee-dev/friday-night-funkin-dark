@@ -614,6 +614,12 @@ a,
     height: 1099px;
     z-index: 4;
 }
+    #freeplay-chapter-graphic {
+    position: absolute;
+    width: 1595px;
+    height: 1099px;
+    z-index: 3;
+}
 
     #freeplay-bg {
     position: fixed;
@@ -1624,6 +1630,7 @@ a,
 </div>
 
 <div id="freeplay-high-score" style="display: none;">SCORE: 0</div>
+<img id="freeplay-chapter-graphic" src="assets/week1.png" style="display: none;">
 <img id="freeplay-score-graphic" src="assets/graphic.png" style="display: none;">
 
 <div id="freeplay-menu" style="display: none;"> 
@@ -2367,8 +2374,12 @@ document.addEventListener('keydown', async (e) => {
         }
 
         titleButtons.style.display = "flex";
+        const scoreText = document.getElementById("freeplay-high-score");
+        const scoreGraphic = document.getElementById("freeplay-score-graphic");
+        const chapterGraphic = document.getElementById("freeplay-chapter-graphic");
         if (scoreText) scoreText.style.display = "none";
         if (scoreGraphic) scoreGraphic.style.display = "none";
+        if (chapterGraphic) chapterGraphic.style.display = "none";
         freePlay.style.display = "none";
         await new Promise(r => setTimeout(r, 1500));
 
@@ -2591,12 +2602,10 @@ function playSongPreview(songId) {
 
 
     function renderScenes() {
-    const chapterHeader = document.getElementById("chapter-header");
     const sceneList = document.getElementById("scene-list");
     const freeplayBg = document.getElementById("freeplay-bg");
 
     const currentChapter = freeplayData[chapterIndex];
-    chapterHeader.innerText = currentChapter.chapterName;
     
     if (previewTimeout) clearTimeout(previewTimeout);
     if (previewFadeInterval) clearInterval(previewFadeInterval);
@@ -2617,6 +2626,16 @@ function playSongPreview(songId) {
 
     const scoreText = document.getElementById("freeplay-high-score");
     const scoreGraphic = document.getElementById("freeplay-score-graphic");
+    const chapterGraphic = document.getElementById("freeplay-chapter-graphic");
+
+        if (chapterGraphic) {
+        if (currentChapter.chapterSrc) {
+            chapterGraphic.src = currentChapter.chapterSrc;
+            chapterGraphic.style.display = "block";
+        } else {
+            chapterGraphic.src = "assets/?.png"; 
+        }
+    }
 
     if (chapterIndex === 10) {
         if (scoreText) scoreText.style.display = "block";
