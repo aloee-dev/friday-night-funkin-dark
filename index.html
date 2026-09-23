@@ -591,14 +591,14 @@ a,
 
 .scene-item {
     font-family: 'cwisdom', sans-serif;
-    font-size: 50px;
+    font-size: 60px;
     color: white;
     text-transform: uppercase;
     position: relative;
     display: inline-flex; 
     align-items: center;
     width: max-content;
-    padding: 10px 100px 10px 20px;
+    padding: 15px 110px 15px 20px;
     margin-bottom: 15px;
     box-sizing: border-box;
     
@@ -613,20 +613,31 @@ a,
     width: 100%;
     height: 100%;
     background-color: white;
-    z-index: 1;
-    clip-path: polygon(0% 0%, 98% 0%, 88% 100%, 0% 100%);
+    z-index: -2;
 }
-
+    
 .scene-item::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: calc(100% - 6px);
+    width: 100%;
     height: 100%;
     background-color: black;
-    z-index: 2;
-    clip-path: polygon(0% 0%, 97.5% 0%, 87.5% 100%, 0% 100%);
+    z-index: -1;
+    clip-path: polygon(
+        0% 0%, 
+        280px 0%,
+        240px 100%,
+        0% 100%,
+        
+        246px 100%, 
+        286px 0%, 
+        
+        100% 0%, 
+        100% 100%, 
+        246px 100%
+    );
 }
 
 .scene-item span {
