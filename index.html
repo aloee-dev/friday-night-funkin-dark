@@ -2038,20 +2038,32 @@ async function preloadAll() {
     setTimeout(showDisclaimer, 1000);
 }
 
-document.addEventListener("visibilitychange", () => {
+document.addEventListener("visibilitychange", async () => {
     if (document.visibilityState === "visible") {
-        Object.keys(assetCache).forEach((key) => {
+        const gameViewport = document.getElementById("game-viewport");
+        gameViewport.style.willChange = "transform, opacity";
+
+        const decodePromises = Object.keys(assetCache).map(async (key) => {
             const asset = assetCache[key];
-            
             if (asset instanceof HTMLImageElement) {
-                asset.decode().catch(() => null); 
+                try {
+                    await asset.decode();
+                } catch (e) {
+                }
             } else if (asset instanceof HTMLAudioElement) {
                 asset.load(); 
             }
+            return asset;
+        });
+
+        await Promise.all(decodePromises);
+
+        requestAnimationFrame(() => {
+            gameViewport.style.willChange = "auto";
         });
     }
 });
-
+    
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
     hoverSfx.preload = "auto";
