@@ -2701,14 +2701,14 @@ function playSongPreview(songId) {
         if (chapterGraphic) {
     if (currentChapter.chapterSrc) {
         chapterGraphic.onerror = function() {
-            chapterGraphic.src = "assets/freeplay/?.png";
+            chapterGraphic.src = "assets/freeplay/%3F.png";
             chapterGraphic.onerror = null; 
         };
 
         chapterGraphic.src = currentChapter.chapterSrc;
         chapterGraphic.style.display = "block";
     } else {
-        chapterGraphic.src = "assets/freeplay/?.png"; 
+        chapterGraphic.src = "assets/freeplay/%3F.png"; 
         chapterGraphic.style.display = "block";
     }
 }
