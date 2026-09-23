@@ -581,6 +581,16 @@ a,
 }
 
 #scene-list {
+    padding-top: 100px;
+    height: 900px;
+    margin-left: 10%;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+#scene-list {
     height: 900px;
     margin-left: 10%;
     margin-top: 80px;
@@ -599,9 +609,8 @@ a,
     position: relative;
     display: inline-flex; 
     align-items: center;
-    
     width: max-content; 
-    padding: 15px 140px 15px 30px; 
+    padding: 15px 40px 15px 30px; 
     margin-bottom: 15px;
     box-sizing: border-box;
     
@@ -615,32 +624,24 @@ a,
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: calc(100% + 30px); 
     height: 100%;
     background-color: black;
     z-index: 1; 
-    clip-path: polygon(
-        0% 0%, 
-        75% 0%, 
-        82% 100%, 
-        0% 100%
-    );
+    clip-path: polygon(0% 0%, calc(100% - 30px) 0%, 100% 100%, 0% 100%);
 }
+
 .scene-item::after {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
+    right: -15px; 
+    
+    width: 15px; 
     height: 100%;
     background-color: white;
     z-index: 2; 
-    clip-path: polygon(
-        88% 0%, 
-        93% 0%, 
-        100% 100%, 
-        95% 100%
-    );
+    transform: skewX(20deg); 
 }
 
 .scene-item span {
