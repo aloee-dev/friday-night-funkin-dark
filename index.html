@@ -1930,7 +1930,8 @@ function preloadAsset(src) {
         const img = new Image();
         
         img.onload = () => {
-            assetCache[src] = img;
+            assetCache[src] = img; 
+
             img.decode()
                 .then(() => {
                     try {
@@ -1944,12 +1945,11 @@ function preloadAsset(src) {
                     } catch (e) {
                         console.warn("GPU texture push skipped:", e);
                     }
-                    
                     resolve(img);
                 })
                 .catch((err) => {
                     console.error("Decoding failed for asset:", src, err);
-                    resolve(img);
+                    resolve(img); 
                 });
         };
 
@@ -1957,8 +1957,8 @@ function preloadAsset(src) {
             console.error(`Failed to fetch asset route: ${src}`);
             resolve(null);
         };
-
-        img.src = src;
+        const cacheBuster = `?t=${Date.now()}`;
+        img.src = src + cacheBuster;
     });
 }
 
