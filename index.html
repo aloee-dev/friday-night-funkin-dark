@@ -2070,8 +2070,6 @@ function preloadAsset(src) {
 }
 
 async function preloadAll() {
-    document.getElementById("game-viewport").style.display = "none";
-
     const progressBar = document.getElementById("progress-bar");
     const gameViewport = document.getElementById("game-viewport");
     const vramAnchor = document.getElementById("vram-anchor"); 
@@ -2091,26 +2089,23 @@ async function preloadAll() {
                 gameViewport.appendChild(element);
             } 
             else if (element instanceof HTMLImageElement) {
-                vramAnchor.appendChild(element);
+                element.style.width = "auto";
+                element.style.height = "auto";
+                element.style.display = "block";
+                vramAnchor.appendChild(element); 
             }
         }
         return element;
     });
 
     await Promise.all(promises);
+
     document.getElementById("loading-text").textContent = "LOADED!";
-    
-    gameViewport.style.display = "block";
-    gameViewport.style.opacity = "1";
+    gameViewport.style.opacity = 1;
+
     await new Promise(r => setTimeout(r, 1000));
-    
-    const loadingScreen = document.getElementById("loading-screen");
-    loadingScreen.style.opacity = 0;
-    
-    setTimeout(() => {
-        loadingScreen.style.display = "none"; 
-        showDisclaimer();
-    }, 1000);
+    document.getElementById("loading-screen").style.opacity = 0;
+    setTimeout(showDisclaimer, 1000);
 }
     
 window.addEventListener("DOMContentLoaded", () => {
