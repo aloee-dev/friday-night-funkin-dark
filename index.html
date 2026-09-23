@@ -2098,16 +2098,20 @@ async function preloadAll() {
     });
 
     await Promise.all(promises);
-
     document.getElementById("loading-text").textContent = "LOADED!";
+    
     gameViewport.style.display = "block";
     gameViewport.style.opacity = "1";
-
     await new Promise(r => setTimeout(r, 1000));
-    document.getElementById("loading-screen").style.opacity = 0;
-    setTimeout(showDisclaimer, 1000);
+    
+    const loadingScreen = document.getElementById("loading-screen");
+    loadingScreen.style.opacity = 0;
+    
+    setTimeout(() => {
+        loadingScreen.style.display = "none"; 
+        showDisclaimer();
+    }, 1000);
 }
-
     
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
