@@ -2039,16 +2039,6 @@ async function preloadAll() {
     await Promise.all(promises);
 
     document.getElementById("loading-text").textContent = "LOADED!";
-    
-    if ('caches' in window) {
-        const engineCache = await caches.open('ACE-engine-v0.0.0');
-        assets.forEach(src => {
-            fetch(src).then(res => {
-                if (res.status === 200) engineCache.put(src, res);
-            }).catch(() => {});
-        });
-    }
-
     await new Promise(r => setTimeout(r, 1000));
     document.getElementById("loading-screen").style.opacity = 0;
     setTimeout(showDisclaimer, 1000);
