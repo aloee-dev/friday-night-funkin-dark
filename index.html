@@ -49,7 +49,6 @@ a,
     transform: translate(-50%, -50%);
     transform-origin: center;
     overflow: hidden;
-    opacity: 0;
 }
     @font-face {
     font-family: "Blue Winter";
@@ -1862,7 +1861,6 @@ a,
 
 
 
-
 <script src="https://cdn.jsdelivr.net/gh/PsychoGoldfishNG/NewgroundsIO-JS@8c72515/dist/NewgroundsIO.min.js"></script>
 <script>
 
@@ -2053,7 +2051,7 @@ document.addEventListener("visibilitychange", () => {
         });
     }
 });
-    
+
 window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
     hoverSfx.preload = "auto";
@@ -2108,6 +2106,7 @@ async function showDisclaimer() {
         document.getElementById("press-enter").classList.add("fade-in");
     }, 2000);
 }
+
     
     document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && disclaimerActive) {
@@ -2152,6 +2151,8 @@ async function showDisclaimer() {
         { header: "SPRITE ARTISTS", names: ["aloe"] }
     ];
         // add animators, composers, charters to the list
+        // although it will be a visual novel, i plan 2 songs at the finale
+        // maybe different composers for ambience and the songs? unless theyre that good
         // https://www.youtube.com/watch?v=CMNyHBx1gak is what im imagining the menu music should sound like
 
     creditsContent.innerHTML = creditData.map(section => `
