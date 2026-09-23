@@ -605,6 +605,7 @@ a,
     transition: transform 0.2s ease;
     flex-shrink: 0;
 }
+
 .scene-item::after {
     content: '';
     position: absolute;
@@ -614,6 +615,12 @@ a,
     height: 100%;
     background-color: white;
     z-index: -2;
+    clip-path: polygon(
+        90% 0%, 
+        91.5% 0%, 
+        86.5% 100%, 
+        85% 100%
+    );
 }
     
 .scene-item::before {
@@ -627,18 +634,19 @@ a,
     z-index: -1;
     clip-path: polygon(
         0% 0%, 
-        280px 0%,
-        240px 100%,
+        90% 0%,
+        85% 100%,
         0% 100%,
         
-        246px 100%, 
-        286px 0%, 
+        86.5% 100%, 
+        91.5% 0%, 
         
         100% 0%, 
         100% 100%, 
-        246px 100%
+        86.5% 100%
     );
 }
+
 
 .scene-item span {
     position: relative;
