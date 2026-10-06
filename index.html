@@ -3610,11 +3610,11 @@ function getGame(sceneName, lineId = null) {
 
 document.addEventListener("keydown", (event) => {
     if (event.key === "1") {
-        saveSlot1();
+        saveSlot1(currentScene, currentLineId); 
     } else if (event.key === "2") {
-        saveSlot2();
+        saveSlot2(currentScene, currentLineId);
     } else if (event.key === "3") {
-        saveSlot3();
+        saveSlot3(currentScene, currentLineId);
     }
 });
 
