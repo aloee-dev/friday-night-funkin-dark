@@ -2316,10 +2316,11 @@ function updateSlots() {
                 let invText = "";
                 if (data.inventory && Object.keys(data.inventory).length > 0) {
                     invText = Object.entries(data.inventory)
+                        .filter(([item, qty]) => qty > 0) 
                         .map(([item, qty]) => `${item.charAt(0).toUpperCase() + item.slice(1)}: ${qty}`)
                         .join("\n");
                 } else {
-                    invText = "No Items";
+                    invText = "No items";
                 }
                 bodyEl.textContent = invText;
 
@@ -2369,6 +2370,21 @@ document.getElementById("load-line-btn").onclick = () => {
     doSave(data);
 };
 
+document.getElementById("slot1-ui-btn").onclick = () => {
+    const data = JSON.parse(localStorage.getItem(SLOT1_SAVE_KEY));
+    doSave(data);
+};
+
+document.getElementById("slot2-ui-btn").onclick = () => {
+    const data = JSON.parse(localStorage.getItem(SLOT2_SAVE_KEY));
+    doSave(data);
+};
+
+document.getElementById("slot3-ui-btn").onclick = () => {
+    const data = JSON.parse(localStorage.getItem(SLOT3_SAVE_KEY));
+    doSave(data);
+};
+    
 document.getElementById("load-scene-btn").onclick = () => {
     const data = JSON.parse(localStorage.getItem(SCENE_SAVE_KEY));
     doSave(data);
