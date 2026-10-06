@@ -495,8 +495,8 @@ a,
 
     .save-slot-box {
         flex: 1;
-        min-height: 140px;
-        border: 3px dashed #7a7a7a;
+        min-height: 300px;
+        border: 5px dashed #7a7a7a;
         border-radius: 12px;
         padding: 12px;
         display: flex;
@@ -515,7 +515,7 @@ a,
     }
 
     .slot-header {
-        font-size: 24px;
+        font-size: 50px;
         font-weight: bold;
         color: #ffffff;
         margin-bottom: 8px;
@@ -527,7 +527,7 @@ a,
     }
 
     .slot-body-text {
-        font-size: 13px;
+        font-size: 23px;
         color: #b0b0b0;
         text-align: center;
         line-height: 1.4;
@@ -1702,15 +1702,15 @@ a,
 
     <div class="save-slots-container">
         <div class="save-slot-box" id="slot1-ui-btn">
-            <div class="slot-header" id="slot1-header">Empty</div>
+            <div class="slot-header" id="slot1-header">EMPTY</div>
             <div class="slot-body-text" id="slot1-body">Press 1 to save to this slot</div>
         </div>
         <div class="save-slot-box" id="slot2-ui-btn">
-            <div class="slot-header" id="slot2-header">Empty</div>
+            <div class="slot-header" id="slot2-header">EMPTY</div>
             <div class="slot-body-text" id="slot2-body">Press 2 to save to this slot</div>
         </div>
         <div class="save-slot-box" id="slot3-ui-btn">
-            <div class="slot-header" id="slot3-header">Empty</div>
+            <div class="slot-header" id="slot3-header">EMPTY</div>
             <div class="slot-body-text" id="slot3-body">Press 3 to save to this slot</div>
         </div>
     </div>
@@ -2298,16 +2298,56 @@ document.getElementById("confirm-restart-btn").onclick = () => {
     resetGame();
     transLoad("prologuev2");
 };
+
+function updateSlots() {
+    const slots = [
+        { key: SLOT1_SAVE_KEY, id: 1 },
+        { key: SLOT2_SAVE_KEY, id: 2 },
+        { key: SLOT3_SAVE_KEY, id: 3 }
+    ];
+
+    slots.forEach(slot => {
+        const headerEl = document.getElementById(`slot${slot.id}-header`);
+        const bodyEl = document.getElementById(`slot${slot.id}-body`);
+        const rawData = localStorage.getItem(slot.key);
+
+        if (rawData) {
+            try {
+                const data = JSON.parse(rawData)
+                headerEl.textContent = `Week ${data.currentChapter || 1}`;
+                let invText = "";
+                if (data.inventory && Object.keys(data.inventory).length > 0) {
+                    invText = Object.entries(data.inventory)
+                        .map(([item, qty]) => `${item.charAt(0).toUpperCase() + item.slice(1)}: ${qty}`)
+                        .join("\n");
+                } else {
+                    invText = "No Items";
+                }
+                bodyEl.textContent = invText;
+
+            } catch (e) {
+                console.error("Error parsing save data for slot " + slot.id, e);
+                headerEl.textContent = "EMPTY";
+                bodyEl.textContent = `Press ${slot.id} to save to this slot`;
+            }
+        } else {
+            headerEl.textContent = "EMPTY";
+            bodyEl.textContent = `Press ${slot.id} to save to this slot`;
+        }
+    });
+}
     
 document.getElementById("btn-continue").onclick = () => {
     const lineSave = localStorage.getItem(LINE_SAVE_KEY);
     const sceneSave = localStorage.getItem(SCENE_SAVE_KEY);
     const chapterSave = localStorage.getItem(CHAPTER_SAVE_KEY);
 
-    if (!!lineSave && !sceneSave && !chapterSave) {
+    if (!lineSave && !sceneSave && !chapterSave) {
         console.log("shit yourself"); 
         return;
     }
+    updateSlots();
+    
     document.getElementById("continue-menu").style.display = "flex";
 };
 
