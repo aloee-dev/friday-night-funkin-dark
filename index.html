@@ -2641,7 +2641,7 @@ function playSongPreview(songId) {
     document.addEventListener('keydown', async (e) => {
   if (!inFreeplay || transition) return;
 
-  const currentChapter = freeplayData[chapterIndex];
+  const selectedChapter = freeplayData[chapterIndex];
 
   if (e.key === 'ArrowRight') {
     chapterIndex = (chapterIndex + 1) % freeplayData.length;
@@ -2654,13 +2654,13 @@ function playSongPreview(songId) {
     renderScenes();
   } 
   else if (e.key === 'ArrowDown') {
-    sceneIndex = (sceneIndex + 1) % currentChapter.scenes.length;
+    sceneIndex = (sceneIndex + 1) % selectedChapter.scenes.length;
     renderScenes();
     hoverSfx.currentTime = 0;
     hoverSfx.play();
   } 
   else if (e.key === 'ArrowUp') {
-    sceneIndex = (sceneIndex - 1 + currentChapter.scenes.length) % currentChapter.scenes.length;
+    sceneIndex = (sceneIndex - 1 + selectedChapter.scenes.length) % selectedChapter.scenes.length;
     renderScenes();
     hoverSfx.currentTime = 0;
     hoverSfx.play();
@@ -2669,8 +2669,8 @@ function playSongPreview(songId) {
     const box = document.getElementById("dialog-box");
     const inDialogue = window.getComputedStyle(box).display === "block";
         if (inDialogue) return; 
-    const currentChapter = freeplayData[chapterIndex];
-    const selectedScene = currentChapter.scenes[sceneIndex];
+    const selectedChapter = freeplayData[chapterIndex];
+    const selectedScene = selectedChapter.scenes[sceneIndex];
     playSfx.play();
     
     await new Promise(r => setTimeout(r, 1000));
@@ -2707,7 +2707,7 @@ function playSongPreview(songId) {
     const sceneList = document.getElementById("scene-list");
     const freeplayBg = document.getElementById("freeplay-bg");
 
-    const currentChapter = freeplayData[chapterIndex];
+    const selectedChapter = freeplayData[chapterIndex];
     
     if (previewTimeout) clearTimeout(previewTimeout);
     if (previewFadeInterval) clearInterval(previewFadeInterval);
@@ -2717,8 +2717,8 @@ function playSongPreview(songId) {
     }
 
     if (freeplayBg) {
-        if (currentChapter.bg) {
-            freeplayBg.style.backgroundImage = `url('${currentChapter.bg}')`;
+        if (selectedChapter.bg) {
+            freeplayBg.style.backgroundImage = `url('${selectedChapter.bg}')`;
         } else {
             freeplayBg.style.backgroundImage = "none"; 
         }
@@ -2731,13 +2731,13 @@ function playSongPreview(songId) {
     const chapterGraphic = document.getElementById("freeplay-chapter-graphic");
 
         if (chapterGraphic) {
-    if (currentChapter.chapterSrc) {
+    if (selectedChapter.chapterSrc) {
         chapterGraphic.onerror = function() {
             chapterGraphic.src = "assets/freeplay/%3F.png";
             chapterGraphic.onerror = null; 
         };
 
-        chapterGraphic.src = currentChapter.chapterSrc;
+        chapterGraphic.src = selectedChapter.chapterSrc;
         chapterGraphic.style.display = "block";
     } else {
         chapterGraphic.src = "assets/freeplay/%3F.png"; 
@@ -2752,7 +2752,7 @@ function playSongPreview(songId) {
         if (scoreGraphic) scoreGraphic.style.display = "none";
     }
 
-    currentChapter.scenes.forEach((sceneName, index) => {
+    selectedChapter.scenes.forEach((sceneName, index) => {
     const scene = document.createElement("div");
     scene.innerHTML = `<span>${sceneName.label}</span>`; 
     
