@@ -485,6 +485,55 @@ a,
   font-size: 28px;
   color: #ffffff;
 }
+    .save-slots-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        justify-content: center;
+        width: 90%;
+    }
+
+    .save-slot-box {
+        flex: 1;
+        min-height: 140px;
+        border: 3px dashed #7a7a7a;
+        border-radius: 12px;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        background: rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+        transition: border-color 0.2s, background-color 0.2s;
+        font-family: 'Funkin', sans-serif;
+    }
+
+    .save-slot-box:hover {
+        border-color: #fff9a6;
+        background: rgba(255, 249, 166, 0.15);
+    }
+
+    .slot-header {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-bottom: 8px;
+        text-transform: capitalize;
+    }
+    
+    .save-slot-box:hover .slot-header {
+        color: #fff9a6;
+    }
+
+    .slot-body-text {
+        font-size: 13px;
+        color: #b0b0b0;
+        text-align: center;
+        line-height: 1.4;
+        white-space: pre-line;
+        width: 100%;
+    }
 
 #settings-menu {
   position: fixed;
@@ -1644,12 +1693,29 @@ a,
 
 
 
-    <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
-    <h1 style="color: white; font-family: 'Funkin'; font-size: 60px;">CONTINUE FROM...</h1>
+    <div id="continue-menu" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 5; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
+    <h1 style="color: white; font-family: 'Funkin'; font-size: 50px; margin: 0;">CONTINUE FROM...</h1>
+    
     <button class="settings-exit" id="load-line-btn">CURRENT LINE</button>
     <button class="settings-exit" id="load-scene-btn">CURRENT SCENE</button>
     <button class="settings-exit" id="load-chapter-btn">CURRENT CHAPTER</button>
-    <button class="settings-exit" style="font-size: 40px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
+
+    <div class="save-slots-container">
+        <div class="save-slot-box" id="slot1-ui-btn">
+            <div class="slot-header" id="slot1-header">Empty</div>
+            <div class="slot-body-text" id="slot1-body">Press 1 to save to this slot</div>
+        </div>
+        <div class="save-slot-box" id="slot2-ui-btn">
+            <div class="slot-header" id="slot2-header">Empty</div>
+            <div class="slot-body-text" id="slot2-body">Press 2 to save to this slot</div>
+        </div>
+        <div class="save-slot-box" id="slot3-ui-btn">
+            <div class="slot-header" id="slot3-header">Empty</div>
+            <div class="slot-body-text" id="slot3-body">Press 3 to save to this slot</div>
+        </div>
+    </div>
+
+    <button class="settings-exit" style="font-size: 30px; margin-top: 5px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
 </div>
 
 <div id="settings-menu" style="display:none;">
