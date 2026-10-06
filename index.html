@@ -3132,9 +3132,10 @@ function applyDialogStyle(box, style) {
         speakerText.textContent = "";
     }
 
-        if (line.id) {
- saveLine(currentSceneName, line.id);
- }
+       if (line.id) {
+     currentLineId = line.id; 
+     saveLine(currentSceneName, line.id);
+    }
 
 const oldSprite = document.querySelector(".char.visible");
 if (oldSprite) {
@@ -3610,11 +3611,11 @@ function getGame(sceneName, lineId = null) {
 
 document.addEventListener("keydown", (event) => {
     if (event.key === "1") {
-        saveSlot1(currentScene, currentLineId); 
+        saveSlot1(currentSceneName, currentLineId); 
     } else if (event.key === "2") {
-        saveSlot2(currentScene, currentLineId);
+        saveSlot2(currentSceneName, currentLineId);
     } else if (event.key === "3") {
-        saveSlot3(currentScene, currentLineId);
+        saveSlot3(currentSceneName, currentLineId);
     }
 });
 
