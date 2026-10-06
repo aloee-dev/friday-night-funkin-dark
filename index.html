@@ -2288,14 +2288,25 @@ document.getElementById("btn-play").onclick = () => {
         document.getElementById("restart-confirm-menu").style.display = "flex";
         return;
     }
-
+    restartGame();
     transLoad("prologuev2");
 };
 
 document.getElementById("confirm-restart-btn").onclick = () => {
     document.getElementById("restart-confirm-menu").style.display = "none";
+    restartGame();
     transLoad("prologuev2");
 };
+
+    function restartGame() {
+    inventory.clear(); 
+    inventory.set("guns", 2);
+    inventory.set("ammo", 1);
+    gameFlags = {}; 
+    meters = { stamina: 100, sanity: 100, picolove: 50, keithlove: 50 };
+    currentChapter = 0; 
+}
+
 
 function updateSlots() {
     const slots = [
@@ -2312,7 +2323,7 @@ function updateSlots() {
         if (rawData) {
             try {
                 const data = JSON.parse(rawData)
-                headerEl.textContent = `Week ${data.currentChapter || 1}`;
+                headerEl.textContent = `Week ${data.currentChapter ?? 1}`;
                 let invText = "";
                 if (data.inventory && Object.keys(data.inventory).length > 0) {
                     invText = Object.entries(data.inventory)
@@ -2918,7 +2929,9 @@ inventory.set("microphone", 0);
     stamina: 100,
     sanity: 100,
     picolove: 50,
-    keithlove: 50
+    keithlove: 50,
+    approval: 0,
+    lv: 0
 };
 
     
