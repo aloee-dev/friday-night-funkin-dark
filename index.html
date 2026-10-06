@@ -488,7 +488,7 @@ a,
     .save-slots-container {
         display: flex;
         gap: 15px;
-        margin-top: 10px;
+        margin-top: 20px;
         justify-content: center;
         width: 90%;
     }
@@ -2289,13 +2289,11 @@ document.getElementById("btn-play").onclick = () => {
         return;
     }
 
-    resetGame();
     transLoad("prologuev2");
 };
 
 document.getElementById("confirm-restart-btn").onclick = () => {
     document.getElementById("restart-confirm-menu").style.display = "none";
-    resetGame();
     transLoad("prologuev2");
 };
 
@@ -3655,13 +3653,6 @@ function loadGameData() {
     
     return data.currentScene;
 }
-
-function resetGame() {
-    gameFlags = { placeholder: false, place: false };
-    meters = { stamina: 100, sanity: 100, picolove: 50, keithlove: 50 };
-    inventory = new Map([["guns", 2], ["ammo", 1], ["importantthings", 0]]);
-}
-
 
 let currentLevelRooms = []; 
 let currentRoom = null;
