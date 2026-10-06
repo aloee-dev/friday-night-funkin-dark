@@ -3644,32 +3644,6 @@ function loadSettings() {
     updateSettingsUI();
 }
 
-    
-    function saveGame(sceneName) {
-    const saveData = {
-        currentScene: sceneName,
-        flags: gameFlags,
-        meters: meters,
-        inventory: Object.fromEntries(inventory)
-    };
-    localStorage.setItem('fnf_dark_minds_save', JSON.stringify(saveData));
-    console.log("Game Saved at:", sceneName);
-}
-
-function loadGameData() {
-    const raw = localStorage.getItem('fnf_dark_minds_save');
-    if (!raw) return null;
-    
-    const data = JSON.parse(raw);
-    gameFlags = { ...gameFlags, ...data.flags };
-    meters = { ...meters, ...data.meters };
-    const cItems = Object.fromEntries(inventory);
-    const mergeItems = { ...cItems, ...data.inventory };
-    inventory = new Map(Object.entries(mergeItems));
-    
-    return data.currentScene;
-}
-
 let currentLevelRooms = []; 
 let currentRoom = null;
 let gameDialogue = {};
@@ -6655,9 +6629,7 @@ if (_activeSong && _activeSong.name) {
         oIcon.style.transform = `scaleX(-${bounce}) scaleY(${bounce})`;
     }
 }
-
-loadGameData();
-    //update the game
+    
 </script>
 
 </body>
