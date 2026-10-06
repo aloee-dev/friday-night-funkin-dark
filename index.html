@@ -2250,6 +2250,7 @@ function doSave(data) {
     gameFlags = data.flags;
     meters = data.meters;
     inventory = new Map(Object.entries(data.inventory));
+    currentChapter = data.currentChapter || 1;
     
     document.getElementById("continue-menu").style.display = "none";
     
@@ -2297,7 +2298,7 @@ async function transLoad(scene, arrayId = null) {
 }
     
     // below i will yoink things from my previous game well i added a lot in between what i was referring to, i did not mean the settings, i meant the dialogue
-
+let currentChapter = 0;
 let settings = {
   fontSize: 1,
   speed: 1,
@@ -3041,6 +3042,9 @@ if (line.speaker && line.mood) {
     }
         
     if (line.newChapter !== undefined) _isNewChapter = line.newChapter;
+    if (line.newChapter) {
+    currentChapter++;
+}
     if (line.ambience) playBgMusic('ambience', line.ambience);
     if (line.track) playBgMusic('track', line.track);
 
@@ -3455,6 +3459,9 @@ const SETTINGS_KEY = 'fnf_dark_minds_settings';
 const CHAPTER_SAVE_KEY = 'fnf_dark_minds_chapter_save';
 const SCENE_SAVE_KEY = 'fnf_dark_minds_scene_save';
 const LINE_SAVE_KEY = 'fnf-dark-minds_line_save';
+const SLOT1_SAVE_KEY = 'fnf-dark-minds_slot1_save';
+const SLOT2_SAVE_KEY = 'fnf-dark-minds_slot2_save';
+const SLOT3_SAVE_KEY = 'fnf-dark-minds_slot3_save';
 
 function getGame(sceneName, lineId = null) {
     return {
@@ -3463,12 +3470,35 @@ function getGame(sceneName, lineId = null) {
         flags: { ...gameFlags },
         meters: { ...meters },
         inventory: Object.fromEntries(inventory),
+        currentChapter: currentChapter,
         timestamp: new Date().toLocaleTimeString()
     };
 }
 
+document.addEventListener("keydown", (event) => {
+    if (event.key === "1") {
+        saveSlot1();
+    } else if (event.key === "2") {
+        saveSlot2();
+    } else if (event.key === "3") {
+        saveSlot3();
+    }
+});
+
 function saveLine(sceneName, lineId) {
     localStorage.setItem(LINE_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
+}
+
+function saveSlot1(sceneName, lineId) {
+    localStorage.setItem(SLOT1_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
+}
+
+function saveSlot2(sceneName, lineId) {
+    localStorage.setItem(SLOT2_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
+}
+
+function saveSlot3(sceneName, lineId) {
+    localStorage.setItem(SLOT3_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
 }
 
 function saveScene(sceneName, lineId) {
