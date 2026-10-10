@@ -2280,13 +2280,13 @@ document.getElementById("btn-play").onclick = () => {
         return;
     }
     restartGame();
-    transLoad("prologuev2");
+    loadScene("prologuev2");
 };
 
 document.getElementById("confirm-restart-btn").onclick = () => {
     document.getElementById("restart-confirm-menu").style.display = "none";
     restartGame();
-    transLoad("prologuev2");
+    loadScene("prologuev2");
 };
 
     function restartGame() {
@@ -2312,25 +2312,19 @@ function updateSlots() {
         const rawData = localStorage.getItem(slot.key);
 
         if (rawData) {
-            try {
-                const data = JSON.parse(rawData)
-                headerEl.textContent = `Week ${data.currentChapter ?? 1}`;
-                let invText = "";
-                if (data.inventory && Object.keys(data.inventory).length > 0) {
-                    invText = Object.entries(data.inventory)
-                        .filter(([item, qty]) => qty > 0) 
-                        .map(([item, qty]) => `${item.charAt(0).toUpperCase() + item.slice(1)}: ${qty}`)
-                        .join("\n");
-                } else {
-                    invText = "No items";
-                }
-                bodyEl.textContent = invText;
-
-            } catch (e) {
-                console.error("Error parsing save data for slot " + slot.id, e);
-                headerEl.textContent = "EMPTY";
-                bodyEl.textContent = `Press ${slot.id} to save to this slot`;
+            const data = JSON.parse(rawData);
+            headerEl.textContent = `Week ${data.currentChapter ?? 1}`;
+            
+            let invText = "";
+            if (data.inventory && Object.keys(data.inventory).length > 0) {
+                invText = Object.entries(data.inventory)
+                    .filter(([item, qty]) => qty > 0) 
+                    .map(([item, qty]) => `${item.charAt(0).toUpperCase() + item.slice(1)}: ${qty}`)
+                    .join("\n");
+            } else {
+                invText = "No items";
             }
+            bodyEl.textContent = invText;
         } else {
             headerEl.textContent = "EMPTY";
             bodyEl.textContent = `Press ${slot.id} to save to this slot`;
@@ -2361,14 +2355,11 @@ function doSave(data) {
     
     document.getElementById("continue-menu").style.display = "none";
     
-    transLoad(data.currentScene, data.currentLineId); 
+    loadScene(data.currentScene, data.currentLineId); 
 }
 
 document.getElementById("load-line-btn").onclick = () => {
-    const data = JSON.parse(localStorage.getItem(LINE_SAVE_KEY));
-
-    const rawData = localStorage.getItem(LINE_SAVE_KEY);
-    
+    const data = JSON.parse(localStorage.getItem(LINE_SAVE_KEY);
     doSave(data);
 };
 
@@ -2397,7 +2388,7 @@ document.getElementById("load-chapter-btn").onclick = () => {
     doSave(data);
 };
 
-async function transLoad(scene, arrayId = null) {
+async function loadScene(scene, arrayId = null) {
     const fade = document.getElementById("fade-overlay");
     const titleButtons = document.getElementById("title-buttons");
     const titleScreen = document.getElementById("title-screen");
@@ -2419,7 +2410,6 @@ async function transLoad(scene, arrayId = null) {
     loadDialogue(scene, arrayId);
 }
     
-    // below i will yoink things from my previous game well i added a lot in between what i was referring to, i did not mean the settings, i meant the dialogue
 let currentChapter = 0;
 let settings = {
   fontSize: 1,
@@ -2429,7 +2419,7 @@ let settings = {
 };
     
 const fontOptions = ["SMALL", "NORMAL", "LARGE"];
-const speedOptions = ["SLOW", "NORMAL", "FAST", "INSTANT"];
+const speedOptions = ["SLOW", "NORMAL", "FAST", "VERY FAST"];
 
 const fpsDisplay = document.getElementById('fps-counter');
 let lastTime = performance.now();
@@ -2439,7 +2429,7 @@ let fps = 0;
 document.getElementById("btn-settings").onclick = () => {
   document.getElementById("settings-menu").style.display = "flex";
   document.getElementById("title-buttons").style.display = "none";
-  updateSettingsUI();
+  updateSettings();
 };
         
 document.getElementById("menu-back").onclick = () => {
@@ -2447,7 +2437,7 @@ document.getElementById("menu-back").onclick = () => {
   document.getElementById("title-buttons").style.display = "flex";
 };
 
-function updateSettingsUI() {
+function updateSettings() {
   document.getElementById("font-value").textContent = fontOptions[settings.fontSize];
   document.getElementById("speed-value").textContent = speedOptions[settings.speed];
 
@@ -2469,39 +2459,39 @@ function updateSettingsUI() {
 document.getElementById("font-left").onclick = () => {
   if (settings.fontSize > 0) {
     settings.fontSize--;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("font-right").onclick = () => {
   if (settings.fontSize < fontOptions.length - 1) {
     settings.fontSize++;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("speed-left").onclick = () => {
   if (settings.speed > 0) {
     settings.speed--;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("speed-right").onclick = () => {
   if (settings.speed < speedOptions.length - 1) {
     settings.speed++;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("skip-box").onclick = () => {
   settings.skipPrologue = !settings.skipPrologue;
-  updateSettingsUI();
+  updateSettings();
 };
 
 document.getElementById("fps-box").onclick = () => {
   settings.showFPS = !settings.showFPS;
-  updateSettingsUI();
+  updateSettings();
 };
 
 document.getElementById("settings-back").onclick = () => {
@@ -2575,9 +2565,9 @@ document.addEventListener('keydown', async (e) => {
         previewAudio.pause();
         previewAudio = null;
     }
-    if (typeof menuMusic !== 'undefined' && menuMusic) {
-        menuMusic.volume = 0.1;
-    }
+          
+    if (menuMusic) menuMusic.volume = 0.1;
+
 
         await new Promise(r => setTimeout(r, 300));
 
@@ -2608,7 +2598,7 @@ document.addEventListener('keydown', async (e) => {
 
 // probbably remove the json part as the load dialogue already adds json 
     // might need to add some way to block meters/flags from incrementing, choices from showing up, and next transitions
-    // should skip choices & close so im cautious abt adding break to choice triggers
+    // should skip choices & close
     
 const freeplayData = [
     {
@@ -2716,21 +2706,21 @@ let previewAudio = null;
 let previewFadeInterval = null;
 
 function playSongPreview(songId) {
-    if (typeof menuMusic !== 'undefined' && menuMusic) {
-        menuMusic.volume = 0; 
-    }
+    if (menuMusic) {
+    menuMusic.volume = 0; 
+}
 
     const audioPath = `assets/final/songs/${songId}/Inst.mp3`;
     previewAudio = new Audio(audioPath);
     previewAudio.volume = 1.0;
     
-    let isFadingOut = false;
+    let isFading = false;
 
     previewAudio.addEventListener("timeupdate", () => {
         if (!previewAudio) return;
 
-        if (previewAudio.currentTime >= 17.5 && !isFadingOut) {
-            isFadingOut = true;
+        if (previewAudio.currentTime >= 17.5 && !isFading) {
+            isFading = true;
             
             previewFadeInterval = setInterval(() => {
                 if (previewAudio && previewAudio.volume > 0.05) {
@@ -2740,7 +2730,7 @@ function playSongPreview(songId) {
                     if (previewAudio) {
                         previewAudio.currentTime = 0;
                         previewAudio.volume = 1.0;
-                        isFadingOut = false;
+                        isFading = false;
                     }
                 }
             }, 100);
@@ -2750,7 +2740,7 @@ function playSongPreview(songId) {
             clearInterval(previewFadeInterval);
             previewAudio.currentTime = 0;
             previewAudio.volume = 1.0;
-            isFadingOut = false;
+            isFading = false;
         }
     });
 
@@ -2791,7 +2781,7 @@ function playSongPreview(songId) {
     const box = document.getElementById("dialog-box");
     const inDialogue = window.getComputedStyle(box).display === "block";
         if (inDialogue) return; 
-    const selectedChapter = freeplayData[chapterIndex];
+        if (_rhythmStarted) return;
     const selectedScene = selectedChapter.scenes[sceneIndex];
     playSfx.play();
     
@@ -2804,7 +2794,6 @@ function playSongPreview(songId) {
         
         menuMusic.pause();
         menuMusic.currentTime = 0;
-
         startSong(selectedScene.file);
     } else {
         startFreeScene(selectedScene.file);
@@ -2931,7 +2920,7 @@ inventory.set("microphone", 0);
   'default': { speed: 30, pitch: 1.0, frequency: 2, sound: 'sfx/blip2.wav' }
 };
 
-const shownDialogs = new Set();
+const shownDialogs = new Set(); // use later
 let currentSceneName = "";
 let _dialogQueue = [];
 let _typingTimeout = null;
@@ -3064,11 +3053,11 @@ function normalizeDialogLines(input, defaultStyle) {
 
 function applyDialogStyle(box, style) {
   box.style.maxWidth = '1200px';
-  box.style.fontSize = '12px';
+  box.style.fontSize = '18px';
   box.style.border = '14px solid black';
   if (style === 'pico') {
     box.style.backgroundColor = '#356849';
-    box.style.fontSize = '18px';
+    box.style.fontSize = '18px'; // i wonder do i need to remove font size from this shit
     box.style.border = '14px solid #0a2d24';
   } else if (style === 'bf') {
     box.style.backgroundColor = '#263a8e';
@@ -3157,7 +3146,7 @@ if (line.speaker && line.mood) {
         // caution
    _nextScene = line.next;
 
-    if (line.branches) {
+    if (!inFreeplay && line.branches) {
         for (let branch of line.branches) {
             let meterValue = meters[branch.meter] || 0;
         
@@ -3272,7 +3261,6 @@ function handleBranch(trig) {
     }
 
     if (goTo) {
-        console.log("Branching to:", goTo);
         loadDialogue(goTo);
     }
 }
@@ -3285,7 +3273,9 @@ async function loadDialogue(sceneName, arrayId = null) {
         const data = await response.json();
         
         currentSceneName = sceneName;
-        saveScene(sceneName, arrayId);        
+        if (!inFreeplay) {
+            saveScene(sceneName, arrayId);        
+        }      
         showDialog(data, {}, arrayId);
     } catch (err) {
         console.error("Failed to load dialogue:", sceneName, err);
@@ -3322,7 +3312,7 @@ function playBgMusic(type, data) {
     
 let _qteTimer = null;
 
-function triggerGameOver(sfxPath) {
+function showGameOver(sfxPath) {
     const fade = document.getElementById("fade-overlay");
     const bg = document.getElementById("dialog-background");
     const box = document.getElementById("dialog-box");
@@ -3355,7 +3345,7 @@ function handleAction(action) {
     if (action.sfx) new Audio(action.sfx).play().catch(e => {});
 
     if (action.type === "gameOver") {
-        triggerGameOver(action.sfx);
+        showGameOver(action.sfx);
     } else if (action.scene) {
         loadDialogue(action.scene);
     }
@@ -3647,7 +3637,7 @@ function loadSettings() {
     if (rawSettings) {
         settings = JSON.parse(rawSettings);
     }
-    updateSettingsUI();
+    updateSettings();
 }
 
 let currentLevelRooms = []; 
