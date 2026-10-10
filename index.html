@@ -4285,7 +4285,6 @@ window.addEventListener("keydown", (e) => {
     if (_heldKeys.has(cleanKey)) return;
     _heldKeys.add(cleanKey);
 
-    
     _playerKey = cleanKey;
     
     const currentTime = _inst.currentTime * 1000;
@@ -4293,22 +4292,23 @@ window.addEventListener("keydown", (e) => {
     const notes = document.querySelectorAll("#player-lanes .note");
     let closestNote = null;
     let minDistance = Infinity;
+    let hitTiming = 0;
 
     notes.forEach(el => {
         const targetTime = parseFloat(el.dataset.time);
-        const lane = Math.round(parseFloat(el.style.left) / 155);
+        const lane = parseInt(el.dataset.lane); 
+        
         const timeDiff = targetTime - currentTime;
-        const speed = _activeSong.scrollSpeed;
-        const centerTimeOffset = 75 / speed;
-        const adjustedDiff = Math.abs(timeDiff + centerTimeOffset);
+        const distance = Math.abs(timeDiff);
 
-        if (lane === targetLane && adjustedDiff < minDistance) {
-            minDistance = adjustedDiff;
+        if (lane === targetLane && distance < minDistance) {
+            minDistance = distance;
             closestNote = el;
+            hitTiming = distance;
         }
     });
         
-        if (closestNote && minDistance <= timing.bad) {
+    if (closestNote && hitTiming <= timing.bad) {
         
         validHit = true;
         _playerMissAnimState = null;
@@ -4341,7 +4341,7 @@ window.addEventListener("keydown", (e) => {
         closestNote.dataset.hit = "true";
         closestNote.remove();
 
-        if (minDistance <= timing.sick) {
+        if (hitTiming <= timing.sick) {
             if (!hpDraining) {
                 hp = Math.min(maxHP, hp + 5); 
             }
@@ -4358,7 +4358,7 @@ window.addEventListener("keydown", (e) => {
                 startTime: currentTime,
                 el: null
             });
-        } else if (minDistance <= timing.good) {
+        } else if (hitTiming <= timing.good) {
             if (!hpDraining) {
                 hp = Math.min(maxHP, hp + 2); 
             }
@@ -4369,7 +4369,7 @@ window.addEventListener("keydown", (e) => {
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
-        } else if (minDistance <= timing.bad) {
+        } else if (hitTiming <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
             bads++;
@@ -4388,7 +4388,6 @@ window.addEventListener("keydown", (e) => {
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
         }
-
         updateHPBar(currentTime);
     }
 });
