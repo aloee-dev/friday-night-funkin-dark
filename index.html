@@ -1808,8 +1808,14 @@ a,
 
     
     <div id="rhythm-ui" style="display:none;">
-    <div id="opponent-lanes" class="lane-container"></div>
-    <div id="player-lanes" class="lane-container"></div>
+    <div id="opponent-lanes" class="lane-container">
+        <div class="receptor-layer"></div> 
+        <div class="note-layer"></div>
+    </div>
+    <div id="player-lanes" class="lane-container">
+        <div class="receptor-layer"></div>
+        <div class="note-layer"></div>
+    </div>
     <div id="countdown-display"></div>
 </div>
 
@@ -4164,27 +4170,22 @@ function calculateAccuracy(sicks, goods, bads, shits, misses) {
   }
 }
 
-const miss1 = new Audio('sfx/miss-1.mp3');
-const miss2 = new Audio('sfx/miss-2.mp3');
-const miss3 = new Audio('sfx/miss-3.mp3');
-
 function playMiss() {
-  const number = Math.floor(Math.random() * 3) + 1;
-        
-  switch (number) {
-    case 1:
-      miss1.currentTime = 0;
-      miss1.play().catch(() => {});
-      break;
-    case 2:
-      miss2.currentTime = 0; 
-      miss2.play().catch(() => {});
-      break;
-    case 3:
-      miss3.currentTime = 0; 
-      miss3.play().catch(() => {});
-      break;
-  }
+    const number = Math.floor(Math.random() * 3) + 1;
+    const path = `sfx/miss-${number}.mp3`;
+    const cachedAudio = assetCache[path];
+    
+    if (cachedAudio) {
+        const soundClone = cachedAudio.cloneNode(true);
+        soundClone.volume = 0.6; 
+        soundClone.play().catch(() => {});
+        soundClone.onended = () => {
+            soundClone.remove();
+        };
+    } else {
+        const fallback = new Audio(path);
+        fallback.play().catch(() => {});
+    }
 }
 
 let NEWS = [];
@@ -4285,7 +4286,6 @@ window.addEventListener("keydown", (e) => {
     if (_heldKeys.has(cleanKey)) return;
     _heldKeys.add(cleanKey);
 
-    
     _playerKey = cleanKey;
     
     const currentTime = _inst.currentTime * 1000;
@@ -4293,22 +4293,23 @@ window.addEventListener("keydown", (e) => {
     const notes = document.querySelectorAll("#player-lanes .note");
     let closestNote = null;
     let minDistance = Infinity;
+    let hitTiming = 0;
 
     notes.forEach(el => {
         const targetTime = parseFloat(el.dataset.time);
-        const lane = Math.round(parseFloat(el.style.left) / 155);
+        const lane = parseInt(el.dataset.lane); 
+        
         const timeDiff = targetTime - currentTime;
-        const speed = _activeSong.scrollSpeed;
-        const centerTimeOffset = 75 / speed;
-        const adjustedDiff = Math.abs(timeDiff + centerTimeOffset);
+        const distance = Math.abs(timeDiff);
 
-        if (lane === targetLane && adjustedDiff < minDistance) {
-            minDistance = adjustedDiff;
+        if (lane === targetLane && distance < minDistance) {
+            minDistance = distance;
             closestNote = el;
+            hitTiming = distance;
         }
     });
         
-        if (closestNote && minDistance <= timing.bad) {
+    if (closestNote && hitTiming <= timing.bad) {
         
         validHit = true;
         _playerMissAnimState = null;
@@ -4341,7 +4342,7 @@ window.addEventListener("keydown", (e) => {
         closestNote.dataset.hit = "true";
         closestNote.remove();
 
-        if (minDistance <= timing.sick) {
+        if (hitTiming <= timing.sick) {
             if (!hpDraining) {
                 hp = Math.min(maxHP, hp + 5); 
             }
@@ -4358,7 +4359,7 @@ window.addEventListener("keydown", (e) => {
                 startTime: currentTime,
                 el: null
             });
-        } else if (minDistance <= timing.good) {
+        } else if (hitTiming <= timing.good) {
             if (!hpDraining) {
                 hp = Math.min(maxHP, hp + 2); 
             }
@@ -4369,7 +4370,7 @@ window.addEventListener("keydown", (e) => {
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
-        } else if (minDistance <= timing.bad) {
+        } else if (hitTiming <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
             bads++;
@@ -4388,7 +4389,6 @@ window.addEventListener("keydown", (e) => {
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
         }
-
         updateHPBar(currentTime);
     }
 });
@@ -4437,46 +4437,24 @@ const INPUT_MAP = {
     "ARROWUP":   "singUP",    "J": "singUP",
     "ARROWRIGHT":"singRIGHT", "K": "singRIGHT"
 };
+    
+let CHARACTER_DATA = {};
+let ENVIRO_DATA = {};
 
-const CHARACTER_DATA = {
-    bf: {
-        src: "assets/final/bf-sprit.png",
-        xml: "assets/final/bf-sprit.xml",
-        healthbar: "assets/final/healthbar-blue.png",
-        imageObj: new Image(),
-        animations: {}
-    },
-    kg: {
-        src: "assets/final/sprites/true-boyfriend.png",
-        xml: "assets/final/sprites/true-boyfriend.xml",
-        healthbar: "assets/final/healthbar-blue.png",
-        imageObj: new Image(),
-        animations: {}
-    },
-    pico: {
-        src: "assets/final/pico-sprite.png",
-        xml: "assets/final/pico-sprite.xml",
-        healthbar: "assets/final/health-green.png",
-        imageObj: new Image(),
-        animations: {}
-    },
-    gf: {
-        src: "assets/final/gf-sprite.png",
-        xml: "assets/final/gf-sprite.xml",
-        healthbar: "assets/final/healthbar-gf.png",
-        imageObj: new Image(),
-        animations: {}
-    }
-};
+async function addCharacterData() {
+    try {
+        const response = await fetch('assets/final/sprites/characters.json');
+        const data = await response.json();
 
-    const ENVIRO_DATA = {
-    radio: {
-        src: "assets/final/sprites/radio.png",
-        xml: "assets/final/sprites/radio.xml",
-        imageObj: new Image(),
-        animations: {}
+        CHARACTER_DATA = data.characters;
+        ENVIRO_DATA = data.environments;
+
+    } catch (error) {
+        console.error("Error: Could not read characters.json config file.", error);
     }
-};
+}
+
+addCharacterData();
 
         async function startA(songJson) {
     _activeSong = songJson;
@@ -4594,6 +4572,15 @@ const CHARACTER_DATA = {
         });
 
         charData.imageObjs = await Promise.all(imagePromises);
+
+    charData.loadedIcons = {};
+
+if (charData.icons && Array.isArray(charData.icons)) {
+    for (let i = 0; i < charData.icons.length; i++) {
+        const iconConfig = charData.icons[i];
+        charData.loadedIcons[iconConfig.type] = iconConfig.src;
+    }
+}
 
     } catch (err) {
         console.error("Error loading character XML:", err);
@@ -5016,8 +5003,8 @@ if (_opponentChar && _opponentChar.healthbar) {
     document.getElementById("icon-container").style.display = "block";
     document.getElementById("icon-player").style.display = "block";
     document.getElementById("icon-opponent").style.display = "block";
-    document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
-    document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
+    document.getElementById("icon-player").src = _playerChar?.loadedIcons?.["neutral"] || "assets/final/gray.png";
+    document.getElementById("icon-opponent").src = _opponentChar?.loadedIcons?.["neutral"] || "assets/final/gray.png";
 
     document.getElementById("healthbar").style.display = "block";
     document.getElementById("rhythm-stats").style.display = "block";
@@ -5033,23 +5020,23 @@ if (_opponentChar && _opponentChar.healthbar) {
 
     if (_playerChar && _playerCtx) {
         _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
-        drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5);
+        drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_player2Char && _player2Ctx) {
         _player2Ctx.clearRect(0, 0, _player2Ctx.canvas.width, _player2Ctx.canvas.height);
-        drawCharacterFrame(_player2Ctx, _player2Char, "idle", 0, 5);
+        drawCharacterFrame(_player2Ctx, _player2Char, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_opponentChar && _opponentCtx) {
         _opponentCtx.clearRect(0, 0, _opponentCtx.canvas.width, _opponentCtx.canvas.height);
-        drawCharacterFrame(_opponentCtx, _opponentChar, "idle", 0, 5);
+        drawCharacterFrame(_opponentCtx, _opponentChar, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_opponent2Char && _opponent2Ctx) {
         _opponent2Ctx.clearRect(0, 0, _opponent2Ctx.canvas.width, _opponent2Ctx.canvas.height);
-        drawCharacterFrame(_opponent2Ctx, _opponent2Char, "idle", 0, 5);
+        drawCharacterFrame(_opponent2Ctx, _opponent2Char, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_speaker && _speakerCtx) {
         _speakerCtx.clearRect(0, 0, _speakerCtx.canvas.width, _speakerCtx.canvas.height);
-        drawCharacterFrame(_speakerCtx, _speaker, "idle", 0, 5);
+        drawCharacterFrame(_speakerCtx, _speaker, "idle", 0, 5, _activeSong.bpm || 120);
     }
 
     camera.x = data.cameraStartX !== undefined ? data.cameraStartX : 256;
@@ -5085,11 +5072,12 @@ if (_opponentChar && _opponentChar.healthbar) {
 }
 
 function setupReceptors() {
-    const opp = document.getElementById("opponent-lanes");
-    const pla = document.getElementById("player-lanes");
+
+    const opp = document.querySelector("#opponent-lanes .receptor-layer");
+    const pla = document.querySelector("#player-lanes .receptor-layer");
 
     if (!opp || !pla) return;
-
+    
     opp.innerHTML = "";
     pla.innerHTML = "";
 
@@ -5277,6 +5265,7 @@ function resumeIntervals() {
 
 let activePlayerSustains = new Set();
 let activeOpponentSustains = new Set();
+const allowedRelease = 330;
 
 function updateRhythmLoop(rSId) {
     
@@ -5481,13 +5470,16 @@ noteElements.forEach(el => {
 
             const tailProgressTime = headTime + length - currentTime;
 
-            const isPlayerHolding = isPlayerLane && 
-                (diff <= 0) && 
-                (tailProgressTime > 0) && 
-                (
-                    _heldKeys.has(getLane(lane).arrow) || 
-                    _heldKeys.has(getLane(lane).letter)
-                );
+const inWindow = tailProgressTime <= (allowedRelease / 1000); 
+
+const isPlayerHolding = isPlayerLane && 
+    (diff <= 0) && 
+    (tailProgressTime > 0) && 
+    (
+        inWindow ||
+        _heldKeys.has(getLane(lane).arrow) || 
+        _heldKeys.has(getLane(lane).letter)
+    );
             
             const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
 
@@ -5510,7 +5502,7 @@ noteElements.forEach(el => {
                     activeOpponentSustains.add(trackingKey);
                 }
             } 
-            else if (isPlayerLane && diff < -150 && tailProgressTime > 0) {
+            else if (isPlayerLane && diff < -150 && tailProgressTime > (allowedRelease / 1000)) {
                 misses++;
                 combo = 0;
                 playMiss();
@@ -5633,7 +5625,9 @@ noteElements.forEach(el => {
         const tailProgressTime = headTime + length - currentTime;
         const holdEnd = (currentTop <= 50) && (tailProgressTime > 0);
 
+        const inWindow = tailProgressTime <= (allowedRelease / 1000);
         const isPlayerHolding = isPlayerLane && (
+            inWindow || 
             _heldKeys.has(getLane(lane).arrow) || 
             _heldKeys.has(getLane(lane).letter)
         );
@@ -5709,8 +5703,8 @@ noteElements.forEach(el => {
 
 function createNoteElement(n, isPlayer) {
     const laneContainer = isPlayer
-        ? document.getElementById("player-lanes")
-        : document.getElementById("opponent-lanes");
+    ? document.querySelector("#player-lanes .note-layer")
+    : document.querySelector("#opponent-lanes .note-layer");
 
     const time = n[0];
     const lane = n[1];
@@ -6031,8 +6025,8 @@ function doPauseAction() {
     document.getElementById("icon-container").style.display = "block";
     document.getElementById("icon-player").style.display = "block";
     document.getElementById("icon-opponent").style.display = "block";
-    document.getElementById("icon-player").src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
-    document.getElementById("icon-opponent").src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
+    document.getElementById("icon-player").src = _playerChar?.loadedIcons?.["neutral"] || "assets/final/gray.png";
+    document.getElementById("icon-opponent").src = _opponentChar?.loadedIcons?.["neutral"] || "assets/final/gray.png";
 
     document.getElementById("healthbar").style.display = "block";
     document.getElementById("rhythm-stats").style.display = "block";
@@ -6219,15 +6213,27 @@ function gameOver() {
 });
 
 
-    function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
+function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks, bpm) {
     const animFrames = charData.animations[actionState];
     const activeFrames = (animFrames && animFrames.length > 0) ? animFrames : charData.animations["idle"];
     
     if (!activeFrames || activeFrames.length === 0) return;
 
-    const currentFrameIndex = Math.floor(timeTick / holdTicks) % activeFrames.length;
-    const frame = activeFrames[currentFrameIndex];
+    let currentFrameIndex = 0;
 
+    if (actionState === "idle" || (!animFrames && charData.animations["idle"])) {
+        const msPerBeat = (60 / bpm) * 1000;
+        const msPerIdle = msPerBeat * 2;
+        const msPerFrame = msPerIdle / activeFrames.length;
+        
+        currentFrameIndex = Math.floor(timeTick / msPerFrame) % activeFrames.length;
+    } 
+    else {
+        const msPerAnimFrame = holdTicks * (1000 / 60); 
+        currentFrameIndex = Math.floor(timeTick / msPerAnimFrame) % activeFrames.length;
+    }
+
+    const frame = activeFrames[currentFrameIndex];
     const activeSheet = charData.imageObjs[frame.sheetIndex];
     const imageToDraw = activeSheet || charData.imageObj;
 
@@ -6287,7 +6293,7 @@ function animateGameOver(ctx, charData) {
         }
     }
 
-    drawCharacterFrame(ctx, charData, actionState, deathTick, DEATH_HOLD);
+    drawCharacterFrame(ctx, charData, actionState, deathTick, DEATH_HOLD, 120);
 }
     
     function animateCharacters(currentTime) {
@@ -6391,7 +6397,8 @@ function animateGameOver(ctx, charData) {
         }
     }
 
-    drawCharacterFrame(_playerCtx, _playerChar, playerState, tick, holdTicks);
+    drawCharacterFrame(_playerCtx, _playerChar, playerState, currentTime, holdTicks, bpm);
+
 
     let player2State = "idle";
     
@@ -6440,8 +6447,8 @@ function animateGameOver(ctx, charData) {
     }
         
     if (_player2Char && _player2Ctx) {
-        drawCharacterFrame(_player2Ctx, _player2Char, player2State, tick, holdTicks);
-    }
+    drawCharacterFrame(_player2Ctx, _player2Char, player2State, currentTime, holdTicks, bpm);
+}
     
     let opponentState = "idle";
 
@@ -6483,7 +6490,7 @@ function animateGameOver(ctx, charData) {
         }
     }
 
-    drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, tick, holdTicks);
+    drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, currentTime, holdTicks, bpm);
 
     let opponent2State = "idle";
 
@@ -6526,7 +6533,7 @@ function animateGameOver(ctx, charData) {
     }
 
     if (_opponent2Char && _opponent2Ctx) {
-        drawCharacterFrame(_opponent2Ctx, _opponent2Char, opponent2State, tick, holdTicks);
+        drawCharacterFrame(_opponent2Ctx, _opponent2Char, opponent2State, currentTime, holdTicks, bpm);
     }
 
     let speakerState = "idle";
@@ -6545,7 +6552,7 @@ function animateGameOver(ctx, charData) {
     }
 
     if (_speaker && _speakerCtx) {
-        drawCharacterFrame(_speakerCtx, _speaker, speakerState, tick, holdTicks);
+        drawCharacterFrame(_speakerCtx, _speaker, speakerState, currentTime, holdTicks, bpm);
     }
 
     if (_activeSong.stageLayers) {
@@ -6586,44 +6593,57 @@ function updateHPBar(currentTime) {
     pIcon.style.left = (splitX - 125 + 100) + "px"; 
     oIcon.style.left = (splitX - 125 - 100) + "px";
 
-if (_inst && _inst.duration > 0) {
-    const songProgress = _inst.currentTime / _inst.duration;
-    const progressPercentage = songProgress * 100;
-    document.getElementById("timer-color").style.width = progressPercentage + "%";
+    if (_inst && _inst.duration > 0) {
+        const songProgress = _inst.currentTime / _inst.duration;
+        const progressPercentage = songProgress * 100;
+        document.getElementById("timer-color").style.width = progressPercentage + "%";
 
-    const timeRemaining = Math.max(0, _inst.duration - _inst.currentTime);
+        const timeRemaining = Math.max(0, _inst.duration - _inst.currentTime);
 
-    const currentSecondsTotal = Math.floor(timeRemaining);
-    const mins = Math.floor(currentSecondsTotal / 60);
-    const secs = currentSecondsTotal % 60;
-    
-    const formattedTime = mins + ":" + (secs < 10 ? "0" : "") + secs;
+        const currentSecondsTotal = Math.floor(timeRemaining);
+        const mins = Math.floor(currentSecondsTotal / 60);
+        const secs = currentSecondsTotal % 60;
+        
+        const formattedTime = mins + ":" + (secs < 10 ? "0" : "") + secs;
 
-if (_activeSong && _activeSong.name) {
-    document.getElementById("timer-text").textContent = `${_activeSong.name} - ${formattedTime}`;
-} else {
-    document.getElementById("timer-text").textContent = formattedTime;
- }   
-}
-
+        if (_activeSong && _activeSong.name) {
+            document.getElementById("timer-text").textContent = `${_activeSong.name} - ${formattedTime}`;
+        } else {
+            document.getElementById("timer-text").textContent = formattedTime;
+        }   
+    }
 
     document.getElementById("stats-score").textContent = score;
     document.getElementById("stats-misses").textContent = misses;
     document.getElementById("stats-accuracy").textContent = accuracy;
     document.getElementById("stats-grade").textContent = grade;
 
+    function findIcon(charData, iconS) {
+        if (!charData || !charData.loadedIcons) return "assets/final/gray.png";
+        
+        if (charData.loadedIcons[iconS]) {
+            return charData.loadedIcons[iconS];
+        }
+        return charData.loadedIcons["neutral"] || "assets/final/gray.png";
+    }
+
+    let playerIcon = "neutral";
     if (hp < 40) {
-        pIcon.src = `assets/final/icon${_currentPlayerChar}-dying.png`;
-    } else {
-        pIcon.src = `assets/final/icon${_currentPlayerChar}-neutral.png`;
+        playerIcon = "losing";
+    } else if (hp > 160) {
+        playerIcon = "winning";
     }
 
+    let opponentIcon = "neutral";
     if (hp > 160) {
-        oIcon.src = `assets/final/icon${_currentOpponentChar}-dying.png`;
-    } else {
-        oIcon.src = `assets/final/icon${_currentOpponentChar}-neutral.png`;
+        opponentIcon = "losing";
+    } else if (hp < 40) {
+        opponentIcon = "winning";
     }
 
+    pIcon.src = findIcon(_playerChar, playerIcon);
+    oIcon.src = findIcon(_opponentChar, opponentIcon);
+ 
     if (_activeSong) {
         const bpm = (_activeSong && _activeSong.bpm) ? _activeSong.bpm : 170;
         const msPerBeat = (60 / bpm) * 1000;
