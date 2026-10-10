@@ -1808,14 +1808,8 @@ a,
 
     
     <div id="rhythm-ui" style="display:none;">
-    <div id="opponent-lanes" class="lane-container">
-        <div class="receptor-layer"></div> 
-        <div class="note-layer"></div>
-    </div>
-    <div id="player-lanes" class="lane-container">
-        <div class="receptor-layer"></div>
-        <div class="note-layer"></div>
-    </div>
+    <div id="opponent-lanes" class="lane-container"></div>
+    <div id="player-lanes" class="lane-container"></div>
     <div id="countdown-display"></div>
 </div>
 
@@ -5072,12 +5066,11 @@ if (_opponentChar && _opponentChar.healthbar) {
 }
 
 function setupReceptors() {
-
-    const opp = document.querySelector("#opponent-lanes .receptor-layer");
-    const pla = document.querySelector("#player-lanes .receptor-layer");
+    const opp = document.getElementById("opponent-lanes");
+    const pla = document.getElementById("player-lanes");
 
     if (!opp || !pla) return;
-    
+
     opp.innerHTML = "";
     pla.innerHTML = "";
 
@@ -5703,8 +5696,8 @@ const isPlayerHolding = isPlayerLane &&
 
 function createNoteElement(n, isPlayer) {
     const laneContainer = isPlayer
-    ? document.querySelector("#player-lanes .note-layer")
-    : document.querySelector("#opponent-lanes .note-layer");
+        ? document.getElementById("player-lanes")
+        : document.getElementById("opponent-lanes");
 
     const time = n[0];
     const lane = n[1];
