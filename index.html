@@ -5020,23 +5020,23 @@ if (_opponentChar && _opponentChar.healthbar) {
 
     if (_playerChar && _playerCtx) {
         _playerCtx.clearRect(0, 0, _playerCtx.canvas.width, _playerCtx.canvas.height);
-        drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5);
+        drawCharacterFrame(_playerCtx, _playerChar, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_player2Char && _player2Ctx) {
         _player2Ctx.clearRect(0, 0, _player2Ctx.canvas.width, _player2Ctx.canvas.height);
-        drawCharacterFrame(_player2Ctx, _player2Char, "idle", 0, 5);
+        drawCharacterFrame(_player2Ctx, _player2Char, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_opponentChar && _opponentCtx) {
         _opponentCtx.clearRect(0, 0, _opponentCtx.canvas.width, _opponentCtx.canvas.height);
-        drawCharacterFrame(_opponentCtx, _opponentChar, "idle", 0, 5);
+        drawCharacterFrame(_opponentCtx, _opponentChar, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_opponent2Char && _opponent2Ctx) {
         _opponent2Ctx.clearRect(0, 0, _opponent2Ctx.canvas.width, _opponent2Ctx.canvas.height);
-        drawCharacterFrame(_opponent2Ctx, _opponent2Char, "idle", 0, 5);
+        drawCharacterFrame(_opponent2Ctx, _opponent2Char, "idle", 0, 5, _activeSong.bpm || 120);
     }
     if (_speaker && _speakerCtx) {
         _speakerCtx.clearRect(0, 0, _speakerCtx.canvas.width, _speakerCtx.canvas.height);
-        drawCharacterFrame(_speakerCtx, _speaker, "idle", 0, 5);
+        drawCharacterFrame(_speakerCtx, _speaker, "idle", 0, 5, _activeSong.bpm || 120);
     }
 
     camera.x = data.cameraStartX !== undefined ? data.cameraStartX : 256;
@@ -6206,15 +6206,27 @@ function gameOver() {
 });
 
 
-    function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks) {
+function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks, bpm) {
     const animFrames = charData.animations[actionState];
     const activeFrames = (animFrames && animFrames.length > 0) ? animFrames : charData.animations["idle"];
     
     if (!activeFrames || activeFrames.length === 0) return;
 
-    const currentFrameIndex = Math.floor(timeTick / holdTicks) % activeFrames.length;
-    const frame = activeFrames[currentFrameIndex];
+    let currentFrameIndex = 0;
 
+    if (actionState === "idle" || (!animFrames && charData.animations["idle"])) {
+        const msPerBeat = (60 / bpm) * 1000;
+        const msPerIdle = msPerBeat * 2;
+        const msPerFrame = msPerIdle / activeFrames.length;
+        
+        currentFrameIndex = Math.floor(timeTick / msPerFrame) % activeFrames.length;
+    } 
+    else {
+        const msPerAnimFrame = holdTicks * (1000 / 60); 
+        currentFrameIndex = Math.floor(timeTick / msPerAnimFrame) % activeFrames.length;
+    }
+
+    const frame = activeFrames[currentFrameIndex];
     const activeSheet = charData.imageObjs[frame.sheetIndex];
     const imageToDraw = activeSheet || charData.imageObj;
 
@@ -6274,7 +6286,7 @@ function animateGameOver(ctx, charData) {
         }
     }
 
-    drawCharacterFrame(ctx, charData, actionState, deathTick, DEATH_HOLD);
+    drawCharacterFrame(ctx, charData, actionState, deathTick, DEATH_HOLD, 120);
 }
     
     function animateCharacters(currentTime) {
@@ -6378,7 +6390,8 @@ function animateGameOver(ctx, charData) {
         }
     }
 
-    drawCharacterFrame(_playerCtx, _playerChar, playerState, tick, holdTicks);
+    drawCharacterFrame(_playerCtx, _playerChar, playerState, currentTime, holdTicks, bpm);
+
 
     let player2State = "idle";
     
@@ -6427,8 +6440,8 @@ function animateGameOver(ctx, charData) {
     }
         
     if (_player2Char && _player2Ctx) {
-        drawCharacterFrame(_player2Ctx, _player2Char, player2State, tick, holdTicks);
-    }
+    drawCharacterFrame(_player2Ctx, _player2Char, player2State, currentTime, holdTicks, bpm);
+}
     
     let opponentState = "idle";
 
@@ -6470,7 +6483,7 @@ function animateGameOver(ctx, charData) {
         }
     }
 
-    drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, tick, holdTicks);
+    drawCharacterFrame(_opponentCtx, _opponentChar, opponentState, currentTime, holdTicks, bpm);
 
     let opponent2State = "idle";
 
@@ -6513,7 +6526,7 @@ function animateGameOver(ctx, charData) {
     }
 
     if (_opponent2Char && _opponent2Ctx) {
-        drawCharacterFrame(_opponent2Ctx, _opponent2Char, opponent2State, tick, holdTicks);
+        drawCharacterFrame(_opponent2Ctx, _opponent2Char, opponent2State, currentTime, holdTicks, bpm);
     }
 
     let speakerState = "idle";
@@ -6532,7 +6545,7 @@ function animateGameOver(ctx, charData) {
     }
 
     if (_speaker && _speakerCtx) {
-        drawCharacterFrame(_speakerCtx, _speaker, speakerState, tick, holdTicks);
+        drawCharacterFrame(_speakerCtx, _speaker, speakerState, currentTime, holdTicks, bpm);
     }
 
     if (_activeSong.stageLayers) {
