@@ -4287,106 +4287,112 @@ window.addEventListener("keydown", (e) => {
     const notes = document.querySelectorAll("#player-lanes .note");
     let closestNote = null;
     let minDistance = Infinity;
-    let hitTiming = 0;
+    
+    const speed = _activeSong.scrollSpeed;
+    const centerTimeOffset = 75 / speed;
 
     notes.forEach(el => {
         const targetTime = parseFloat(el.dataset.time);
-        const lane = parseInt(el.dataset.lane); 
+        const lane = Math.round(parseFloat(el.style.left) / 155);
         
         const timeDiff = targetTime - currentTime;
-        const distance = Math.abs(timeDiff);
+        
+        const receptorDistance = Math.abs(timeDiff + centerTimeOffset);
 
-        if (lane === targetLane && distance < minDistance) {
-            minDistance = distance;
+        if (lane === targetLane && receptorDistance < minDistance) {
+            minDistance = receptorDistance;
             closestNote = el;
-            hitTiming = distance;
         }
     });
         
-    if (closestNote && hitTiming <= timing.bad) {
-        
-        validHit = true;
-        _playerMissAnimState = null;
-        _player2MissAnimState = null;
+    if (closestNote) {
+        const finalTimeDiff = parseFloat(closestNote.dataset.time) - currentTime;
+        const accuracyScore = Math.abs(finalTimeDiff + centerTimeOffset);
 
-        const noteType = parseInt(closestNote.dataset.type) || 0;
-        if (noteType === 1) {
-            applyPoison(currentTime);
+        if (accuracyScore <= timing.bad) {
+            validHit = true;
+            _playerMissAnimState = null;
+            _player2MissAnimState = null;
+
+            const noteType = parseInt(closestNote.dataset.type) || 0;
+            if (noteType === 1) {
+                applyPoison(currentTime);
+                closestNote.dataset.hit = "true";
+                closestNote.remove();
+                combo = 0;
+                misses++;
+                updateHPBar(currentTime);
+                return;
+            }
+
+            const noteTarget = parseInt(closestNote.dataset.target) || 0;
+
+            if (noteTarget === 1) {
+                _lastPressedPlayer2Key = cleanKey;
+                _player2AnimationTimer = 250;
+            } else {
+                _lastPressedPlayerKey = cleanKey;
+                _playerAnimationTimer = 250;
+            }
+
+            const hitTime = closestNote.dataset.time;
+            _playerLaneHitTimes[targetLane] = currentTime;
+           
             closestNote.dataset.hit = "true";
             closestNote.remove();
-            combo = 0;
-            misses++;
+
+            if (accuracyScore <= timing.sick) {
+                if (!hpDraining) {
+                    hp = Math.min(maxHP, hp + 5); 
+                }
+                spawnRating("sick");
+                sicks++;
+                score += 350;
+                combo++;
+                spawnCombo(combo);
+                accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+                grade = calculateGrade(accuracy);
+                
+                splashes.push({
+                    lane: targetLane,
+                    startTime: currentTime,
+                    el: null
+                });
+            } else if (accuracyScore <= timing.good) {
+                if (!hpDraining) {
+                    hp = Math.min(maxHP, hp + 2); 
+                }
+                spawnRating("good");
+                goods++;
+                score += 200;
+                combo++;
+                spawnCombo(combo);
+                accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+                grade = calculateGrade(accuracy);
+            } else if (accuracyScore <= timing.bad) {
+                hp = Math.min(maxHP, hp + 0); 
+                spawnRating("bad");
+                bads++;
+                score += 100;
+                combo++;
+                spawnCombo(combo);
+                accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+                grade = calculateGrade(accuracy);
+            } else {
+                hp = Math.min(maxHP, hp + 0); 
+                spawnRating("shit");
+                shits++;
+                score += 50;
+                combo = 0;
+                spawnCombo(combo);
+                accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+                grade = calculateGrade(accuracy);
+            }
+
             updateHPBar(currentTime);
-            return;
         }
-
-        const noteTarget = parseInt(closestNote.dataset.target) || 0;
-
-        if (noteTarget === 1) {
-            _lastPressedPlayer2Key = cleanKey;
-            _player2AnimationTimer = 250;
-        } else {
-            _lastPressedPlayerKey = cleanKey;
-            _playerAnimationTimer = 250;
-        }
-
-        const hitTime = closestNote.dataset.time;
-        _playerLaneHitTimes[targetLane] = currentTime;
-       
-        closestNote.dataset.hit = "true";
-        closestNote.remove();
-
-        if (hitTiming <= timing.sick) {
-            if (!hpDraining) {
-                hp = Math.min(maxHP, hp + 5); 
-            }
-            spawnRating("sick");
-            sicks++;
-            score += 350;
-            combo++;
-            spawnCombo(combo);
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
-            
-            splashes.push({
-                lane: targetLane,
-                startTime: currentTime,
-                el: null
-            });
-        } else if (hitTiming <= timing.good) {
-            if (!hpDraining) {
-                hp = Math.min(maxHP, hp + 2); 
-            }
-            spawnRating("good");
-            goods++;
-            score += 200;
-            combo++;
-            spawnCombo(combo);
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
-        } else if (hitTiming <= timing.bad) {
-            hp = Math.min(maxHP, hp + 0); 
-            spawnRating("bad");
-            bads++;
-            score += 100;
-            combo++;
-            spawnCombo(combo);
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
-        } else {
-            hp = Math.min(maxHP, hp + 0); 
-            spawnRating("shit");
-            shits++;
-            score += 50;
-            combo = 0;
-            spawnCombo(combo);
-            accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
-            grade = calculateGrade(accuracy);
-        }
-        updateHPBar(currentTime);
     }
 });
-
 
 window.addEventListener("keyup", (e) => {
     if (isPaused) return;
