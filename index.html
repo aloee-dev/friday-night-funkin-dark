@@ -5479,7 +5479,7 @@ const isPlayerHolding = isPlayerLane &&
             if (isPlayerHolding || isOpponentSection) {
                 let visualTop = headY + 75;
                 let laneOffset = (lane === 1) ? 0 : 25;
-                let clipAmount = (50 - laneOffset) - visualTop;
+                let clipAmount = (50 + laneOffset) - visualTop;
                 
                 if (clipAmount > 0) {
                     el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
@@ -5630,7 +5630,7 @@ const isPlayerHolding = isPlayerLane &&
 
         if (isPlayerHolding || isOpponentSection) {
             let laneOffset = (lane === 1) ? 0 : 25;
-            let clipAmount = (50 - laneOffset) - currentTop;
+            let clipAmount = (50 + laneOffset) - currentTop;
             
             if (clipAmount > 0) {
                 el.style.clipPath = `inset(${clipAmount}px 0px 0px 0px)`;
