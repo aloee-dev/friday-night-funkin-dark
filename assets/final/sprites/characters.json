@@ -1,0 +1,46 @@
+{
+  "characters": {
+    "bf": {
+      "src": "assets/final/bf-sprit.png",
+      "xml": "assets/final/bf-sprit.xml",
+      "healthbar": "assets/final/healthbar-blue.png",
+      "icons": [
+        { "type": "neutral", "src": "assets/final/iconbf-neutral.png" },
+        { "type": "losing", "src": "assets/final/iconbf-dying.png" }
+      ]
+    },
+    "kg": {
+      "src": "assets/final/sprites/true-boyfriend.png",
+      "xml": "assets/final/sprites/true-boyfriend.xml",
+      "healthbar": "assets/final/healthbar-blue.png",
+      "icons": [
+        { "type": "neutral", "src": "assets/final/iconkg-neutral.png" },
+        { "type": "losing", "src": "assets/final/iconkg-dying.png" }
+      ]
+    },
+    "pico": {
+      "src": "assets/final/pico-sprite.png",
+      "xml": "assets/final/pico-sprite.xml",
+      "healthbar": "assets/final/health-green.png",
+      "icons": [
+        { "type": "neutral", "src": "assets/final/iconpico-neutral.png" },
+        { "type": "losing", "src": "assets/final/iconpico-dying.png" }
+      ]
+    },
+    "gf": {
+      "src": "assets/final/gf-sprite.png",
+      "xml": "assets/final/gf-sprite.xml",
+      "healthbar": "assets/final/healthbar-gf.png",
+      "icons": [
+        { "type": "neutral", "src": "assets/final/icongf-neutral.png" },
+        { "type": "losing", "src": "assets/final/icongf-dying.png" }
+      ]
+    }
+  },
+  "environments": {
+    "radio": {
+      "src": "assets/final/sprites/radio.png",
+      "xml": "assets/final/sprites/radio.xml"
+    }
+  }
+}
