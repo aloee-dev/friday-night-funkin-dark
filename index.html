@@ -5258,6 +5258,7 @@ function resumeIntervals() {
 
 let activePlayerSustains = new Set();
 let activeOpponentSustains = new Set();
+const allowedRelease = 120;
 
 function updateRhythmLoop(rSId) {
     
@@ -5462,13 +5463,16 @@ noteElements.forEach(el => {
 
             const tailProgressTime = headTime + length - currentTime;
 
-            const isPlayerHolding = isPlayerLane && 
-                (diff <= 0) && 
-                (tailProgressTime > 0) && 
-                (
-                    _heldKeys.has(getLane(lane).arrow) || 
-                    _heldKeys.has(getLane(lane).letter)
-                );
+const inWindow = tailProgressTime <= (allowedRelease / 1000); 
+
+const isPlayerHolding = isPlayerLane && 
+    (diff <= 0) && 
+    (tailProgressTime > 0) && 
+    (
+        inWindow ||
+        _heldKeys.has(getLane(lane).arrow) || 
+        _heldKeys.has(getLane(lane).letter)
+    );
             
             const isOpponentSection = !isPlayerLane && (diff <= 0) && (tailProgressTime > 0);
 
@@ -5491,7 +5495,7 @@ noteElements.forEach(el => {
                     activeOpponentSustains.add(trackingKey);
                 }
             } 
-            else if (isPlayerLane && diff < -150 && tailProgressTime > 0) {
+            else if (isPlayerLane && diff < -150 && tailProgressTime > (allowedRelease / 1000)) {
                 misses++;
                 combo = 0;
                 playMiss();
@@ -5614,7 +5618,9 @@ noteElements.forEach(el => {
         const tailProgressTime = headTime + length - currentTime;
         const holdEnd = (currentTop <= 50) && (tailProgressTime > 0);
 
+        const inWindow = tailProgressTime <= (allowedRelease / 1000);
         const isPlayerHolding = isPlayerLane && (
+            inWindow || 
             _heldKeys.has(getLane(lane).arrow) || 
             _heldKeys.has(getLane(lane).letter)
         );
