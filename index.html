@@ -3104,7 +3104,7 @@ function applyDialogStyle(box, style) {
     const speakerTag = document.getElementById("speaker-tag");
     const speakerText = document.getElementById("dialog-speaker");
         
-    const muted = line.triggers && line.triggers.some(t => t.type === "mute");
+    const muted = JSON.stringify(line.triggers).includes('"mute"');
 
     applyDialogStyle(box, line.style);
 
@@ -3155,7 +3155,7 @@ if (line.speaker && line.mood) {
     }
 }
         // caution
-    _nextScene = line.next || null;
+   _nextScene = line.next;
 
     if (line.branches) {
         for (let branch of line.branches) {
@@ -3168,7 +3168,7 @@ if (line.speaker && line.mood) {
         }
     }
         
-    if (line.newChapter !== undefined) _isNewChapter = line.newChapter;
+    if (line.newChapter) _isNewChapter = true;
     if (line.newChapter) {
     currentChapter++;
 }
@@ -3194,7 +3194,6 @@ if (line.speaker && line.mood) {
         showChoices(line.choices);
     }
 
-    document.getElementById("dialog-speaker").textContent = line.speaker || "";
     applyFontSetting();
     startTypewriter(line.text, textDiv, line.speaker, line.effect, null, muted);
 }
