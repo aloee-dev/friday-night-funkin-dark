@@ -2612,6 +2612,8 @@ let previewFadeInterval = null;
 function playSongPreview(songId) {
     if (typeof menuMusic !== 'undefined' && menuMusic) {
         menuMusic.volume = 0; 
+        menuMusic.pause();
+        menuMusic.currentTime = 0;
     }
     const audioPath = `assets/final/songs/${songId}/Inst.mp3`;
     previewAudio = new Audio(audioPath);
