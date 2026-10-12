@@ -3491,12 +3491,29 @@ function doCommand(input) {
 }
     
 const SETTINGS_KEY = 'fnf_dark_minds_settings';
+const SHOWN_KEY = 'fnf_dark_minds_shown';
 const CHAPTER_SAVE_KEY = 'fnf_dark_minds_chapter_save';
 const SCENE_SAVE_KEY = 'fnf_dark_minds_scene_save';
 const LINE_SAVE_KEY = 'fnf-dark-minds_line_save';
 const SLOT1_SAVE_KEY = 'fnf-dark-minds_slot1_save';
 const SLOT2_SAVE_KEY = 'fnf-dark-minds_slot2_save';
 const SLOT3_SAVE_KEY = 'fnf-dark-minds_slot3_save';
+
+    function loadShown() {
+    const shownDialogues = localStorage.getItem(SHOWN_KEY);
+    if (shownDialogues) {
+        const dialogueData = JSON.parse(shownDialogues); 
+        shownDialogs = new Set(dialogueData.shownDialogs || []);
+    }
+}
+
+function saveDialogue() {
+    const shownData = {
+    shownDialogs: Array.from(shownDialogs),
+    };
+    localStorage.setItem(SHOWN_KEY, JSON.stringify(shownData));
+}
+    loadShown();
 
 function getGame(sceneName, lineId = null) {
     return {
