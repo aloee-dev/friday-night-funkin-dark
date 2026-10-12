@@ -5356,57 +5356,78 @@ function updateRhythmLoop(rSId) {
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
 
-        const targetTime = parseFloat(el.dataset.time);
-        const diff = targetTime - currentTime;
-       
-        const y = 50 + (diff * speed);
-        el.style.top = y + "px";
-        const isPlayerLane = el.parentElement.id === "player-lanes";
+    const targetTime = parseFloat(el.dataset.time);
+    const diff = targetTime - currentTime;
+   
+    const y = 50 + (diff * speed);
+    el.style.top = y + "px";
+    
+    const lane = parseInt(el.dataset.lane);
+    const noteType = parseInt(el.dataset.type) || 0;
+    const isPlayerLane = el.parentElement.id === "player-lanes";
 
-        if (isPlayerLane) {
-            const centerTimeOffset = 75 / speed;
-            if (diff < -350 + centerTimeOffset) {
-                if (!el.dataset.hit) {
-                    const noteType = parseInt(el.dataset.type) || 0;
-                    if (noteType !== 1) {
+    if (isPlayerLane) {
+        if (noteType === 2) {
+            const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
+            
+            if (diff <= 50 && diff >= -150 && isKeyHeld && !el.dataset.hit) {
+                el.dataset.hit = "true";
+                
+                hp = Math.max(0, hp - 20);
+                misses++;
+                combo = 0;
+                playMiss();
+
+                const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+                if (directionMap[lane]) {
+                    _playerMissAnimState = directionMap[lane];
+                    _playerAnimationTimer = 250; 
+                }
+                
+                el.remove();
+                return;
+            }
+        }
+
+        const centerTimeOffset = 75 / speed;
+        if (diff < -350 + centerTimeOffset) {
+            if (!el.dataset.hit) {
+                if (noteType !== 1 && noteType !== 2) {
                     hp = Math.max(0, hp - 10);
                     misses++;
                     combo = 0;
                     playMiss();
 
-                    const lane = parseInt(el.dataset.lane);
                     const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-                    
                     if (directionMap[lane]) {
                         _playerMissAnimState = directionMap[lane];
                         _playerAnimationTimer = 250; 
                     }
                 }
             }
-                el.remove();
-            }
-        } 
-        else { 
-            const centerTimeOffset = 75 / speed;
-            if (diff <= -centerTimeOffset) {
-                const lane = parseInt(el.dataset.lane);
-                const directionMap = ["left", "down", "up", "right"];
-                const noteTarget = parseInt(el.dataset.target) || 0;
-
-                if (directionMap[lane]) {
-                    if (noteTarget === 1) {
-                        _opponent2AnimState = directionMap[lane];
-                        _opponent2AnimTimer = 250; 
-                    } else {
-                        _opponentAnimState = directionMap[lane];
-                        _opponentAnimTimer = 250;
-                    }
-                }
-                _opponentLaneHitTimes[lane] = currentTime;
-                
-                el.remove(); 
-            }
+            el.remove();
         }
+    } 
+    else { 
+        const centerTimeOffset = 75 / speed;
+        if (diff <= -centerTimeOffset) {
+            const directionMap = ["left", "down", "up", "right"];
+            const noteTarget = parseInt(el.dataset.target) || 0;
+
+            if (directionMap[lane]) {
+                if (noteTarget === 1) {
+                    _opponent2AnimState = directionMap[lane];
+                    _opponent2AnimTimer = 250; 
+                } else {
+                    _opponentAnimState = directionMap[lane];
+                    _opponentAnimTimer = 250;
+                }
+            }
+            _opponentLaneHitTimes[lane] = currentTime;
+            
+            el.remove(); 
+        }
+    }
 });
 
     activePlayerSustains.clear();
@@ -5687,6 +5708,9 @@ function createNoteElement(n, isPlayer) {
 
     if (type === 1) {
         note.style.backgroundImage = `url('assets/final/notes/notestyles/arrow-poison.png')`;
+    }
+    if (type === 2) {
+        note.style.backgroundImage = `url('assets/final/notes/notestyles/arrow-mine.png')`;
     }
 
     if (length > 0) {
