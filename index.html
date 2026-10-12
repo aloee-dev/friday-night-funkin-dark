@@ -1875,7 +1875,8 @@ a,
     Score: <span id="stats-score">0</span> |
     Misses: <span id="stats-misses">0</span> |
     Accuracy:<span id="stats-accuracy">100.00</span> |
-    <span id="stats-grade">??</span>
+    <span id="stats-grade">??</span> |
+    <span id="stats-combo-rank">??</span>
 </div>
 
 <div id="pause-overlay" style="display: none;">
@@ -2654,7 +2655,7 @@ function playSongPreview(songId) {
 
 
     document.addEventListener('keydown', async (e) => {
-  if (!inFreeplay || transition) return;
+  if (!inFreeplay || transition || _rhythmStarted) return;
 
   const selectedChapter = freeplayData[chapterIndex];
 
@@ -4071,6 +4072,7 @@ let shits = 0;
 let misses = 0;
 let accuracy = "100.00";
 let grade = "??";
+let comboRank = "??";
 let splashes = []; 
 
 let canPause = false;
@@ -4126,6 +4128,23 @@ function calculateAccuracy(sicks, goods, bads, shits, misses) {
     return "D";
   }
 }
+    
+function calculateComboRank(sicks, goods, bads, shits, misses) {
+  if (misses >= 10) {
+    return "Clear";
+  } else if (misses > 0 && misses <= 9) {
+    return "SDCB";
+  }
+
+  if (bads > 0 || shits > 0) {
+    return "FC";   
+  } else if (goods > 0) {
+    return "GFC";  
+  } else {
+    return "SFC";  
+  }
+}
+
 
 function playMiss() {
     const number = Math.floor(Math.random() * 3) + 1;
@@ -4310,6 +4329,7 @@ window.addEventListener("keydown", (e) => {
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
+            comboRank = calculateComboRank(sicks, goods, bads, shits, misses);
             
             splashes.push({
                 lane: targetLane,
@@ -4327,6 +4347,7 @@ window.addEventListener("keydown", (e) => {
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
+            comboRank = calculateComboRank(sicks, goods, bads, shits, misses);
         } else if (hitTiming <= timing.bad) {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("bad");
@@ -4336,6 +4357,7 @@ window.addEventListener("keydown", (e) => {
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
+            comboRank = calculateComboRank(sicks, goods, bads, shits, misses);
         } else {
             hp = Math.min(maxHP, hp + 0); 
             spawnRating("shit");
@@ -4344,6 +4366,7 @@ window.addEventListener("keydown", (e) => {
             combo = 0;
             spawnCombo(combo);
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
+            comboRank = calculateComboRank(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
         }
         updateHPBar(currentTime);
@@ -4617,6 +4640,7 @@ function resetScore() {
     combo = 0;
     accuracy = "100.00";
     grade = "??";
+    comboRank = "??";
   }
 
     function updateBar(progressStep) {
@@ -6599,6 +6623,7 @@ function updateHPBar(currentTime) {
     document.getElementById("stats-misses").textContent = misses;
     document.getElementById("stats-accuracy").textContent = accuracy;
     document.getElementById("stats-grade").textContent = grade;
+    document.getElementById("stats-combo-rank").textContent = comboRank;
 
     function findIcon(charData, iconS) {
         if (!charData || !charData.loadedIcons) return "assets/final/gray.png";
