@@ -2688,6 +2688,7 @@ function playSongPreview(songId) {
     const selectedChapter = freeplayData[chapterIndex];
     const selectedScene = selectedChapter.scenes[sceneIndex];
     playSfx.play();
+    clearInterval(previewFadeInterval);
     
     await new Promise(r => setTimeout(r, 1000));
 
