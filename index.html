@@ -209,17 +209,17 @@ a,
     transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
 
-#btn-play { background-image: var(--btn-play, url('assets/play.png')); }
-#btn-play:hover { background-image: var(--btn-play-hover, url('assets/play-hover.png')); }
+#btn-play { background-image: url('assets/play.png'); }
+#btn-play:hover { background-image: url('assets/play-hover.png'); }
 
-#btn-continue { background-image: var(--btn-continue, url('assets/continue.png')); }
-#btn-continue:hover { background-image: var(--btn-continue-hover, url('assets/continue-hover.png')); }
+#btn-continue { background-image: url('assets/continue.png'); }
+#btn-continue:hover { background-image: url('assets/continue-hover.png'); }
 
-#btn-settings { background-image: var(--btn-settings, url('assets/settings.png')); }
-#btn-settings:hover { background-image: var(--btn-settings-hover, url('assets/settings-hover.png')); }
+#btn-settings { background-image: url('assets/settings.png'); }
+#btn-settings:hover { background-image: url('assets/settings-hover.png'); }
 
-#btn-credits { background-image: var(--btn-credits, url('assets/credits.png')); }
-#btn-credits:hover { background-image: var(--btn-credits-hover, url('assets/credits-hover.png')); }
+#btn-credits { background-image: url('assets/credits.png'); }
+#btn-credits:hover { background-image: url('assets/credits-hover.png'); }
 
 .menu-btn:hover {
     transform: scale(1.3);
@@ -966,7 +966,7 @@ a,
     
 .loading-bg {
     inset: 0;
-    background-image: var(--bg-loading-song, url('assets/final/loading/loading-song.png'));
+    background-image: url('assets/final/loading/loading-song.png');
     z-index: 1;
 }
 
@@ -975,12 +975,8 @@ a,
     left: 0;
     width: 876px;
     height: 919px;
-    background-image: var(--img-boyco, url('assets/final/loading/boyco.png'));
+    background-image: url('assets/final/loading/boyco.png');
     z-index: 2;
-}
-
-#song-loading-screen.glow-active #loading-characters {
-    background-image: var(--img-glow-boyco, url('assets/final/loading/glow-boyco.png'));
 }
 
 .loading-bar {
@@ -992,26 +988,31 @@ a,
     display: none;
 }
 
-#bar-1 { background-image: var(--img-bar-1, url('assets/final/loading/bar-1.png')); }
-#bar-2 { background-image: var(--img-bar-2, url('assets/final/loading/bar-2.png')); }
-#bar-3 { background-image: var(--img-bar-3, url('assets/final/loading/bar-3.png')); }
-#bar-4 { background-image: var(--img-bar-4, url('assets/final/loading/bar-4.png')); }
-#bar-5 { background-image: var(--img-bar-5, url('assets/final/loading/bar-5.png')); }
-#bar-6 { background-image: var(--img-bar-6, url('assets/final/loading/bar-6.png')); }
+#bar-1 { background-image: url('assets/final/loading/bar-1.png'); }
+#bar-2 { background-image: url('assets/final/loading/bar-2.png'); }
+#bar-3 { background-image: url('assets/final/loading/bar-3.png'); }
+#bar-4 { background-image: url('assets/final/loading/bar-4.png'); }
+#bar-5 { background-image: url('assets/final/loading/bar-5.png'); }
+#bar-6 { background-image: url('assets/final/loading/bar-6.png'); }
 
 #bar-glow {
     top: 340px;
     left: 785px;
     width: 810px;
     height: 759px;
-    background-image: var(--img-bar-glow, url('assets/final/loading/bar-glow.png'));
+    background-image: url('assets/final/loading/bar-glow.png');
     z-index: 4;
     display: none;
+}
+
+#song-loading-screen.glow-active #loading-characters {
+    background-image: url('assets/final/loading/glow-boyco.png');
 }
 
 #song-loading-screen.glow-active #bar-glow {
     display: block;
 }
+
     
 #rhythm-ui {
     position: absolute;
@@ -1446,32 +1447,33 @@ a,
 #btn-resume {
     top: 30px; 
     left: 0px;
-    background-image: var(--btn-resume, url('assets/final/pause/resume.png'));
+    background-image: url('assets/final/pause/resume.png');
 }
 #btn-resume.selected {
-    background-image: var(--btn-resume-selected, url('assets/final/pause/resume-selected.png'));
+    background-image: url('assets/final/pause/resume-selected.png');
     left: 40px;
 }
 
 #btn-restart {
     top: 370px;
     left: 0px;
-    background-image: var(--btn-restart, url('assets/final/pause/restart.png'));
+    background-image: url('assets/final/pause/restart.png');
 }
 #btn-restart.selected {
-    background-image: var(--btn-restart-selected, url('assets/final/pause/restart-selected.png'));
+    background-image: url('assets/final/pause/restart-selected.png');
     left: 40px;
 }
 
 #btn-exit {
     top: 700px;
     left: 0px;
-    background-image: var(--btn-exit, url('assets/final/pause/exit.png'));
+    background-image: url('assets/final/pause/exit.png');
 }
 #btn-exit.selected {
-    background-image: var(--btn-exit-selected, url('assets/final/pause/exit-selected.png'));
+    background-image: url('assets/final/pause/exit-selected.png');
     left: 40px;
 }
+
     
 .results-screen {
   position: fixed;
@@ -1974,7 +1976,6 @@ a,
 
 
 <script src="https://cdn.jsdelivr.net/gh/PsychoGoldfishNG/NewgroundsIO-JS@8c72515/dist/NewgroundsIO.min.js"></script>
-<script src="js/preload.js"></script>
 <script>
 
     // to do list!!
@@ -1984,9 +1985,119 @@ a,
     // plotting out how the point and click section will go out
     // "delay" feature idk what that means but i wrote that in my google doc a month ago
 
-    window.addEventListener("DOMContentLoaded", () => {
+const version = "0.0.0";
+   
+let assets = [];
+
+const menuMusic = new Audio('assets/music/menu.m4a');
+let loaded = 0;
+const assetCache = {};
+
+async function addAssets() {
+    try {
+        const response = await fetch('data/assets.json');
+        assets = await response.json();
+    } catch (error) {
+        console.error("Failed to load files:", error);
+        alert("Failed to load files:" + error);
+    }
+}
+
+function preloadAsset(src) {
+    return new Promise((resolve) => {
+        if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
+            const audio = new Audio();
+            audio.oncanplaythrough = () => {
+                assetCache[src] = audio;
+                resolve(audio);
+            };
+            audio.src = src;
+            audio.load();
+            return;
+        }
+
+        const img = new Image();
+        img.src = src;
+
+        img.onload = () => {
+            img.decode()
+                .then(() => {
+                    assetCache[src] = img;
+                    resolve(img);
+                })
+                .catch(() => {
+                    assetCache[src] = img;
+                    resolve(img);
+                });
+        };
+    });
+}
+
+async function preloadAll() {
+    const progressBar = document.getElementById("progress-bar");
+    const gameViewport = document.getElementById("game-viewport");
+
+    const promises = assets.map(async (src) => {
+        const element = await preloadAsset(src);
+        
+        loaded++;
+        const percent = Math.floor((loaded / assets.length) * 100);
+        progressBar.style.width = percent + "%";
+
+        if (src.includes("sprites/")) {
+            const id = src.split('/').pop().split('.')[0]; 
+            element.id = id; 
+            element.className = "char"; 
+            gameViewport.appendChild(element);
+        }
+
+        return element;
+    });
+
+    await Promise.all(promises);
+
+    document.getElementById("loading-text").textContent = "LOADED!";
+    await new Promise(r => setTimeout(r, 1000));
+
+    document.getElementById("loading-screen").style.opacity = 0;
+    setTimeout(showDisclaimer, 1000);
+}
+
+        async function findAndPreload() {
+    await addAssets();
+    await preloadAll();
+}
+
     findAndPreload();
 
+document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible") {
+        const gameViewport = document.getElementById("game-viewport");
+        gameViewport.style.willChange = "transform, opacity";
+
+        const decodePromises = Object.keys(assetCache).map(async (key) => {
+            const asset = assetCache[key];
+            
+            if (asset instanceof HTMLImageElement) {
+                try {
+                    await asset.decode(); 
+                } catch (e) {
+                    console.warn(`Failed to decode asset: ${key}`, e);
+                }
+            }
+            return asset;
+        });
+
+        await Promise.all(decodePromises);
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                gameViewport.style.willChange = "auto";
+            });
+        });
+    }
+});
+    
+window.addEventListener("DOMContentLoaded", () => {
     const hoverSfx = new Audio("sfx/scrollMenu.mp3");
     hoverSfx.preload = "auto";
     hoverSfx.volume = 0.8;
