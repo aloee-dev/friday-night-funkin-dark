@@ -1,3 +1,4 @@
+try {
 const version = "0.0.0";
 let assets = [];
 let loaded = 0;
@@ -78,43 +79,47 @@ function preloadAsset(src) {
 }
 
 async function preloadAll() {
-    const progressBar = document.getElementById("progress-bar");
-    const gameViewport = document.getElementById("game-viewport");
+    try {
+        const progressBar = document.getElementById("progress-bar");
+        const gameViewport = document.getElementById("game-viewport");
 
-    const promises = assets.map(async (src) => {
-        const element = await preloadAsset(src);
+        const promises = assets.map(async (src) => {
+            const element = await preloadAsset(src);
+            
+            loaded++;
+            const percent = Math.floor((loaded / assets.length) * 100);
+            if (progressBar) progressBar.style.width = percent + "%";
+
+            const fileName = src.split('/').pop();
+            const varName = CSS_VARIABLE_MAPS[fileName];
+
+            if (varName) {
+                document.documentElement.style.setProperty(varName, `url('${src}')`);
+            }
+
+            if (src.includes("sprites/")) {
+                const id = src.split('/').pop().split('.')[0]; 
+                element.id = id; 
+                element.className = "char"; 
+                if (gameViewport) gameViewport.appendChild(element);
+            }
+
+            return element;
+        });
+
+        await Promise.all(promises);
+
+        const loadingText = document.getElementById("loading-text");
+        if (loadingText) loadingText.textContent = "LOADED!";
         
-        loaded++;
-        const percent = Math.floor((loaded / assets.length) * 100);
-        if (progressBar) progressBar.style.width = percent + "%";
+        await new Promise(r => setTimeout(r, 1000));
 
-        const fileName = src.split('/').pop();
-        const varName = CSS_VARIABLE_MAPS[fileName];
-
-        if (varName) {
-            document.documentElement.style.setProperty(varName, `url('${src}')`);
-        }
-
-        if (src.includes("sprites/")) {
-            const id = src.split('/').pop().split('.')[0]; 
-            element.id = id; 
-            element.className = "char"; 
-            if (gameViewport) gameViewport.appendChild(element);
-        }
-
-        return element;
-    });
-
-    await Promise.all(promises);
-
-    const loadingText = document.getElementById("loading-text");
-    if (loadingText) loadingText.textContent = "LOADED!";
-    
-    await new Promise(r => setTimeout(r, 1000));
-
-    const loadingScreen = document.getElementById("loading-screen");
-    if (loadingScreen) loadingScreen.style.opacity = 0;
-    setTimeout(showDisclaimer, 1000);
+        const loadingScreen = document.getElementById("loading-screen");
+        if (loadingScreen) loadingScreen.style.opacity = 0;
+        setTimeout(showDisclaimer, 1000);
+    } catch (e) {
+        alert("Error inside preloadAll loop: " + e);
+    }
 }
 
 document.addEventListener("visibilitychange", () => {
@@ -133,6 +138,16 @@ document.addEventListener("visibilitychange", () => {
 });
 
 async function findAndPreload() {
-    await addAssets();
-    await preloadAll();
+    try {
+        await addAssets();
+        await preloadAll();
+    } catch (e) {
+        alert("Error inside findAndPreload pipeline: " + e);
+    }
+}
+window.findAndPreload = findAndPreload;
+window.assetCache = assetCache;
+
+} catch (globalPreloadError) {
+    alert("Error: " + globalPreloadError);
 }
