@@ -3434,6 +3434,15 @@ function doCommand(input) {
             loadDialogue(args[0]);
             break;
 
+                    case '/seen':
+            if (!shownDialogs || shownDialogs.size === 0) {
+                alert("No scenes viewed yet.");
+            } else {
+                const historyList = Array.from(shownDialogs).join("\n- ");
+                alert(`Scenes viewed: (${shownDialogs.size}):\n- ${historyList}`);
+            }
+            break;
+
             case '/pnc':
             console.log("Showing section:", args[0]);
             startPointNClick(args[0]);
