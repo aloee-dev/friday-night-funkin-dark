@@ -2042,6 +2042,13 @@ async function preloadAll() {
     setTimeout(showDisclaimer, 1000);
 }
 
+        async function findAndPreload() {
+    await addAssets();
+    await preloadAll();
+}
+
+    findAndPreload();
+
 document.addEventListener("visibilitychange", async () => {
     if (document.visibilityState === "visible") {
         const gameViewport = document.getElementById("game-viewport");
@@ -2154,9 +2161,6 @@ async function showDisclaimer() {
         }, 1000);
     }
 });
-
-
-    preloadAll();
 
     document.getElementById("btn-credits").onclick = async () => {
     const fade = document.getElementById("fade-overlay");
@@ -3181,7 +3185,8 @@ async function loadDialogue(sceneName, arrayId = null) {
         const data = await response.json();
         
         currentSceneName = sceneName;
-        saveScene(sceneName, arrayId);        
+        saveScene(sceneName, arrayId);     
+        shownDialogs.add(sceneName);
         showDialog(data, {}, arrayId);
     } catch (err) {
         console.error("Failed to load dialogue:", sceneName, err);
