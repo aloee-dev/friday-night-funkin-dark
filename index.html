@@ -1987,53 +1987,23 @@ a,
 
 const version = "0.0.0";
    
-const blobCache = {}; 
-let loaded = 0;
 let assets = [];
-const assetCache = {};
+
 const menuMusic = new Audio('assets/music/menu.m4a');
+let loaded = 0;
+const assetCache = {};
 
-(function p() {
-    const oSrc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
-    Object.defineProperty(HTMLImageElement.prototype, 'src', {
-        set(value) {
-            if (typeof value === 'string') {
-                const cleanKey = Object.keys(blobCache).find(key => value.includes(key));
-                if (cleanKey && blobCache[cleanKey]) {
-                    return oSrc.set.call(this, blobCache[cleanKey]);
-                }
-            }
-            return oSrc.set.call(this, value);
-        },
-        get() { return oSrc.get.call(this); }
-    });
-
-    const oBg = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, 'backgroundImage');
-    if (oBg) {
-        Object.defineProperty(CSSStyleDeclaration.prototype, 'backgroundImage', {
-            set(value) {
-                if (typeof value === 'string') {
-                    const match = value.match(/url\(['"]?([^'"]+)['"]?\)/);
-                    if (match) {
-                        const originalPath = match[1];
-                        const cleanKey = Object.keys(blobCache).find(key => originalPath.includes(key));
-                        if (cleanKey && blobCache[cleanKey]) {
-                            value = `url('${blobCache[cleanKey]}')`;
-                        }
-                    }
-                }
-                return oBg.set.call(this, value);
-            },
-            get() { return oBg.get.call(this); }
-        });
+async function addAssets() {
+    try {
+        const response = await fetch('data/assets.json');
+        assets = await response.json();
+    } catch (error) {
+        console.error("Failed to load files:", error);
+        alert("Failed to load files:" + error);
     }
-})();
+}
 
 function preloadAsset(src) {
-    if (assetCache[src]) {
-        return Promise.resolve(assetCache[src]);
-    }
-
     return new Promise((resolve) => {
         if (src.endsWith(".m4a") || src.endsWith(".mp3") || src.endsWith(".wav")) {
             const audio = new Audio();
@@ -2046,43 +2016,21 @@ function preloadAsset(src) {
             return;
         }
 
-        fetch(src)
-            .then(response => response.blob())
-            .then(blob => {
-                const blobUrl = URL.createObjectURL(blob);
-                blobCache[src] = blobUrl; 
+        const img = new Image();
+        img.src = src;
 
-                const img = new Image();
-                img.src = blobUrl;
-                img.onload = () => {
-                    img.decode()
-                        .then(() => {
-                            assetCache[src] = img;
-                            resolve(img);
-                        })
-                        .catch(() => {
-                            assetCache[src] = img;
-                            resolve(img);
-                        });
-                };
-            })
-            .catch(err => {
-                console.error(`Failed asset: ${src}`, err);
-                const img = new Image();
-                img.src = src;
-                img.onload = () => resolve(img);
-            });
+        img.onload = () => {
+            img.decode()
+                .then(() => {
+                    assetCache[src] = img;
+                    resolve(img);
+                })
+                .catch(() => {
+                    assetCache[src] = img;
+                    resolve(img);
+                });
+        };
     });
-}
-
-async function addAssets() {
-    try {
-        const response = await fetch('data/assets.json');
-        assets = await response.json();
-    } catch (error) {
-        console.error("Failed to load files:", error);
-        alert("Failed to load files:" + error);
-    }
 }
 
 async function preloadAll() {
@@ -2108,8 +2056,6 @@ async function preloadAll() {
 
     await Promise.all(promises);
 
-    le();
-
     document.getElementById("loading-text").textContent = "LOADED!";
     await new Promise(r => setTimeout(r, 1000));
 
@@ -2117,45 +2063,45 @@ async function preloadAll() {
     setTimeout(showDisclaimer, 1000);
 }
 
-function le() {
-    for (let sheet of document.styleSheets) {
-        try {
-            if (!sheet.cssRules) continue;
-            for (let rule of sheet.cssRules) {
-                if (rule.style && rule.style.backgroundImage) {
-                    const bgValue = rule.style.backgroundImage;
-                    const match = bgValue.match(/url\(['"]?([^'"]+)['"]?\)/);
-                    if (match) {
-                        const originalPath = match[1];
-                        const cleanPath = Object.keys(blobCache).find(key => originalPath.includes(key));
-                        if (cleanPath && blobCache[cleanPath]) {
-                            rule.style.backgroundImage = `url(${blobCache[cleanPath]})`;
-                        }
-                    }
-                }
-            }
-        } catch (e) { console.warn("Error", e); }
-    }
-
-    const aIm = document.getElementsByTagName("img");
-    for (let img of aIm) {
-        const currentSrc = img.getAttribute("src"); 
-        if (currentSrc) {
-            const cleanPath = Object.keys(blobCache).find(key => currentSrc.includes(key));
-            if (cleanPath && blobCache[cleanPath]) {
-                img.src = blobCache[cleanPath];
-            }
-        }
-    }
-}
-
-async function findAndPreload() {
+        async function findAndPreload() {
     await addAssets();
     await preloadAll();
 }
 
-findAndPreload();
+    findAndPreload();
 
+document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible") {
+        const gameViewport = document.getElementById("game-viewport");
+        
+        gameViewport.style.willChange = "transform, opacity";
+
+        const decodePromises = Object.keys(assetCache).map(async (key) => {
+            const asset = assetCache[key];
+            
+            if (asset instanceof HTMLImageElement) {
+                const currentSrc = asset.src;
+                asset.src = ''; 
+                asset.src = currentSrc;
+
+                try {
+                    await asset.decode(); 
+                } catch (e) {
+                    console.warn(`Failed: ${key}`, e);
+                }
+            }
+            return asset;
+        });
+
+        await Promise.all(decodePromises);
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                gameViewport.style.willChange = "auto";
+            });
+        });
+    }
+});
 
     
 window.addEventListener("DOMContentLoaded", () => {
