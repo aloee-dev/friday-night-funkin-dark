@@ -2827,7 +2827,7 @@ addRandomData();
   'default': { speed: 30, pitch: 1.0, frequency: 2, sound: 'sfx/blip2.wav' }
 };
 
-const shownDialogs = new Set();
+let shownDialogs = new Set();
 let currentSceneName = "";
 let _dialogQueue = [];
 let _typingTimeout = null;
