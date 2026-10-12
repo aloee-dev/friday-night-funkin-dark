@@ -1720,19 +1720,22 @@ a,
     <button class="settings-exit" id="load-chapter-btn">CURRENT CHAPTER</button>
 
     <div class="save-slots-container">
-        <div class="save-slot-box" id="slot1-ui-btn">
-            <div class="slot-header" id="slot1-header">EMPTY</div>
-            <div class="slot-body-text" id="slot1-body">Press 1 to save to this slot</div>
-        </div>
-        <div class="save-slot-box" id="slot2-ui-btn">
-            <div class="slot-header" id="slot2-header">EMPTY</div>
-            <div class="slot-body-text" id="slot2-body">Press 2 to save to this slot</div>
-        </div>
-        <div class="save-slot-box" id="slot3-ui-btn">
-            <div class="slot-header" id="slot3-header">EMPTY</div>
-            <div class="slot-body-text" id="slot3-body">Press 3 to save to this slot</div>
-        </div>
+    <div class="save-slot-box" id="slot1-ui-btn">
+        <div class="slot-header" id="slot1-header">EMPTY</div>
+        <div class="slot-body-text" id="slot1-body">Press 1 to save to this slot</div>
+        <div class="slot-time" id="slot1-timestamp"></div>
     </div>
+    <div class="save-slot-box" id="slot2-ui-btn">
+        <div class="slot-header" id="slot2-header">EMPTY</div>
+        <div class="slot-body-text" id="slot2-body">Press 2 to save to this slot</div>
+        <div class="slot-time" id="slot2-timestamp"></div>
+    </div>
+    <div class="save-slot-box" id="slot3-ui-btn">
+        <div class="slot-header" id="slot3-header">EMPTY</div>
+        <div class="slot-body-text" id="slot3-body">Press 3 to save to this slot</div>
+        <div class="slot-time" id="slot3-timestamp"></div>
+    </div>
+</div>
 
     <button class="settings-exit" style="font-size: 30px; margin-top: 5px;" onclick="document.getElementById('continue-menu').style.display='none'">BACK</button>
 </div>
@@ -1779,6 +1782,8 @@ a,
 <div id="freeplay-high-score" style="display: none;"></div>
 <img id="freeplay-chapter-graphic" src="assets/freeplay/week-1.png" style="display: none;">
 <img id="freeplay-score-graphic" src="assets/freeplay/graphic.png" style="display: none;">
+<img id="freeplay-spray" src="assets/freeplay/spray.png" style="opacity: 0; pointer-events: none;">
+<img id="freeplay-tab" src="assets/freeplay/tab.png" style="opacity: 0; pointer-events: none;">
 
 <div id="freeplay-menu" style="display: none;"> 
     <div id="freeplay-bg"></div>
@@ -2262,12 +2267,18 @@ function updateSlots() {
     slots.forEach(slot => {
         const headerEl = document.getElementById(`slot${slot.id}-header`);
         const bodyEl = document.getElementById(`slot${slot.id}-body`);
+        const timeEl = document.getElementById(`slot${slot.id}-timestamp`); 
+        
         const rawData = localStorage.getItem(slot.key);
 
         if (rawData) {
             try {
-                const data = JSON.parse(rawData)
+                const data = JSON.parse(rawData);
                 headerEl.textContent = `Week ${data.currentChapter ?? 1}`;
+                if (timeEl) {
+                    timeEl.textContent = data.timestamp || "Unknown Time";
+                }
+
                 let invText = "";
                 if (data.inventory && Object.keys(data.inventory).length > 0) {
                     invText = Object.entries(data.inventory)
@@ -2283,10 +2294,12 @@ function updateSlots() {
                 console.error("Error parsing save data for slot " + slot.id, e);
                 headerEl.textContent = "EMPTY";
                 bodyEl.textContent = `Press ${slot.id} to save to this slot`;
+                if (timeEl) timeEl.textContent = "";
             }
         } else {
             headerEl.textContent = "EMPTY";
             bodyEl.textContent = `Press ${slot.id} to save to this slot`;
+            if (timeEl) timeEl.textContent = "";
         }
     });
 }
@@ -3535,10 +3548,16 @@ function getGame(sceneName, lineId = null) {
         meters: { ...meters },
         inventory: Object.fromEntries(inventory),
         currentChapter: currentChapter,
-        timestamp: new Date().toLocaleTimeString()
+        timestamp: new Date().toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        })
     };
 }
-
+    
 document.addEventListener("keydown", (event) => {
     if (event.key === "1") {
         saveSlot1(currentSceneName, currentLineId); 
