@@ -3182,8 +3182,10 @@ async function loadDialogue(sceneName, arrayId = null) {
         const data = await response.json();
         
         currentSceneName = sceneName;
-        saveScene(sceneName, arrayId);     
-        shownDialogs.add(sceneName);
+        saveScene(sceneName, arrayId);
+            if (!inFreeplay) {
+            shownDialogs.add(sceneName);
+            }
         showDialog(data, {}, arrayId);
     } catch (err) {
         console.error("Failed to load dialogue:", sceneName, err);
