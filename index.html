@@ -5355,32 +5355,47 @@ function updateRhythmLoop(rSId) {
 
     const noteElements = document.querySelectorAll(".note");
 noteElements.forEach(el => {
-    try {
-        const targetTime = parseFloat(el.dataset.time);
-        const diff = targetTime - currentTime;
-       
-        const y = 50 + (diff * speed);
-        el.style.top = y + "px";
-        
-        const lane = parseInt(el.dataset.lane);
-        const noteType = parseInt(el.dataset.type) || 0;
-        const isPlayerLane = el.parentElement && el.parentElement.id === "player-lanes";
 
-        if (isPlayerLane) {
-            if (noteType === 2) {
-                if (typeof lane === 'undefined' || !arrowKeys || !letterKeys) {
-                    throw new Error(`Key maps missing or Lane is invalid. Lane: ${lane}`);
-                }
-                if (lane < 0 || lane >= arrowKeys.length) {
-                    throw new Error(`Lane index ${lane} out of bounds for arrowKeys (length ${arrowKeys.length})`);
-                }
+    const targetTime = parseFloat(el.dataset.time);
+    const diff = targetTime - currentTime;
+   
+    const y = 50 + (diff * speed);
+    el.style.top = y + "px";
+    
+    const lane = parseInt(el.dataset.lane);
+    const noteType = parseInt(el.dataset.type) || 0;
+    const isPlayerLane = el.parentElement.id === "player-lanes";
 
-                const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
+    if (isPlayerLane) {
+        if (noteType === 2) {
+                const arrowKeys = ["ARROWLEFT", "ARROWDOWN", "ARROWUP", "ARROWRIGHT"];
+                const letterKeys = ["D", "F", "J", "K"];
+            const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
+            
+            if (diff <= 50 && diff >= -150 && isKeyHeld && !el.dataset.hit) {
+                el.dataset.hit = "true";
                 
-                if (diff <= 50 && diff >= -150 && isKeyHeld && !el.dataset.hit) {
-                    el.dataset.hit = "true";
-                    
-                    hp = Math.max(0, hp - 20);
+                hp = Math.max(0, hp - 20);
+                misses++;
+                combo = 0;
+                playMiss();
+
+                const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+                if (directionMap[lane]) {
+                    _playerMissAnimState = directionMap[lane];
+                    _playerAnimationTimer = 250; 
+                }
+                
+                el.remove();
+                return;
+            }
+        }
+
+        const centerTimeOffset = 75 / speed;
+        if (diff < -350 + centerTimeOffset) {
+            if (!el.dataset.hit) {
+                if (noteType !== 1 && noteType !== 2) {
+                    hp = Math.max(0, hp - 10);
                     misses++;
                     combo = 0;
                     playMiss();
@@ -5390,75 +5405,30 @@ noteElements.forEach(el => {
                         _playerMissAnimState = directionMap[lane];
                         _playerAnimationTimer = 250; 
                     }
-                    
-                    el.remove();
-                    return;
                 }
             }
-
-            if (!speed || speed === 0) {
-                throw new Error("Speed variable is zero, undefined, or NaN!");
-            }
-            const centerTimeOffset = 75 / speed;
-            
-            if (diff < -350 + centerTimeOffset) {
-                if (!el.dataset.hit) {
-                    if (noteType !== 1 && noteType !== 2) {
-                        hp = Math.max(0, hp - 10);
-                        misses++;
-                        combo = 0;
-                        playMiss();
-
-                        const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-                        if (directionMap[lane]) {
-                            _playerMissAnimState = directionMap[lane];
-                            _playerAnimationTimer = 250; 
-                        }
-                    }
-                }
-                el.remove();
-                return;
-            }
-        } 
-        else { 
-            if (!speed || speed === 0) {
-                throw new Error("Speed variable is zero, undefined, or NaN!");
-            }
-            const centerTimeOffset = 75 / speed;
-            if (diff <= -centerTimeOffset) {
-                const directionMap = ["left", "down", "up", "right"];
-                const noteTarget = parseInt(el.dataset.target) || 0;
-
-                if (directionMap[lane]) {
-                    if (noteTarget === 1) {
-                        _opponent2AnimState = directionMap[lane];
-                        _opponent2AnimTimer = 250; 
-                    } else {
-                        _opponentAnimState = directionMap[lane];
-                        _opponentAnimTimer = 250;
-                    }
-                }
-                _opponentLaneHitTimes[lane] = currentTime;
-                
-                el.remove(); 
-                return;
-            }
+            el.remove();
         }
-    } catch (error) {
-        const timeData = el ? el.dataset.time : "unknown";
-        const laneData = el ? el.dataset.lane : "unknown";
-        const typeData = el ? el.dataset.type : "unknown";
-        
-        alert(
-            `⚠️ GAME CRASHED!\n\n` +
-            `Error: ${error.message}\n\n` +
-            `Note Details when crashed:\n` +
-            `- Type: ${typeData} (2 = mine)\n` +
-            `- Lane: ${laneData}\n` +
-            `- Time: ${timeData}`
-        );
-        
-        throw error; 
+    } 
+    else { 
+        const centerTimeOffset = 75 / speed;
+        if (diff <= -centerTimeOffset) {
+            const directionMap = ["left", "down", "up", "right"];
+            const noteTarget = parseInt(el.dataset.target) || 0;
+
+            if (directionMap[lane]) {
+                if (noteTarget === 1) {
+                    _opponent2AnimState = directionMap[lane];
+                    _opponent2AnimTimer = 250; 
+                } else {
+                    _opponentAnimState = directionMap[lane];
+                    _opponentAnimTimer = 250;
+                }
+            }
+            _opponentLaneHitTimes[lane] = currentTime;
+            
+            el.remove(); 
+        }
     }
 });
 
