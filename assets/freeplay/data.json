@@ -10,7 +10,7 @@
   },
   {
     "chapterName": "Week 1",
-    "chapterSrc": "assets/freeplay/week-1.png",
+    "chapterSrc": "assets/freeplay/week1.png",
     "scenes": [
       { "label": "Where 2 Go?", "file": "test.json" },
       { "label": "To Get Coffee", "file": "test.json" },
@@ -20,7 +20,7 @@
   },
   {
     "chapterName": "Week 2",
-    "chapterSrc": "assets/freeplay/week-2.png",
+    "chapterSrc": "assets/freeplay/week2.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -28,7 +28,7 @@
   },
   {
     "chapterName": "Week 3",
-    "chapterSrc": "assets/freeplay/week-3.png",
+    "chapterSrc": "assets/freeplay/week3.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -36,7 +36,7 @@
   },
   {
     "chapterName": "Week 4",
-    "chapterSrc": "assets/freeplay/week-4.png",
+    "chapterSrc": "assets/freeplay/week4.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -44,7 +44,7 @@
   },
   {
     "chapterName": "Week 5",
-    "chapterSrc": "assets/freeplay/week-5.png",
+    "chapterSrc": "assets/freeplay/week5.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -52,7 +52,7 @@
   },
   {
     "chapterName": "Week 6",
-    "chapterSrc": "assets/freeplay/week-6.png",
+    "chapterSrc": "assets/freeplay/week6.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -60,7 +60,7 @@
   },
   {
     "chapterName": "Week 7",
-    "chapterSrc": "assets/freeplay/week-7.png",
+    "chapterSrc": "assets/freeplay/week7.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -68,7 +68,7 @@
   },
   {
     "chapterName": "Week 8",
-    "chapterSrc": "assets/freeplay/week-8.png",
+    "chapterSrc": "assets/freeplay/week8.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
@@ -76,7 +76,7 @@
   },
   {
     "chapterName": "Week 9",
-    "chapterSrc": "assets/freeplay/week-9.png",
+    "chapterSrc": "assets/freeplay/week9.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
       { "label": "Quatre", "file": "test.json" }
