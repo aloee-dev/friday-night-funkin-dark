@@ -2613,8 +2613,6 @@ function playSongPreview(songId) {
     if (typeof menuMusic !== 'undefined' && menuMusic) {
         menuMusic.volume = 0; 
     }
-    
-    if (!previewAudio) return;
     const audioPath = `assets/final/songs/${songId}/Inst.mp3`;
     previewAudio = new Audio(audioPath);
     previewAudio.volume = 1.0;
