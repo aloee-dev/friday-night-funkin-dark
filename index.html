@@ -2655,7 +2655,7 @@ function playSongPreview(songId) {
 
 
     document.addEventListener('keydown', async (e) => {
-  if (!inFreeplay || transition || _rhythmStarted) return;
+  if (!inFreeplay || transition || _rhythmStarted || cancelEnter) return;
 
   const selectedChapter = freeplayData[chapterIndex];
 
@@ -3381,6 +3381,7 @@ const textBox = new Audio("sfx/textboxClick.mp3");
 document.addEventListener("keydown", async e => {
   if (e.key === "Enter") {
     if (_rhythmStarted) return;
+      if (cancelEnter) return;
     if (_isTyping) { finishTyping(document.getElementById("dialog-text")); return; }
     if (document.getElementById("choice-container").style.display === "flex") return;
 
@@ -4051,6 +4052,7 @@ let _inst = null;
 let _voicePlayer = null;
 let _voiceOpponent = null;
 let _rhythmStarted = false;
+let cancelEnter = false;
 let _playerChar = null;
 let _player2Char = null;
 let _opponentChar = null;
@@ -5258,6 +5260,7 @@ function updateRhythmLoop(rSId) {
         endIntervals();
         
         _rhythmStarted = false;
+        cancelEnter = true;
         canPause = false;
 
         camera.manualCamera = true;
@@ -5906,6 +5909,7 @@ function doPauseAction() {
     sId++;
     const mySId = sId;
     _rhythmStarted = false;
+    cancelEnter = true;
     blueBalled = false;
 
     const fadeOverlay = document.getElementById("fade-overlay");
