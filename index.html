@@ -5293,14 +5293,16 @@ function updateRhythmLoop(rSId) {
     if (rSId !== sId) {
         return; 
     }
+
+    if (!menuMusic.paused) {
+        menuMusic.pause();
+        menuMusic.volume = 0;
+        }
+    
     if (!_rhythmStarted || !_inst) return;
 
         if (_inst && _inst.ended && _rhythmStarted) {
        
-        if (!menuMusic.paused) {
-        menuMusic.pause();
-        menuMusic.volume = 0;
-        }
         endIntervals();
         
         _rhythmStarted = false;
