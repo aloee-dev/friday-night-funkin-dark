@@ -2192,7 +2192,7 @@ async function showDisclaimer() {
 
     
     document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && disclaimerActive) {
+    if (e.key === "Enter" && disclaimerActive &&!inFreeplay) {
         disclaimerActive = false;
 
         const d = document.getElementById("disclaimer-screen");
@@ -2722,6 +2722,10 @@ function playSongPreview(songId) {
         previewAudio.pause();
         previewAudio = null;
     }
+        if (!menuMusic.paused) {
+        menuMusic.pause();
+        menuMusic.volume = 0;
+        }
     clearInterval(previewFadeInterval);
     if (previewTimeout) {
         clearTimeout(previewTimeout);
@@ -2733,9 +2737,6 @@ function playSongPreview(songId) {
         //document.getElementById("freeplay-menu").style.display = "none";
         //const freeplayBg = document.getElementById("freeplay-bg");
         //if (freeplayBg) freeplayBg.style.backgroundImage = "none";
-        
-        menuMusic.pause();
-        menuMusic.currentTime = 0;
 
         startSong(selectedScene.file);
     } else {
@@ -5293,11 +5294,6 @@ function updateRhythmLoop(rSId) {
     if (rSId !== sId) {
         return; 
     }
-
-    if (!menuMusic.paused) {
-        menuMusic.pause();
-        menuMusic.volume = 0;
-        }
     
     if (!_rhythmStarted || !_inst) return;
 
