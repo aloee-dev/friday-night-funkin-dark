@@ -2072,28 +2072,66 @@ async function preloadAll() {
 
 document.addEventListener("visibilitychange", async () => {
     if (document.visibilityState === "visible") {
-        const gameViewport = document.getElementById("game-viewport");
-        gameViewport.style.willChange = "transform, opacity";
-
-        const decodePromises = Object.keys(assetCache).map(async (key) => {
+        const droppedKeys = Object.keys(assetCache).filter((key) => {
             const asset = assetCache[key];
-            
             if (asset instanceof HTMLImageElement) {
+                return !asset.complete || asset.naturalWidth === 0;
+            }
+            if (asset instanceof HTMLAudioElement) {
+                return asset.readyState < 2 || asset.error;
+            }
+            return false;
+        });
+        if (droppedKeys.length === 0) {
+            return; 
+        }
+
+        const gameViewport = document.getElementById("game-viewport");
+        if (gameViewport) gameViewport.style.willChange = "transform, opacity";
+
+        const hiddenCanvas = document.createElement("canvas");
+        const ctx = hiddenCanvas.getContext("2d");
+        hiddenCanvas.width = 1;
+        hiddenCanvas.height = 1;
+
+        const restorePromises = droppedKeys.map(async (key) => {
+            const asset = assetCache[key];
+            if (asset instanceof HTMLImageElement) {
+                const originalSrc = asset.src;
+                asset.src = originalSrc; 
+                await new Promise((resolve) => {
+                    asset.onload = resolve;
+                    asset.onerror = resolve; 
+                });
+                
                 try {
                     await asset.decode(); 
+                    if (ctx && asset.naturalWidth > 0) {
+                        ctx.drawImage(asset, 0, 0, 1, 1);
+                    }
                 } catch (e) {
-                    console.warn(`Failed to decode asset: ${key}`, e);
+                    console.warn(`Error: ${key}`, e);
                 }
+            }
+
+            if (asset instanceof HTMLAudioElement) {
+                asset.load();
             }
             return asset;
         });
 
-        await Promise.all(decodePromises);
-        requestAnimationFrame(() => {
+        await Promise.all(restorePromises);
+        hiddenCanvas.remove();
+
+        if (gameViewport) {
+            const forceReflow = gameViewport.offsetHeight; 
+            
             requestAnimationFrame(() => {
-                gameViewport.style.willChange = "auto";
+                requestAnimationFrame(() => {
+                    gameViewport.style.willChange = "auto";
+                });
             });
-        });
+        }
     }
 });
     
