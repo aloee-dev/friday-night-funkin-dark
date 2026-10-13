@@ -484,6 +484,6 @@
 ],
   "events": [
   { "time": 8000, "event": "hpDrain" },
-  { "time": 1600, "event": "laneWave" }
+  { "time": 16000, "event": "laneWave" }
   ]
 }
