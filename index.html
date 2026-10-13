@@ -4751,6 +4751,7 @@ async function startSong(songId) {
         _playerLaneHitTimes[i] = -1;
         _opponentLaneHitTimes[i] = -1;
     }
+    menuMusic.pause();
     
     const data = await loadSongData(songId);
     if (!data) return;
