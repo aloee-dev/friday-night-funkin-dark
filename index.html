@@ -2576,6 +2576,7 @@ document.addEventListener('keydown', async (e) => {
         transition = false;
         inMenu = false;
         inFreeplay = true;
+        ignoreMusic = true;
       }
       else if (inFreeplay) {
         curtain.style.transform = "translateY(100%)";
@@ -2689,6 +2690,7 @@ function playSongPreview(songId) {
     });
 }
 
+    let ignoreMusic = true;
 
     document.addEventListener('keydown', async (e) => {
   if (!inFreeplay || transition || _rhythmStarted || cancelEnter) return;
@@ -3369,6 +3371,7 @@ function showChoices(choices) {
 }
     
 function showDialog(lines, opts = {}, arrayId = null) {
+    ignoreMusic = false;
     _dialogQueue = normalizeDialogLines(lines, opts.style);
     document.getElementById("dialog-box").style.display = "block";
     document.getElementById("dialog-background").style.display = "block";
@@ -3408,9 +3411,11 @@ function fadeToMenu() {
         setTimeout(() => {
             document.getElementById("title-screen").style.opacity = 1;
             document.getElementById("title-screen").style.display = "flex";
+            if (!ignoreMusic) {
             menuMusic.play();
             menuMusic.volume = 0.2;
             menuMusic.loop = true;
+            }
             setTimeout(() => {
                 const buttons = document.getElementById("title-buttons");
                 buttons.style.display = "flex";
