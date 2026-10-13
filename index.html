@@ -2580,9 +2580,6 @@ document.addEventListener('keydown', async (e) => {
         previewAudio.pause();
         previewAudio = null;
     }
-    if (typeof menuMusic !== 'undefined' && menuMusic) {
-        menuMusic.volume = 0.1;
-    }
 
         await new Promise(r => setTimeout(r, 300));
 
@@ -5299,6 +5296,11 @@ function updateRhythmLoop(rSId) {
     if (!_rhythmStarted || !_inst) return;
 
         if (_inst && _inst.ended && _rhythmStarted) {
+       
+        if (!menuMusic.paused) {
+        menuMusic.pause();
+        menuMusic.volume = 0;
+        }
         endIntervals();
         
         _rhythmStarted = false;
