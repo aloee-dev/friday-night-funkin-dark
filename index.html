@@ -5422,28 +5422,6 @@ if (ev.event === "removeWave") {
         }
     }
 }
-
-    if (laneWave) {
-    waveTime += 0.045;
-    currentX = Math.sin(waveTime) * 80;
-    currentY = Math.sin(waveTime * 4) * 20;
-} else {
-    currentX *= 0.9; 
-    currentY *= 0.9; 
-    if (Math.abs(currentX) < 0.1) currentX = 0;
-    if (Math.abs(currentY) < 0.1) currentY = 0;
-}
-
-const playerLanes = document.getElementById("player-lanes");
-const opponentLanes = document.getElementById("opponent-lanes");
-
-if (playerLanes) {
-    playerLanes.style.transform = `translate(${currentX}px, ${currentY}px)`;
-}
-if (opponentLanes) {
-    opponentLanes.style.transform = `translate(${-currentX}px, ${currentY}px)`;
-}
-
     animateCharacters(currentTime);
     updateHPBar(currentTime);
     updateCamera();
@@ -5752,6 +5730,25 @@ const isPlayerHolding = isPlayerLane &&
             el.remove();
         }
     });
+
+        if (laneWave) {
+    waveTime += 0.045;
+    currentX = Math.sin(waveTime) * 80;
+    currentY = Math.sin(waveTime * 4) * 20;
+} else {
+    currentX *= 0.9; 
+    currentY *= 0.9; 
+    if (Math.abs(currentX) < 0.1) currentX = 0;
+    if (Math.abs(currentY) < 0.1) currentY = 0;
+}
+
+if (playerLanes) {
+    playerLanes.style.transform = `translate(${currentX}px, ${currentY}px)`;
+}
+if (opponentLanes) {
+    opponentLanes.style.transform = `translate(${-currentX}px, ${currentY}px)`;
+}
+
 
     const frameDuration = 60;
 
