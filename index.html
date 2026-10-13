@@ -2715,8 +2715,6 @@ function playSongPreview(songId) {
     hoverSfx.play();
   } 
     else if (e.key === 'Enter') {
-    const box = document.getElementById("dialog-box");
-    const inDialogue = window.getComputedStyle(box).display === "block";
         if (inDialogue) return; 
     const selectedChapter = freeplayData[chapterIndex];
     const selectedScene = selectedChapter.scenes[sceneIndex];
@@ -3367,6 +3365,7 @@ function showChoices(choices) {
 }
     
 function showDialog(lines, opts = {}, arrayId = null) {
+    inDialogue = true;
     ignoreMusic = false;
     _dialogQueue = normalizeDialogLines(lines, opts.style);
     document.getElementById("dialog-box").style.display = "block";
@@ -3403,7 +3402,7 @@ function closeDialog() {
 }
 
 function fadeToMenu() {
-        
+        inDialogue = false;
         setTimeout(() => {
             document.getElementById("title-screen").style.opacity = 1;
             document.getElementById("title-screen").style.display = "flex";
@@ -3429,6 +3428,7 @@ document.addEventListener("keydown", async e => {
   if (e.key === "Enter") {
     if (_rhythmStarted) return;
       if (cancelEnter) return;
+      if (!inDialogue) return;
     if (_isTyping) { finishTyping(document.getElementById("dialog-text")); return; }
     if (document.getElementById("choice-container").style.display === "flex") return;
 
