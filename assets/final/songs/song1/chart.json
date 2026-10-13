@@ -483,7 +483,6 @@
   [118483, 1, 0, 0, 0]
 ],
   "events": [
-  { "time": 8000, "event": "hpDrain" },
-  { "time": 16000, "event": "laneWave" }
+  { "time": 8000, "event": "hpDrain" }
   ]
 }
