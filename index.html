@@ -1031,28 +1031,6 @@ a,
 
 #opponent-lanes { left: 100px; }
 #player-lanes { right: 100px; }
-
-.wave {
-    animation: laneWave 2s ease-in-out infinite;
-}
-
-@keyframes laneWave {
-    0% {
-        transform: translate(0px, 0px);
-    }
-    25% {
-        transform: translate(-80px, 5px);
-    }
-    50% {
-        transform: translate(0px, -5px);
-    }
-    75% {
-        transform: translate(80px, 5px);
-    }
-    100% {
-        transform: translate(0px, 0px);
-    }
-}
     
 .receptor {
     width: 150px;
@@ -5317,7 +5295,11 @@ function resumeIntervals() {
 
 let activePlayerSustains = new Set();
 let activeOpponentSustains = new Set();
-const allowedRelease = 120;
+const allowedRelease = 400;
+let waveTime = 0;
+let laneWave = false;
+let currentX = 0;
+let currentY = 0;
 
 function updateRhythmLoop(rSId) {
     
@@ -5416,15 +5398,34 @@ function updateRhythmLoop(rSId) {
                 }, 100);
             }
 
-            if (ev.event === "laneWave") {
-                document.getElementById("player-lanes").classList.add("wave");
-                document.getElementById("opponent-lanes").classList.add("wave");
-            }
+if (ev.event === "laneWave") {
+    laneWave = true;
+}
 
-            if (ev.event === "removeWave") {
-                document.getElementById("player-lanes").classList.remove("wave");
-                document.getElementById("opponent-lanes").classList.remove("wave");
-            }
+if (ev.event === "removeWave") {
+    laneWave = false;
+}
+
+if (laneWave) {
+    waveTime += 0.045;
+    currentX = Math.sin(waveTime) * 80;
+    currentY = Math.sin(waveTime * 2) * 20;
+} else {
+    currentX *= 0.9; 
+    currentY *= 0.9; 
+    if (Math.abs(currentX) < 0.1) currentX = 0;
+    if (Math.abs(currentY) < 0.1) currentY = 0;
+}
+
+const playerLanes = document.getElementById("player-lanes");
+const opponentLanes = document.getElementById("opponent-lanes");
+
+if (playerLanes) {
+    playerLanes.style.transform = `translate(${currentX}px, ${currentY}px)`;
+}
+if (opponentLanes) {
+    opponentLanes.style.transform = `translate(${-currentX}px, ${currentY}px)`;
+}
             
             if (ev.cameraCommand) {
                 if (ev.cameraCommand === "MANUAL_PAN") {
