@@ -1990,12 +1990,7 @@ const version = "0.0.0";
 let assets = [];
 
 const menuMusic = new Audio('assets/music/menu.m4a');
-    const originalPlay = menuMusic.play;
-menuMusic.play = function() {
-    const errorStack = new Error().stack || "No trace available";
-    alert("menuMusic.play() was just called from:\n\n" + errorStack);
-    return originalPlay.apply(this, arguments);
-};
+    
 
 let loaded = 0;
 const assetCache = {};
