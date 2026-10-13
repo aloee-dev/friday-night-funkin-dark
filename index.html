@@ -1990,6 +1990,13 @@ const version = "0.0.0";
 let assets = [];
 
 const menuMusic = new Audio('assets/music/menu.m4a');
+    const originalPlay = menuMusic.play;
+menuMusic.play = function() {
+    const errorStack = new Error().stack || "No trace available";
+    alert("menuMusic.play() was just called from:\n\n" + errorStack);
+    return originalPlay.apply(this, arguments);
+};
+
 let loaded = 0;
 const assetCache = {};
 
@@ -2722,10 +2729,10 @@ function playSongPreview(songId) {
         previewAudio.pause();
         previewAudio = null;
     }
-        if (!menuMusic.paused) {
         menuMusic.pause();
         menuMusic.volume = 0;
-        }
+        menuMusic.currentTime = 0;
+        
     clearInterval(previewFadeInterval);
     if (previewTimeout) {
         clearTimeout(previewTimeout);
