@@ -1032,6 +1032,28 @@ a,
 #opponent-lanes { left: 100px; }
 #player-lanes { right: 100px; }
 
+.wave {
+    animation: laneWave 2s ease-in-out infinite;
+}
+
+@keyframes laneWave {
+    0% {
+        transform: translate(0px, 0px);
+    }
+    25% {
+        transform: translate(-80px, 5px);
+    }
+    50% {
+        transform: translate(0px, -5px);
+    }
+    75% {
+        transform: translate(80px, 5px);
+    }
+    100% {
+        transform: translate(0px, 0px);
+    }
+}
+    
 .receptor {
     width: 150px;
     height: 150px;
@@ -5392,6 +5414,16 @@ function updateRhythmLoop(rSId) {
                         updateHPBar(currentTime);
                     }
                 }, 100);
+            }
+
+            if (ev.event === "laneWave") {
+                document.getElementById("player-lanes").classList.add("wave");
+                document.getElementById("opponent-lanes").classList.add("wave");
+            }
+
+            if (ev.event === "removeWave") {
+                document.getElementById("player-lanes").classList.remove("wave");
+                document.getElementById("opponent-lanes").classList.remove("wave");
             }
             
             if (ev.cameraCommand) {
