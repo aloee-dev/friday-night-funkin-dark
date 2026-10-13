@@ -5405,8 +5405,25 @@ if (ev.event === "laneWave") {
 if (ev.event === "removeWave") {
     laneWave = false;
 }
+            
+            if (ev.cameraCommand) {
+                if (ev.cameraCommand === "MANUAL_PAN") {
+                    camera.manualCamera = true;
+                    camera.targetX = ev.x || 0;
+                    camera.targetY = ev.y || 1000;
+                    camera.targetZoom = ev.zoom || 1.0;
+                } 
+                else if (ev.cameraCommand === "RELEASE_CAMERA") {
+                    camera.manualCamera = false;
+                }
+            }
 
-if (laneWave) {
+            ev.hasFired = true; 
+        }
+    }
+}
+
+    if (laneWave) {
     waveTime += 0.045;
     currentX = Math.sin(waveTime) * 80;
     currentY = Math.sin(waveTime * 4) * 20;
@@ -5425,23 +5442,6 @@ if (playerLanes) {
 }
 if (opponentLanes) {
     opponentLanes.style.transform = `translate(${-currentX}px, ${currentY}px)`;
-}
-            
-            if (ev.cameraCommand) {
-                if (ev.cameraCommand === "MANUAL_PAN") {
-                    camera.manualCamera = true;
-                    camera.targetX = ev.x || 0;
-                    camera.targetY = ev.y || 1000;
-                    camera.targetZoom = ev.zoom || 1.0;
-                } 
-                else if (ev.cameraCommand === "RELEASE_CAMERA") {
-                    camera.manualCamera = false;
-                }
-            }
-
-            ev.hasFired = true; 
-        }
-    }
 }
 
     animateCharacters(currentTime);
