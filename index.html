@@ -1444,36 +1444,32 @@ a,
     height: 428px; 
 }
 
-#btn-resume {
-    top: 30px; 
-    left: 0px;
-    background-image: url('assets/final/pause/resume.png');
-}
-#btn-resume.selected {
-    background-image: url('assets/final/pause/resume-selected.png');
-    left: 40px;
-}
+#btn-resume { top: 30px; left: 0px; position: absolute; }
+#btn-resume.selected { left: 40px; }
 
-#btn-restart {
-    top: 370px;
-    left: 0px;
-    background-image: url('assets/final/pause/restart.png');
-}
-#btn-restart.selected {
-    background-image: url('assets/final/pause/restart-selected.png');
-    left: 40px;
-}
+#btn-restart { top: 370px; left: 0px; position: absolute; }
+#btn-restart.selected { left: 40px; }
 
-#btn-exit {
-    top: 700px;
-    left: 0px;
-    background-image: url('assets/final/pause/exit.png');
-}
-#btn-exit.selected {
-    background-image: url('assets/final/pause/exit-selected.png');
-    left: 40px;
-}
+#btn-exit { top: 700px; left: 0px; position: absolute; }
+#btn-exit.selected { left: 40px; }
 
+#btn-resume img, #btn-restart img, #btn-exit img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.normal-state {
+    opacity: 1;
+}
+.selected-state {
+    opacity: 0;
+}
+.selected .normal-state {
+    opacity: 0;
+}
+.selected .selected-state {
+    opacity: 1;
+}
     
 .results-screen {
   position: fixed;
@@ -1988,12 +1984,17 @@ a,
 const version = "0.0.0";
    
 let assets = [];
-
 const menuMusic = new Audio('assets/music/menu.m4a');
-    
-
 let loaded = 0;
 const assetCache = {};
+const pauseAssets = {
+    'assets/final/pause/resume.png':          { id: 'btn-resume',  type: 'normal-state' },
+    'assets/final/pause/resume-selected.png': { id: 'btn-resume',  type: 'selected-state' },
+    'assets/final/pause/restart.png':         { id: 'btn-restart', type: 'normal-state' },
+    'assets/final/pause/restart-selected.png':{ id: 'btn-restart', type: 'selected-state' },
+    'assets/final/pause/exit.png':            { id: 'btn-exit',    type: 'normal-state' },
+    'assets/final/pause/exit-selected.png':   { id: 'btn-exit',    type: 'selected-state' }
+};
 
 async function addAssets() {
     try {
@@ -2045,6 +2046,15 @@ async function preloadAll() {
         loaded++;
         const percent = Math.floor((loaded / assets.length) * 100);
         progressBar.style.width = percent + "%";
+
+        if (src in pauseAssets) {
+    const config = pauseAssets[src];
+    const targetElement = document.getElementById(config.id);
+    if (targetElement) {
+        element.className = config.type;
+        targetElement.appendChild(element);
+    }
+}
 
         if (src.includes("sprites/")) {
             const id = src.split('/').pop().split('.')[0]; 
