@@ -4289,15 +4289,33 @@ function clearPauseTicker() {
     }
 }
 
+
+const KEY_CONFIG = {
+    singLEFT:  ["ARROWLEFT", "D"],
+    singDOWN:  ["ARROWDOWN", "F"],
+    singUP:    ["ARROWUP", "J"],
+    singRIGHT: ["ARROWRIGHT", "K"]
+};
+const LANE_ORDER = ["singLEFT", "singDOWN", "singUP", "singRIGHT"];
+
+const INPUT_MAP = {};
+const keyToLane = {};
+
 function getLane(lane) {
-    const maps = [
-        { arrow: "ARROWLEFT",  letter: "D" },
-        { arrow: "ARROWDOWN",  letter: "F" },
-        { arrow: "ARROWUP",    letter: "J" },
-        { arrow: "ARROWRIGHT", letter: "K" } 
-    ];
-    return maps[lane];
+    const action = LANE_ORDER[lane];
+    return {
+        arrow: KEY_CONFIG[action][0],
+        letter: KEY_CONFIG[action][1]
+    };
 }
+
+LANE_ORDER.forEach((action, laneIndex) => {
+    const keys = KEY_CONFIG[action];
+    keys.forEach(key => {
+        INPUT_MAP[key.toUpperCase()] = action;
+        keyToLane[key.toUpperCase()] = laneIndex;
+    });
+});
 
 const _heldKeys = new Set();
 let validHit = false;
@@ -4305,13 +4323,6 @@ let validHit = false;
 window.addEventListener("keydown", (e) => {
     if (!_rhythmStarted || !_inst) return;
     if (isPaused) return;
-
-    const keyToLane = {
-        "ARROWLEFT": 0, "D": 0,
-        "ARROWDOWN": 1, "F": 1,
-        "ARROWUP": 2,   "J": 2,
-        "ARROWRIGHT": 3, "K": 3
-    };
 
     const cleanKey = e.key.toUpperCase();
     const targetLane = keyToLane[cleanKey];
@@ -4436,14 +4447,10 @@ window.addEventListener("keydown", (e) => {
 
 window.addEventListener("keyup", (e) => {
     if (isPaused) return;
-    const keyToLane = {
-        "ARROWLEFT": 0, "D": 0,
-        "ARROWDOWN": 1, "F": 1,
-        "ARROWUP": 2,   "J": 2,
-        "ARROWRIGHT": 3, "K": 3
-    };
 
-    const cleanKey = e.key.toUpperCase();
+    const cleanKey = e.key.toUpperCase()
+    if (keyToLane[cleanKey] === undefined) return;
+
     _heldKeys.delete(cleanKey);
 
     if (cleanKey === _lastPressedPlayerKey || cleanKey === _lastPressedPlayer2Key) {
@@ -4470,13 +4477,6 @@ let _opponent2Ctx = _opponentCanvas.getContext("2d");
 let _playerKey = null; 
 window.addEventListener("keydown", e => _playerKey = e.key.toUpperCase());
 window.addEventListener("keyup", () => _playerKey = null);
-
-const INPUT_MAP = {
-    "ARROWLEFT": "singLEFT",  "D": "singLEFT",
-    "ARROWDOWN": "singDOWN",  "F": "singDOWN",
-    "ARROWUP":   "singUP",    "J": "singUP",
-    "ARROWRIGHT":"singRIGHT", "K": "singRIGHT"
-};
     
 let CHARACTER_DATA = {};
 let ENVIRO_DATA = {};
@@ -5451,26 +5451,25 @@ noteElements.forEach(el => {
 
     if (isPlayerLane) {
         if (noteType === 2) {
-                const arrowKeys = ["ARROWLEFT", "ARROWDOWN", "ARROWUP", "ARROWRIGHT"];
-                const letterKeys = ["D", "F", "J", "K"];
-            const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
+            const action = LANE_ORDER[lane];
+            const isKeyHeld = KEY_CONFIG[action].some(key => _heldKeys.has(key));
+        
+        if (diff <= 50 && diff >= -150 && isKeyHeld && !el.dataset.hit) {
+            el.dataset.hit = "true";
             
-            if (diff <= 50 && diff >= -150 && isKeyHeld && !el.dataset.hit) {
-                el.dataset.hit = "true";
-                
-                hp = Math.max(0, hp - 20);
-                misses++;
-                combo = 0;
-                playMiss();
+            hp = Math.max(0, hp - 20);
+            misses++;
+            combo = 0;
+            playMiss();
 
-                const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
-                if (directionMap[lane]) {
-                    _playerMissAnimState = directionMap[lane];
-                    _playerAnimationTimer = 250; 
-                }
-                
-                el.remove();
-                return;
+            const directionMap = ["miss-left", "miss-down", "miss-up", "miss-right"];
+            if (directionMap[lane]) {
+                _playerMissAnimState = directionMap[lane];
+                _playerAnimationTimer = 250; 
+            }
+            
+            el.remove();
+            return;
             }
         }
 
@@ -5599,47 +5598,45 @@ const isPlayerHolding = isPlayerLane &&
             }
     });
     
-    const arrowKeys = ["ARROWLEFT", "ARROWDOWN", "ARROWUP", "ARROWRIGHT"];
-    const letterKeys = ["D", "F", "J", "K"];
+const playerLanes = document.getElementById("player-lanes");
+if (playerLanes) {
+    for (let lane = 0; lane < 4; lane++) {
+        const receptor = playerLanes.children[lane];
+        if (!receptor) continue;
+        const innerImg = receptor.querySelector("img");
+        if (!innerImg) continue;
 
-    const playerLanes = document.getElementById("player-lanes");
-    if (playerLanes) {
-        for (let lane = 0; lane < 4; lane++) {
-            const receptor = playerLanes.children[lane];
-            if (!receptor) continue;
-            const innerImg = receptor.querySelector("img");
-            if (!innerImg) continue;
+        const action = LANE_ORDER[lane];
+        const isKeyHeld = KEY_CONFIG[action].some(key => _heldKeys.has(key));
+        
+        const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
+        const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : Infinity;
 
-            const isKeyHeld = _heldKeys.has(arrowKeys[lane]) || _heldKeys.has(letterKeys[lane]);
-            
-            const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
-            const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : Infinity;
-
-            const anyPSustainActive = activePlayerSustains.has(`${lane}-0`) || activePlayerSustains.has(`${lane}-1`);
-            
-            if (anyPSustainActive) {
-                if (timeSinceHit < 75) {
-                    innerImg.style.left = "-300px";
-                } else {
-                    const holdFlicker = Math.floor((currentTime - (_playerLaneHitTimes[lane] + 75)) / 50) % 2;
-                    innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
-                }
-            }
-            else if (hasHitHappened && timeSinceHit < 150) {
-                if (timeSinceHit < 75) {
-                    innerImg.style.left = "-300px";
-                } else {
-                    innerImg.style.left = "-450px";
-                }
-            } 
-            else if (isKeyHeld) {
-                innerImg.style.left = "-150px";
-            } 
-            else {
-                innerImg.style.left = "0px";
+        const anyPSustainActive = activePlayerSustains.has(`${lane}-0`) || activePlayerSustains.has(`${lane}-1`);
+        
+        if (anyPSustainActive) {
+            if (timeSinceHit < 75) {
+                innerImg.style.left = "-300px";
+            } else {
+                const holdFlicker = Math.floor((currentTime - (_playerLaneHitTimes[lane] + 75)) / 50) % 2;
+                innerImg.style.left = holdFlicker === 0 ? "-450px" : "-600px";
             }
         }
+        else if (hasHitHappened && timeSinceHit < 150) {
+            if (timeSinceHit < 75) {
+                innerImg.style.left = "-300px";
+            } else {
+                innerImg.style.left = "-450px";
+            }
+        } 
+        else if (isKeyHeld) {
+            innerImg.style.left = "-150px";
+        } 
+        else {
+            innerImg.style.left = "0px";
+        }
     }
+}
 
     const oppLanes = document.getElementById("opponent-lanes");
     if (oppLanes) {
