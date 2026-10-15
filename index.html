@@ -1788,10 +1788,12 @@ a,
 </div>
 
     <div id="keybind-overlay" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 6999; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
-    <h1 style="color: white; font-family: 'Funkin'; font-size: 40px; text-align: center; max-width: 1000px;">
-        YOU HAVE A SAVE FILE.<br>ARE YOU SURE YOU WANT TO RESTART YOUR GAME? change this later
-    </h1>
-    <button class="settings-exit" style="font-size: 40px;" onclick="document.getElementById('keybind-overlay').style.display='none'">BACK</button>
+    <div style="color: white; font-family: 'Funkin'; text-align: center; margin-bottom: 20px;">
+        <h2 style="font-size: 32px; margin: 0 0 5px 0; letter-spacing: 1px;">CURRENT KEY BINDS:</h2>
+        <p style="font-size: 20px; color: #ffffff; margin: 0;">Click to change the key</p>
+    </div>
+    <div id="keybinds-container" style="color: white; font-family: 'Funkin'; text-align: center; margin-bottom: 30px;"></div>
+    <button class="settings-exit" style="font-size: 30px;" onclick="document.getElementById('keybind-overlay').style.display='none'">BACK</button>
 </div>
 
 <div id="freeplay-high-score" style="display: none;"></div>
@@ -2462,9 +2464,94 @@ const speedOptions = ["SLOW", "NORMAL", "FAST", "INSTANT"];
 
 const changeKeybindsBtn = document.getElementById('change-keybinds-btn');
 const keybindOverlay = document.getElementById('keybind-overlay');
-changeKeybindsBtn.addEventListener('click', () => {
-    keybindOverlay.style.display = 'block'; 
+
+let activeRebindAction = null;
+
+function changeKeybindUI() {
+    const container = document.getElementById('keybinds-container');
+    container.innerHTML = '';
+
+    const labelRow = document.createElement('div');
+    labelRow.style.fontSize = '24px';
+    labelRow.style.letterSpacing = '1px';
+    labelRow.style.color = '#fff';
+    
+    const readableLabels = LANE_ORDER.map(action => action.replace('sing', '').toLowerCase());
+    labelRow.innerText = readableLabels.join(' | ');
+    container.appendChild(labelRow);
+
+    const keysRow = document.createElement('div');
+    keysRow.style.fontSize = '36px';
+    keysRow.style.marginTop = '15px';
+    keysRow.style.fontWeight = 'bold';
+
+    LANE_ORDER.forEach((action, index) => {
+        const keySpan = document.createElement('span');
+        
+        if (activeRebindAction === action) {
+            keySpan.innerText = 'Change key to?';
+            keySpan.style.color = '#ffcc00';
+        } else {
+            keySpan.innerText = KEY_CONFIG[action][1];
+            keySpan.style.color = '#fff';
+            keySpan.style.cursor = 'pointer';
+            
+            keySpan.addEventListener('click', () => {
+                activeRebindAction = action;
+                changeKeybindUI(); 
+            });
+        }
+
+        keysRow.appendChild(keySpan);
+
+        if (index < LANE_ORDER.length - 1) {
+            const separator = document.createElement('span');
+            separator.innerText = ' | ';
+            separator.style.color = '#666';
+            keysRow.appendChild(separator);
+        }
+    });
+
+    container.appendChild(keysRow);
+}
+
+window.addEventListener('keydown', (event) => {
+    if (!activeRebindAction) return;
+
+    const pressedKey = event.key.toUpperCase();
+
+    if (pressedKey === 'ESCAPE') {
+        activeRebindAction = null;
+        changeKeybindUI();
+        return;
+    }
+
+    const targetAction = activeRebindAction;
+    const oldLetterKey = KEY_CONFIG[targetAction][1].toUpperCase();
+    delete INPUT_MAP[oldLetterKey];
+    delete keyToLane[oldLetterKey];
+
+    KEY_CONFIG[targetAction][1] = pressedKey;
+
+    LANE_ORDER.forEach((action, laneIndex) => {
+        const keys = KEY_CONFIG[action];
+        keys.forEach(key => {
+            INPUT_MAP[key.toUpperCase()] = action;
+            keyToLane[key.toUpperCase()] = laneIndex;
+        });
+    });
+
+    activeRebindAction = null;
+    changeKeybindUI();
 });
+
+document.getElementById('change-keybinds-btn').addEventListener('click', () => {
+    const overlay = document.getElementById('keybind-overlay');
+    overlay.style.display = 'flex';
+    activeRebindAction = null; 
+    changeKeybindUI();
+});
+
 
 const fpsDisplay = document.getElementById('fps-counter');
 let lastTime = performance.now();
