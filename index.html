@@ -1770,29 +1770,11 @@ a,
     <img id="fps-box" class="checkbox" src="assets/checkbox_empty.png">
   </div>
 
-  <div class="settings-row" style="flex-direction: column; gap: 8px; margin-top: 15px;">
-    <div class="settings-label" style="font-size: 20px; color: #aaa; text-align: center;">
-      CURRENT KEY BINDS:<br><span style="font-size: 14px;">click a key to change it</span>
-    </div>
-    
-    <div id="keybinds-display-container" style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; width: 100%;">
-    </div>
-  </div>
-
   <div id="settings-back">
     <button class="settings-exit" id="menu-back">BACK</button>
   </div>
  </div>
 </div>
-
-<div id="key-rebind-overlay" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
-    <h1 style="color: white; font-family: 'Funkin', sans-serif; font-size: 40px; text-align: center; letter-spacing: 2px; max-width: 600px; line-height: 1.3; margin: 0;">
-        PRESS ANY KEY FOR<br>
-        <span id="rebind-target-lane" style="color: #00ffff;">LEFT</span>
-    </h1>
-    <button class="settings-exit" id="cancel-rebind-btn" style="font-size: 30px; cursor: pointer;">BACK</button>
-</div>
-
 
     <div id="credits-screen" style="display:none;">
     <div id="credits-wrapper">
@@ -2461,13 +2443,7 @@ let settings = {
   fontSize: 1,
   speed: 1,
   skipPrologue: false,
-  showFPS: false,
-  keyConfig: {
-    singLEFT:  ["ARROWLEFT", "D"],
-    singDOWN:  ["ARROWDOWN", "F"],
-    singUP:    ["ARROWUP", "J"],
-    singRIGHT: ["ARROWRIGHT", "K"]
-  }
+  showFPS: false
 };
     
 const fontOptions = ["SMALL", "NORMAL", "LARGE"];
@@ -2489,8 +2465,6 @@ document.getElementById("menu-back").onclick = () => {
   document.getElementById("title-buttons").style.display = "flex";
 };
 
-let activeRebindKey = null;
-
 function updateSettingsUI() {
   document.getElementById("font-value").textContent = fontOptions[settings.fontSize];
   document.getElementById("speed-value").textContent = speedOptions[settings.speed];
@@ -2501,76 +2475,14 @@ function updateSettingsUI() {
   document.getElementById("fps-box").src =
     settings.showFPS ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
 
+    saveSettings();
+
   if (settings.showFPS) {
     fpsDisplay.style.display = "block";
   } else {
     fpsDisplay.style.display = "none";
   }
-
-  const container = document.getElementById("keybinds-display-container");
-  if (container) {
-    container.innerHTML = "";
-
-    const headerLine = document.createElement("div");
-    headerLine.style.cssText = "color: #fff; font-size: 24px; letter-spacing: 2px; text-transform: lowercase;";
-    headerLine.textContent = LANE_ORDER.map(action => action.replace("sing", "")).join(" | ");
-    container.appendChild(headerLine);
-
-    const valuesLine = document.createElement("div");
-    valuesLine.style.cssText = "color: #fff; font-size: 28px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px;";
-
-    LANE_ORDER.forEach((action, index) => {
-      const keySpan = document.createElement("span");
-      keySpan.style.cssText = "cursor: pointer; padding: 0 4px; transition: color 0.1s;";
-      keySpan.textContent = settings.keyConfig[action];
-      
-      keySpan.onmouseenter = () => keySpan.style.color = "#00ffff";
-      keySpan.onmouseleave = () => keySpan.style.color = "#ffffff";
-      
-      keySpan.onclick = () => {
-        activeRebindKey = action;
-        const cleanName = action.replace("sing", "").toUpperCase();
-        document.getElementById("rebind-target-lane").textContent = cleanName;
-        
-        document.getElementById("key-rebind-overlay").style.display = "flex";
-      };
-
-      valuesLine.appendChild(keySpan);
-
-      if (index < LANE_ORDER.length - 1) {
-        const divider = document.createElement("span");
-        divider.textContent = "|";
-        divider.style.color = "#666";
-        valuesLine.appendChild(divider);
-      }
-    });
-
-    container.appendChild(valuesLine);
-  }
-
-  saveSettings();
 }
-    
-document.getElementById("cancel-rebind-btn").onclick = (e) => {
-  e.stopPropagation(); 
-  activeRebindKey = null;
-  document.getElementById("key-rebind-overlay").style.display = "none";
-};
-
-window.addEventListener("keydown", (e) => {
-  if (!activeRebindKey) return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  const pressedKey = e.key.toUpperCase();
-  document.getElementById("key-rebind-overlay").style.display = "none";
-
-  settings.keyConfig[activeRebindKey] = pressedKey;
-  activeRebindKey = null;
-  changeKeybinds();
-  updateSettingsUI();
-}, true);
 
 document.getElementById("font-left").onclick = () => {
   if (settings.fontSize > 0) {
@@ -3759,10 +3671,8 @@ function loadSettings() {
     if (rawSettings) {
         settings = JSON.parse(rawSettings);
     }
-    changeKeybinds(); 
     updateSettingsUI();
 }
-
 
 let currentLevelRooms = []; 
 let currentRoom = null;
@@ -4380,30 +4290,32 @@ function clearPauseTicker() {
 }
 
 
+const KEY_CONFIG = {
+    singLEFT:  ["ARROWLEFT", "D"],
+    singDOWN:  ["ARROWDOWN", "F"],
+    singUP:    ["ARROWUP", "J"],
+    singRIGHT: ["ARROWRIGHT", "K"]
+};
 const LANE_ORDER = ["singLEFT", "singDOWN", "singUP", "singRIGHT"];
+
 const INPUT_MAP = {};
 const keyToLane = {};
-
-function changeKeybinds() {
-    for (const key in INPUT_MAP) delete INPUT_MAP[key];
-    for (const key in keyToLane) delete keyToLane[key];
-
-    LANE_ORDER.forEach((action, laneIndex) => {
-        const keys = settings.keyConfig[action];
-        keys.forEach(key => {
-            INPUT_MAP[key.toUpperCase()] = action;    
-            keyToLane[key.toUpperCase()] = laneIndex; 
-        });
-    });
-}
 
 function getLane(lane) {
     const action = LANE_ORDER[lane];
     return {
-        arrow: settings.keyConfig[action][0],
-        letter: settings.keyConfig[action][1]
+        arrow: KEY_CONFIG[action][0],
+        letter: KEY_CONFIG[action][1]
     };
 }
+
+LANE_ORDER.forEach((action, laneIndex) => {
+    const keys = KEY_CONFIG[action];
+    keys.forEach(key => {
+        INPUT_MAP[key.toUpperCase()] = action;
+        keyToLane[key.toUpperCase()] = laneIndex;
+    });
+});
 
 const _heldKeys = new Set();
 let validHit = false;
@@ -5540,7 +5452,7 @@ noteElements.forEach(el => {
     if (isPlayerLane) {
         if (noteType === 2) {
             const action = LANE_ORDER[lane];
-            const isKeyHeld = settings.keyConfig[action].some(key => _heldKeys.has(key));
+            const isKeyHeld = KEY_CONFIG[action].some(key => _heldKeys.has(key));
         
         if (diff <= 50 && diff >= -150 && isKeyHeld && !el.dataset.hit) {
             el.dataset.hit = "true";
@@ -5695,7 +5607,7 @@ if (playerLanes) {
         if (!innerImg) continue;
 
         const action = LANE_ORDER[lane];
-        const isKeyHeld = settings.keyConfig[action].some(key => _heldKeys.has(key));
+        const isKeyHeld = KEY_CONFIG[action].some(key => _heldKeys.has(key));
         
         const hasHitHappened = _playerLaneHitTimes[lane] !== -1;
         const timeSinceHit = hasHitHappened ? (currentTime - _playerLaneHitTimes[lane]) : Infinity;
