@@ -1953,7 +1953,11 @@ a,
 
     <div id="choice-container" style="display:none;"></div>
 
-    <div id="fps-counter">FPS: 0</div>
+    <div id="fps-counter" style="display: none;">
+    <div id="fps-text">FPS: 0</div>
+    <div id="version-text">0.0.0</div>
+</div>
+
     
       <div id="fade-overlay"></div>
     <div id="black-curtain"></div>
@@ -2586,6 +2590,9 @@ document.getElementById('change-keybinds-btn').addEventListener('click', () => {
 
 
 const fpsDisplay = document.getElementById('fps-counter');
+const fpsText = document.getElementById('fps-text');
+const versionText = document.getElementById('version-text');
+    
 let lastTime = performance.now();
 let frameCount = 0;
 let fps = 0;
@@ -2615,6 +2622,7 @@ function updateSettingsUI() {
 
   if (settings.showFPS) {
     fpsDisplay.style.display = "block";
+    versionText.textContent = `${version}`;
   } else {
     fpsDisplay.style.display = "none";
   }
@@ -2670,8 +2678,8 @@ function updateFPS(currentTime) {
     fps = Math.round((frameCount * 1000) / delta);
     
     if (settings.showFPS) {
-      fpsDisplay.textContent = `FPS: ${fps}`;
-    }
+    fpsText.textContent = `FPS: ${fps}`;
+}
     
     frameCount = 0;
     lastTime = currentTime;
