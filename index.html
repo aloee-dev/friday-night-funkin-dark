@@ -2206,7 +2206,7 @@ let disclaimerActive = false;
 
 async function showDisclaimer() {
     loadSettings();
-    //loadKeybinds();
+    loadKeybinds();
     const d = document.getElementById("disclaimer-screen");
     d.style.opacity = 1;
     d.style.pointerEvents = "auto";
@@ -2470,8 +2470,8 @@ let activeRebindAction = null;
 const KEYBIND_KEY = "fnf_dark_minds_keybinds";
 
 function changeKeybinds() {
-    INPUT_MAP = {};
-    keyToLane = {};
+    for (let key in INPUT_MAP) delete INPUT_MAP[key];
+    for (let key in keyToLane) delete keyToLane[key];
     
     LANE_ORDER.forEach((action, laneIndex) => {
         const keys = KEY_CONFIG[action];
