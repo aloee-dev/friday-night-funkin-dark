@@ -1770,6 +1770,15 @@ a,
     <img id="fps-box" class="checkbox" src="assets/checkbox_empty.png">
   </div>
 
+  <div class="settings-row" style="flex-direction: column; gap: 8px; margin-top: 15px;">
+    <div class="settings-label" style="font-size: 20px; color: #aaa; text-align: center;">
+      CURRENT KEY BINDS:<br><span style="font-size: 14px;">click a key to change it</span>
+    </div>
+    
+    <div id="keybinds-display-container" style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; width: 100%;">
+    </div>
+  </div>
+
   <div id="settings-back">
     <button class="settings-exit" id="menu-back">BACK</button>
   </div>
@@ -2443,7 +2452,13 @@ let settings = {
   fontSize: 1,
   speed: 1,
   skipPrologue: false,
-  showFPS: false
+  showFPS: false,
+  keyConfig: {
+    singLEFT:  ["ARROWLEFT", "D"],
+    singDOWN:  ["ARROWDOWN", "F"],
+    singUP:    ["ARROWUP", "J"],
+    singRIGHT: ["ARROWRIGHT", "K"]
+  }
 };
     
 const fontOptions = ["SMALL", "NORMAL", "LARGE"];
@@ -2465,6 +2480,8 @@ document.getElementById("menu-back").onclick = () => {
   document.getElementById("title-buttons").style.display = "flex";
 };
 
+let activeRebindKey = null;
+
 function updateSettingsUI() {
   document.getElementById("font-value").textContent = fontOptions[settings.fontSize];
   document.getElementById("speed-value").textContent = speedOptions[settings.speed];
@@ -2475,14 +2492,73 @@ function updateSettingsUI() {
   document.getElementById("fps-box").src =
     settings.showFPS ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
 
-    saveSettings();
-
   if (settings.showFPS) {
     fpsDisplay.style.display = "block";
   } else {
     fpsDisplay.style.display = "none";
   }
+
+  const container = document.getElementById("keybinds-display-container");
+  if (container) {
+    container.innerHTML = "";
+    const headerLine = document.createElement("div");
+    headerLine.style.cssText = "color: #fff; font-size: 24px; letter-spacing: 2px;";
+    headerLine.textContent = LANE_ORDER.map(action => action.replace("sing", "")).join(" | ");
+    container.appendChild(headerLine);
+    const valuesLine = document.createElement("div");
+    valuesLine.style.cssText = "color: #fff; font-size: 28px; display: flex; align-items: center; justify-content: center; gap: 10px;";
+
+    LANE_ORDER.forEach((action, index) => {
+      const keySpan = document.createElement("span");
+      keySpan.style.cssText = "cursor: pointer; padding: 0 4px; transition: color 0.1s;";
+      const currentBind = settings.keyConfig[action][1];
+      if (activeRebindKey === action) {
+        keySpan.textContent = "?";
+        keySpan.style.color = "#ffaa00";
+      } else {
+        keySpan.textContent = currentBind;
+        keySpan.onmouseenter = () => keySpan.style.color = "#00ffff";
+        keySpan.onmouseleave = () => keySpan.style.color = "#ffffff";
+        keySpan.onclick = () => {
+          activeRebindKey = action;
+          updateSettingsUI();
+        };
+      }
+
+      valuesLine.appendChild(keySpan);
+
+      if (index < LANE_ORDER.length - 1) {
+        const divider = document.createElement("span");
+        divider.textContent = "|";
+        divider.style.color = "#666";
+        valuesLine.appendChild(divider);
+      }
+    });
+
+    container.appendChild(valuesLine);
+  }
+  saveSettings();
 }
+    
+window.addEventListener("keydown", (e) => {
+  if (!activeRebindKey) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const pressedKey = e.key.toUpperCase();
+
+  if (pressedKey === "ESCAPE" || pressedKey === "F12" || pressedKey === "F5") {
+    activeRebindKey = null;
+    updateSettingsUI();
+    return;
+  }
+
+  settings.keyConfig[activeRebindKey][1] = pressedKey;
+  activeRebindKey = null;
+  changeKeybinds();
+  updateSettingsUI();
+}, true);
 
 document.getElementById("font-left").onclick = () => {
   if (settings.fontSize > 0) {
@@ -3671,8 +3747,10 @@ function loadSettings() {
     if (rawSettings) {
         settings = JSON.parse(rawSettings);
     }
+    changeKeybinds(); 
     updateSettingsUI();
 }
+
 
 let currentLevelRooms = []; 
 let currentRoom = null;
@@ -4290,22 +4368,28 @@ function clearPauseTicker() {
 }
 
 
-const KEY_CONFIG = {
-    singLEFT:  ["ARROWLEFT", "D"],
-    singDOWN:  ["ARROWDOWN", "F"],
-    singUP:    ["ARROWUP", "J"],
-    singRIGHT: ["ARROWRIGHT", "K"]
-};
 const LANE_ORDER = ["singLEFT", "singDOWN", "singUP", "singRIGHT"];
-
 const INPUT_MAP = {};
 const keyToLane = {};
+
+function changeKeybinds() {
+    for (const key in INPUT_MAP) delete INPUT_MAP[key];
+    for (const key in keyToLane) delete keyToLane[key];
+
+    LANE_ORDER.forEach((action, laneIndex) => {
+        const keys = settings.keyConfig[action];
+        keys.forEach(key => {
+            INPUT_MAP[key.toUpperCase()] = action;    
+            keyToLane[key.toUpperCase()] = laneIndex; 
+        });
+    });
+}
 
 function getLane(lane) {
     const action = LANE_ORDER[lane];
     return {
-        arrow: KEY_CONFIG[action][0],
-        letter: KEY_CONFIG[action][1]
+        arrow: settings.keyConfig[action][0],
+        letter: settings.keyConfig[action][1]
     };
 }
 
