@@ -2466,13 +2466,43 @@ const changeKeybindsBtn = document.getElementById('change-keybinds-btn');
 const keybindOverlay = document.getElementById('keybind-overlay');
 
 let activeRebindAction = null;
+const KEYBIND_KEY = "fnf_dark_minds_keybinds";
+
+function changeKeybinds() {
+    INPUT_MAP = {};
+    keyToLane = {};
+    
+    LANE_ORDER.forEach((action, laneIndex) => {
+        const keys = KEY_CONFIG[action];
+        keys.forEach(key => {
+            INPUT_MAP[key.toUpperCase()] = action;
+            keyToLane[key.toUpperCase()] = laneIndex;
+        });
+    });
+}
+
+function saveKeybinds() {
+    localStorage.setItem(KEYBIND_KEY, JSON.stringify(KEY_CONFIG));
+}
+
+function loadKeybinds() {
+    const rawKeybinds = localStorage.getItem(KEYBIND_KEY);
+    if (rawKeybinds) {
+        try {
+            KEY_CONFIG = JSON.parse(rawKeybinds);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+    changeKeybinds();
+}
 
 function changeKeybindUI() {
     const container = document.getElementById('keybinds-container');
     container.innerHTML = '';
 
     const labelRow = document.createElement('div');
-    labelRow.style.fontSize = '24px';
+    labelRow.style.fontSize = '28px';
     labelRow.style.letterSpacing = '1px';
     labelRow.style.color = '#fff';
     
@@ -2481,7 +2511,7 @@ function changeKeybindUI() {
     container.appendChild(labelRow);
 
     const keysRow = document.createElement('div');
-    keysRow.style.fontSize = '36px';
+    keysRow.style.fontSize = '40px';
     keysRow.style.marginTop = '15px';
     keysRow.style.fontWeight = 'bold';
 
@@ -2489,7 +2519,7 @@ function changeKeybindUI() {
         const keySpan = document.createElement('span');
         
         if (activeRebindAction === action) {
-            keySpan.innerText = 'Change key to?';
+            keySpan.innerText = '?';
             keySpan.style.color = '#ffcc00';
         } else {
             keySpan.innerText = KEY_CONFIG[action][1];
@@ -2542,6 +2572,7 @@ window.addEventListener('keydown', (event) => {
     });
 
     activeRebindAction = null;
+    saveKeybinds();
     changeKeybindUI();
 });
 
@@ -4394,7 +4425,7 @@ function clearPauseTicker() {
 }
 
 
-const KEY_CONFIG = {
+let KEY_CONFIG = {
     singLEFT:  ["ARROWLEFT", "D"],
     singDOWN:  ["ARROWDOWN", "F"],
     singUP:    ["ARROWUP", "J"],
