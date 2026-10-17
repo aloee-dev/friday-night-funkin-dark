@@ -5977,7 +5977,7 @@ function createNoteElement(n, isPlayer) {
   for (let i = 0; i < digitString.length; i++) {
     const digit = digitString[i];
     const imgNode = document.createElement('img');
-    imgNode.src = `assets/final/results/numbers/${folderPrefix}-${digit}.png`;
+    imgNode.src = `assets/final/results/${folderPrefix}-${digit}.png`;
     imgNode.alt = digit;
     container.appendChild(imgNode);
   }
