@@ -4213,11 +4213,11 @@ function showText(ptext, callback = null) {
     }
 
     if (!pcMessageInterval) {
-        processNextQueueLine();
+        showNextLine();
         
         pcMessageInterval = setInterval(() => {
             if (pcMessageQueue.length > 0) {
-                processNextQueueLine();
+                showNextLine();
             } else {
                 clearInterval(pcMessageInterval);
                 pcMessageInterval = null;
@@ -4241,7 +4241,7 @@ function showText(ptext, callback = null) {
     }
 }
 
-function processNextQueueLine() {
+function showNextLine() {
     const ptext = pcMessageQueue.shift();
     if (!ptext) return;
 
