@@ -4140,19 +4140,23 @@ function useItem(item) {
         if (element.action === "pickup") {
         let uniqueItems = 0;
         inventory.forEach((quantity) => {
-            const numericQuantity = Number(quantity);
-            if (!isNaN(numericQuantity) && numericQuantity > 0) {
-                uniqueItems++;
-            }
+            if (Number(quantity) > 0) uniqueItems++;
         });
 
-        const currentCount = Number(inventory.get(element.item)) || 0;
-        const alreadyHasThisItem = currentCount > 0;
+        alert(
+            "pick up\n" +
+            "uniqueItems): " + uniqueItems + "\n" +
+            "Name: " + element.item + "\n" +
+            "Value: " + inventory.get(element.item)
+        );
+
+        const alreadyHasThisItem = (inventory.get(element.item) || 0) > 0;
         
         if (uniqueItems >= 5 && !alreadyHasThisItem) {
+            alert("uniqueItems: " + uniqueItems);
             const textData = gameDialogue["inv_full_warning"];
             if (textData) showText(textData);
-            return;
+            return; 
         }
 
         inventory.set(element.item, currentCount + 1);
