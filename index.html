@@ -1575,8 +1575,28 @@ a,
 }
 
 .num-wrapper.sicks img {
-  top: 0px;
-  left: 0px; 
+  top: 267px;
+  left: 456px; 
+}
+
+.num-wrapper.goods img {
+  top: 403px;
+  left: 474px; 
+}
+
+.num-wrapper.bads img {
+  top: 559px;
+  left: 399px; 
+}
+
+.num-wrapper.shits img {
+  top: 714px;
+  left: 441px; 
+}
+
+.num-wrapper.misses img {
+  top: 848px;
+  left: 532px; 
 }
 
 .score-panel {
@@ -5982,6 +6002,18 @@ function createNoteElement(n, isPlayer) {
 
         if (folderPrefix === 'sicks') {
     container.classList.add('sicks');
+  }
+        if (folderPrefix === 'goods') {
+    container.classList.add('goods');
+  }
+        if (folderPrefix === 'bads') {
+    container.classList.add('bads');
+  }
+        if (folderPrefix === 'shits') {
+    container.classList.add('shits');
+  }
+        if (folderPrefix === 'misses') {
+    container.classList.add('misses');
   }
   
   for (let i = 0; i < digitString.length; i++) {
