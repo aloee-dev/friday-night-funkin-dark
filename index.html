@@ -3849,9 +3849,9 @@ function loadSettings() {
 let currentLevelRooms = []; 
 let currentRoom = null;
 let gameDialogue = {};
-let pcMessageFadeTimeout = null;
+let messageFadeTimeout = null;
 let itemDatabase = {};
-let lastPickedUpItemId = null;
+let lastItemId = null;
 let currentBgmAudio = null; 
 let currentBgmFile = "";
 
@@ -4005,9 +4005,9 @@ function renderInvItems() {
                 img.src = `assets/pointnclick/icons/default.png`;
             }
 
-if (itemId === lastPickedUpItemId) {
+if (itemId === lastItemId) {
     img.className = "inv-item-image clickable pickup-animate";
-    lastPickedUpItemId = null;
+    lastItemId = null;
 } else {
     img.className = "inv-item-image clickable";
 }
@@ -4167,7 +4167,7 @@ if (element.action === "pickup") {
         showText(textData);
     }
 
-    lastPickedUpItemId = element.item;
+    lastItemId = element.item;
 
     currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
     loadRoom(currentRoom);
@@ -4207,9 +4207,9 @@ function showText(ptext) {
         pcMessageQueue.push(ptext);
     }
 
-    if (pcMessageFadeTimeout) {
-        clearTimeout(pcMessageFadeTimeout);
-        pcMessageFadeTimeout = null;
+    if (messageFadeTimeout) {
+        clearTimeout(messageFadeTimeout);
+        messageFadeTimeout = null;
     }
 
     if (!pcMessageInterval) {
@@ -4221,14 +4221,14 @@ function showText(ptext) {
             } else {
                 clearInterval(pcMessageInterval);
                 pcMessageInterval = null;
-                pcMessageFadeTimeout = setTimeout(() => {
+                messageFadeTimeout = setTimeout(() => {
                     const allActiveLines = textOverlay.getElementsByClassName("pc-message-line");
                     Array.from(allActiveLines).forEach(line => {
                         line.classList.add("fading");
                         setTimeout(() => { line.remove(); }, 500);
                     });
                     
-                    pcMessageFadeTimeout = null;
+                    messageFadeTimeout = null;
                 }, 4000);
             }
         }, 3000);
