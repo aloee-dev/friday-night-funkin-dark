@@ -4073,20 +4073,17 @@ function closePopup() {
 function useItem(item) {
     
     if (item === 'thing') {
+        // Code for 'thing'
     }
 
     if (item === 'microphone') {
-    const textData = gameDialogue["mic_use"];
-    if (textData) {
-        showText(textData, function() {
-            startSong(song1);
-        });
+        const textData = gameDialogue["mic_use"];
+        if (textData) {
+            showText(textData, function() {
+                startSong(song1);
+            });
+        }
     }
-}       
-    }
-
-
-
     const currentCount = inventory.get(item) || 0;
     const newCount = Math.max(0, currentCount - 1);
 
@@ -4098,6 +4095,7 @@ function useItem(item) {
 
     renderInvItems();
 }
+
 
     function getInvTotal() {
     let total = 0;
