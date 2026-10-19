@@ -4,6 +4,6 @@
     "style": "bf",
     "text": "oi lets go load this thang.",
     "triggers": [
-        { "type": "pnc", "value": "city" }
+        { "type": "pnc", "value": "city", "when": "finish" }
     ]
 }
