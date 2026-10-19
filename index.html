@@ -4076,15 +4076,13 @@ function useItem(item) {
     }
 
     if (item === 'microphone') {
-        const textData = gameDialogue["mic_use"];
-            if (textData) {
-                showText(textData);
-            }
-        
-        setTimeout(() => {
-        startSong(name);
-    }, 40500);
-        
+    const textData = gameDialogue["mic_use"];
+    if (textData) {
+        showText(textData, function() {
+            startSong(song1);
+        });
+    }
+}       
     }
 
 
@@ -4199,8 +4197,12 @@ function applyColor(colorName) {
 
 let pcMessageQueue = [];
 let pcMessageInterval = null;
+let finishedDialogue = null;
 
-function showText(ptext) {
+function showText(ptext, callback = null) {
+    if (callback) {
+        finishedDialogue = callback;
+    }
     if (Array.isArray(ptext)) {
         pcMessageQueue = pcMessageQueue.concat(ptext);
     } else {
@@ -4221,6 +4223,12 @@ function showText(ptext) {
             } else {
                 clearInterval(pcMessageInterval);
                 pcMessageInterval = null;
+                setTimeout(() => {
+                    if (typeof finishedDialogue === 'function') {
+                        finishedDialogue();
+                        finishedDialogue = null;
+                    }
+                }, 3000); 
                 messageFadeTimeout = setTimeout(() => {
                     const allActiveLines = textOverlay.getElementsByClassName("pc-message-line");
                     Array.from(allActiveLines).forEach(line => {
