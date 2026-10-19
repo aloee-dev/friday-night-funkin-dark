@@ -4178,11 +4178,22 @@ const textOverlay = document.getElementById("point-click-text-overlay");
 const maxLines = 5;
 
 function applyColor(colorName) {
-    if (colorName === 'blue') return '#414c89';
-    if (colorName === 'green') return '#1b412d';
-    if (colorName === 'red') return '#ff3333';
-    if (colorName === 'white') return '#ffffff';
-    return '#ffffff';
+    let styles = {
+        color: '#ffffff',
+        fontFamily: '',
+        textShadow: ''
+    };
+
+    if (colorName === 'blue')  styles.color = '#414c89';
+    if (colorName === 'green') styles.color = '#1b412d';
+    if (colorName === 'red')   styles.color = '#ff3333';
+    if (colorName === 'white') styles.color = '#ffffff';
+    if (colorName === 'warning') {
+        styles.color = '#ff000d';
+        styles.fontFamily = '"VCR OSD Mono", "VCR OSD", monospace';
+        styles.textShadow = '0 0 8px #ff000d, 0 0 15px #ff000d';
+    }
+    return styles;
 }
 
 let pcMessageQueue = [];
@@ -4229,11 +4240,13 @@ function processNextQueueLine() {
 
     const textStr = ptext.text != null ? String(ptext.text) : '';
     const iconSrc = ptext.icon || null;
-    const textColor = applyColor(ptext.color || 'green');
+    
+    const textStyles = applyColor(ptext.color || 'green');
 
     const lineElement = document.createElement("div");
     lineElement.className = "pc-message-line";
-    lineElement.style.color = textColor;
+    
+    lineElement.style.color = textStyles.color;
 
     if (iconSrc) {
         const iconElement = document.createElement("img");
@@ -4244,8 +4257,15 @@ function processNextQueueLine() {
 
     const textSpan = document.createElement("span");
     textSpan.innerText = textStr;
-    lineElement.appendChild(textSpan);
 
+    if (textStyles.fontFamily) {
+        textSpan.style.fontFamily = textStyles.fontFamily;
+    }
+    if (textStyles.textShadow) {
+        textSpan.style.textShadow = textStyles.textShadow;
+    }
+
+    lineElement.appendChild(textSpan);
     textOverlay.appendChild(lineElement);
 
     const currentLines = textOverlay.getElementsByClassName("pc-message-line");
