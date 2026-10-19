@@ -3403,6 +3403,9 @@ case "requireItem":
             case "song":
             startSong(trig.value);
             break;
+            case "pnc":
+    startPointNClick(trig.value);
+    break;
         case "flag":
             if (inFreeplay) break;
             gameFlags[trig.key] = trig.value;
