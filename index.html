@@ -6145,8 +6145,9 @@ function doPauseAction() {
         restartSong(); 
     } 
     else if (pauseIndex === 2) {
-        document.getElementById('pause-overlay').style.display = 'none';
-        isPaused = false;
+        if (!inFreeplay) {
+            showText({ text: "You cannot exit a song outside of freeplay!", color: "warning" });
+        }
         //exitSong(); 
     }
 }
