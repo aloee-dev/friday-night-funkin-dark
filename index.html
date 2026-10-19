@@ -1571,6 +1571,12 @@ a,
 
 .num-wrapper img {
   width: auto;
+  position: relative;
+}
+
+.num-wrapper.sicks img {
+  top: 0px;
+  left: 0px; 
 }
 
 .score-panel {
@@ -5973,6 +5979,10 @@ function createNoteElement(n, isPlayer) {
   const container = document.getElementById(targetHtmlId);
   container.innerHTML = "";
   const digitString = variableValue.toString();
+
+        if (folderPrefix === 'sicks') {
+    container.classList.add('sicks');
+  }
   
   for (let i = 0; i < digitString.length; i++) {
     const digit = digitString[i];
