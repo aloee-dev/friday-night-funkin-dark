@@ -4175,12 +4175,7 @@ const textOverlay = document.getElementById("point-click-text-overlay");
 const maxLines = 5;
 
 function applyColor(colorName) {
-    let styles = {
-        color: '#ffffff',
-        fontFamily: '',
-        textShadow: ''
-    };
-
+    let styles = { color: '#ffffff', fontFamily: '', textShadow: '' };
     if (colorName === 'blue')  styles.color = '#414c89';
     if (colorName === 'green') styles.color = '#1b412d';
     if (colorName === 'red')   styles.color = '#ff3333';
@@ -4194,7 +4189,8 @@ function applyColor(colorName) {
 }
 
 let pcMessageQueue = [];
-let pcMessageInterval = null;
+let pcMessageTimeout = null;
+let messageFadeTimeout = null;
 let finishedDialogue = null;
 
 function showText(ptext, callback = null) {
@@ -4212,47 +4208,52 @@ function showText(ptext, callback = null) {
         messageFadeTimeout = null;
     }
 
-    if (!pcMessageInterval) {
-        showNextLine();
-        
-        pcMessageInterval = setInterval(() => {
-            if (pcMessageQueue.length > 0) {
-                showNextLine();
-            } else {
-                clearInterval(pcMessageInterval);
-                pcMessageInterval = null;
-                setTimeout(() => {
-                    if (typeof finishedDialogue === 'function') {
-                        finishedDialogue();
-                        finishedDialogue = null;
-                    }
-                }, 3000); 
-                messageFadeTimeout = setTimeout(() => {
-                    const allActiveLines = textOverlay.getElementsByClassName("pc-message-line");
-                    Array.from(allActiveLines).forEach(line => {
-                        line.classList.add("fading");
-                        setTimeout(() => { line.remove(); }, 500);
-                    });
-                    
-                    messageFadeTimeout = null;
-                }, 4000);
-            }
-        }, 3000);
+    if (!pcMessageTimeout) {
+        processQueue();
     }
 }
 
-function showNextLine() {
+function processQueue() {
+    if (pcMessageTimeout) {
+        clearTimeout(pcMessageTimeout);
+        pcMessageTimeout = null;
+    }
+
+    if (pcMessageQueue.length > 0) {
+        processLine();
+        
+        pcMessageTimeout = setTimeout(() => {
+            processQueue();
+        }, 3000);
+    } else {
+        setTimeout(() => {
+            if (typeof finishedDialogue === 'function') {
+                finishedDialogue();
+                finishedDialogue = null;
+            }
+        }, 3000); 
+
+        messageFadeTimeout = setTimeout(() => {
+            const allActiveLines = textOverlay.getElementsByClassName("pc-message-line");
+            Array.from(allActiveLines).forEach(line => {
+                line.classList.add("fading");
+                setTimeout(() => { line.remove(); }, 500);
+            });
+            messageFadeTimeout = null;
+        }, 4000);
+    }
+}
+
+function processLine() {
     const ptext = pcMessageQueue.shift();
     if (!ptext) return;
 
     const textStr = ptext.text != null ? String(ptext.text) : '';
     const iconSrc = ptext.icon || null;
-    
     const textStyles = applyColor(ptext.color || 'green');
 
     const lineElement = document.createElement("div");
     lineElement.className = "pc-message-line";
-    
     lineElement.style.color = textStyles.color;
 
     if (iconSrc) {
@@ -4265,12 +4266,8 @@ function showNextLine() {
     const textSpan = document.createElement("span");
     textSpan.innerText = textStr;
 
-    if (textStyles.fontFamily) {
-        textSpan.style.fontFamily = textStyles.fontFamily;
-    }
-    if (textStyles.textShadow) {
-        textSpan.style.textShadow = textStyles.textShadow;
-    }
+    if (textStyles.fontFamily) textSpan.style.fontFamily = textStyles.fontFamily;
+    if (textStyles.textShadow) textSpan.style.textShadow = textStyles.textShadow;
 
     lineElement.appendChild(textSpan);
     textOverlay.appendChild(lineElement);
@@ -4282,6 +4279,15 @@ function showNextLine() {
         setTimeout(() => { oldestLine.remove(); }, 500);
     }
 }
+
+window.addEventListener("keydown", function(event) {
+    if (event.key === "Shift") {
+        if (pcMessageTimeout && pcMessageQueue.length > 0) {
+            event.preventDefault();
+            processQueue();
+        }
+    }
+});
 
     
 let hp = 100;
