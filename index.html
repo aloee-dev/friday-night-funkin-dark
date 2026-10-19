@@ -3343,15 +3343,24 @@ if (line.speaker && line.mood) {
     }
 
     if (line.triggers) {
-        line.triggers.forEach(trig => handleTrigger(trig));
+        line.triggers.forEach(trig => {
+            if (trig.when === "start" || !trig.when) handleTrigger(trig);
+        });
     }
+        
         if (line.choices && line.choices.length > 0) {
         showChoices(line.choices);
     }
 
     document.getElementById("dialog-speaker").textContent = line.speaker || "";
     applyFontSetting();
-    startTypewriter(line.text, textDiv, line.speaker, line.effect, null, muted);
+    startTypewriter(line.text, textDiv, line.speaker, line.effect, () => {
+        if (line.triggers) {
+            line.triggers.forEach(trig => {
+                if (trig.when === "finish") handleTrigger(trig);
+            });
+        }
+    }, muted);
 }
 
     function handleTrigger(trig) {
