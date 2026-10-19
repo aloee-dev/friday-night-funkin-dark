@@ -4143,17 +4143,9 @@ function useItem(item) {
             if (Number(quantity) > 0) uniqueItems++;
         });
 
-        alert(
-            "pick up\n" +
-            "uniqueItems): " + uniqueItems + "\n" +
-            "Name: " + element.item + "\n" +
-            "Value: " + inventory.get(element.item)
-        );
-
         const alreadyHasThisItem = (inventory.get(element.item) || 0) > 0;
         
         if (uniqueItems >= 5 && !alreadyHasThisItem) {
-            alert("uniqueItems: " + uniqueItems);
             const textData = gameDialogue["inv_full_warning"];
             if (textData) showText(textData);
             return; 
