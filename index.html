@@ -4116,9 +4116,7 @@ function useItem(item) {
                 if (destinationRoom) loadRoom(destinationRoom);
             } else {
                 const textData = gameDialogue[element.dialogue_id];
-                if (textData) {
-                    showText(textData);
-                }
+                if (textData) showText(textData);
             }
         } else {
             const destinationRoom = currentLevelRooms.find(r => r.name === element.tp);
@@ -4131,46 +4129,39 @@ function useItem(item) {
             element.image = "drawer1_open.png";
             gameFlags.drawer1_open = true;
             element.action = "none"; 
-
             loadRoom(currentRoom);
             return;
         }
-    const textData = gameDialogue[element.dialogue_id];
-    if (textData) {
-        showText(textData);
+        const textData = gameDialogue[element.dialogue_id];
+        if (textData) showText(textData);
     }
-}
 
-if (element.action === "pickup") {
-    let uniqueItems = 0;
-    inventory.forEach((quantity) => {
-        if (quantity > 0) uniqueItems++;
-    });
+    if (element.action === "pickup") {
+        let uniqueItems = 0;
+        inventory.forEach((quantity) => {
+            if (Number(quantity) > 0) uniqueItems++;
+        });
 
-    const alreadyHasThisItem = (inventory.get(element.item) || 0) > 0;
-    
-    if (uniqueItems >= 5 && !alreadyHasThisItem) {
-        const textData = gameDialogue["inv_full_warning"];
-        if (textData) {
-            showText(textData);
+        const alreadyHasThisItem = (inventory.get(element.item) || 0) > 0;
+        
+        if (uniqueItems >= 5 && !alreadyHasThisItem) {
+            const textData = gameDialogue["inv_full_warning"];
+            if (textData) showText(textData);
+            return; 
         }
-        return; 
+
+        const currentCount = inventory.get(element.item) || 0;
+        inventory.set(element.item, currentCount + 1);
+
+        const textData = gameDialogue[element.dialogue_id];
+        if (textData) showText(textData);
+
+        lastItemId = element.item;
+
+        currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
+        loadRoom(currentRoom);
+        renderInvItems(); 
     }
-
-    const currentCount = inventory.get(element.item) || 0;
-    inventory.set(element.item, currentCount + 1);
-
-    const textData = gameDialogue[element.dialogue_id];
-    if (textData) {
-        showText(textData);
-    }
-
-    lastItemId = element.item;
-
-    currentRoom.elements = currentRoom.elements.filter(e => e.name !== element.name);
-    loadRoom(currentRoom);
-    renderInvItems(); 
-  }
 }
 
 const textOverlay = document.getElementById("point-click-text-overlay");
