@@ -6043,7 +6043,7 @@ function createNoteElement(n, isPlayer) {
   for (let i = 0; i < digitString.length; i++) {
     const digit = digitString[i];
     const imgNode = document.createElement('img');
-    imgNode.src = `assets/final/results/${folderPrefix}-${digit}.png`;
+    imgNode.src = `assets/final/results/${folderPrefix}/${digit}.png`;
     imgNode.alt = digit;
     container.appendChild(imgNode);
   }
@@ -6137,14 +6137,16 @@ function selectPauseBtn() {
 }
     
 function doPauseAction() {
-    breakfastPico.pause();
-    clearPauseTicker();
     if (pauseIndex === 0) {
         resume();
+        breakfastPico.pause();
+        clearPauseTicker();
     } 
     else if (pauseIndex === 1) {
         document.getElementById('pause-overlay').classList.remove('active');
         document.getElementById('pause-overlay').style.display = 'none';
+        breakfastPico.pause();
+        clearPauseTicker();
         isPaused = false;
         restartSong(); 
     } 
