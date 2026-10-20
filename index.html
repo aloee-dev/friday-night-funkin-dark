@@ -2017,6 +2017,10 @@ a,
 
 
 
+<script type="module">
+    import { render as light } from './data/shaders/light.js';
+    window["light"] = light;
+</script>
 
 <script src="https://cdn.jsdelivr.net/gh/PsychoGoldfishNG/NewgroundsIO-JS@8c72515/dist/NewgroundsIO.min.js"></script>
 <script>
@@ -4835,6 +4839,20 @@ if (charData.icons && Array.isArray(charData.icons)) {
         charData.loadedIcons[iconConfig.type] = iconConfig.src;
     }
 }
+        charData.loadedShaders = {};
+        if (charData.shaders && Array.isArray(charData.shaders)) {
+            for (let i = 0; i < charData.shaders.length; i++) {
+                const config = charData.shaders[i];
+                
+                const globalWindowKey = config.name + "Shader"; 
+                
+                if (window[globalWindowKey]) {
+                    charData.loadedShaders[config.name] = window[globalWindowKey];
+                } else {
+                    console.warn(`Shader script function 'window.${globalWindowKey}' was not found in index.html.`);
+                }
+            }
+        }
 
     } catch (err) {
         console.error("Error loading character XML:", err);
@@ -5041,6 +5059,7 @@ async function startSong(songId) {
         bpm: data.bpm,
         scrollSpeed: data.scrollSpeed,
         stageLayers: data.stageLayers ? [...data.stageLayers] : [],
+        shader: data.shader,
         player: data.player,
         player2: data.player2,
         opponent: data.opponent,
@@ -6536,13 +6555,19 @@ function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks, bpm
 
     const frame = activeFrames[currentFrameIndex];
     const activeSheet = charData.imageObjs[frame.sheetIndex];
-    const imageToDraw = activeSheet || charData.imageObj;
+    const img = activeSheet || charData.imageObj;
+    const targetShader = _activeSong ? _activeSong.shader : null;
 
-    ctx.drawImage(
-        imageToDraw,
-        frame.x, frame.y, frame.w, frame.h, 
-        frame.offsetX, frame.offsetY, frame.w, frame.h              
-    );
+    if (targetShader && charData.loadedShaders && charData.loadedShaders[targetShader]) {
+        const shade = charData.loadedShaders[targetShader];
+        shade(ctx, img, frame, targetShader);
+    } else {
+        ctx.drawImage(
+            img,
+            frame.x, frame.y, frame.w, frame.h, 
+            frame.offsetX, frame.offsetY, frame.w, frame.h              
+        );
+    }
 }
 
 let _opponentAnimState = "idle";
