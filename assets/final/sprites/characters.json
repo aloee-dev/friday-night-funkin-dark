@@ -4,6 +4,9 @@
       "src": "assets/final/bf-sprit.png",
       "xml": "assets/final/bf-sprit.xml",
       "healthbar": "assets/final/healthbar-blue.png",
+      "shaders": [
+        { "name": "light", "src": "data/shaders/light.js" }
+      ],
       "icons": [
         { "type": "neutral", "src": "assets/final/iconbf-neutral.png" },
         { "type": "losing", "src": "assets/final/iconbf-dying.png" }
