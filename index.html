@@ -4118,20 +4118,21 @@ function useItem(item) {
 }
 
     function handleElement(element) {
+    if (!element) return;
 
     if (element.action === "door") {
-        if (element.name === "door1") {
-            if ((inventory.get("redkey") || 0) > 0) {
-                const destinationRoom = currentLevelRooms.find(r => r.name === element.tp);
-                if (destinationRoom) loadRoom(destinationRoom);
-            } else {
-                const textData = gameDialogue[element.dialogue_id];
-                if (textData) showText(textData);
-            }
-        } else {
-            const destinationRoom = currentLevelRooms.find(r => r.name === element.tp);
-            if (destinationRoom) loadRoom(destinationRoom);
+        const isLockedDoor = element.name === "door1";
+        const hasKey = (inventory.get("redkey") || 0) > 0;
+
+        if (isLockedDoor && !hasKey) {
+            const textData = gameDialogue[element.dialogue_id];
+            if (textData) showText(textData);
+            return;
         }
+
+        const destinationRoom = currentLevelRooms.find(r => r.name === element.tp);
+        if (destinationRoom) loadRoom(destinationRoom);
+        return;
     }
 
     if (element.action === "inspect") {
@@ -4142,14 +4143,16 @@ function useItem(item) {
             loadRoom(currentRoom);
             return;
         }
+        
         const textData = gameDialogue[element.dialogue_id];
         if (textData) showText(textData);
+        return;
     }
 
-        if (element.action === "pickup") {
+    if (element.action === "pickup") {
         let uniqueItems = 0;
         inventory.forEach((quantity) => {
-            if (Number(quantity) > 0) uniqueItems++;
+            if (quantity > 0) uniqueItems++;
         });
 
         const alreadyHasThisItem = (inventory.get(element.item) || 0) > 0;
@@ -4160,6 +4163,7 @@ function useItem(item) {
             return; 
         }
 
+        const currentCount = inventory.get(element.item) || 0;
         inventory.set(element.item, currentCount + 1);
 
         const textData = gameDialogue[element.dialogue_id];
