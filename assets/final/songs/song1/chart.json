@@ -8,6 +8,7 @@
     "stageLayers": [
     { "id": "background", "type": "static", "src": "bg.png", "zIndex": 2 }
   ],
+  "shader": "light",
   "player": "bf",
   "opponent": "gf",
   "speaker": "radio",
