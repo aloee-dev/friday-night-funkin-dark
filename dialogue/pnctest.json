@@ -6,4 +6,13 @@
     "triggers": [
         { "type": "pnc", "value": "city", "when": "finish" }
     ]
-}
+},
+{
+    "speaker": "Pico",
+    "mood": "neutral",
+    "position": "left",
+    "background": "darkalley",
+    "text": "Second message.",
+    "style": "pico",
+    "triggers": []
+  }
