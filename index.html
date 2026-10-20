@@ -3872,6 +3872,8 @@ let currentBgmFile = "";
 async function startPointNClick(levelName) {
     try {
         document.getElementById("dialog-box").style.display = "none";
+        const dialogBg = document.getElementById("dialog-background");
+        if (dialogBg) dialogBg.style.display = "none";
 
         const [levelsResponse, dialogueResponse, itemsResponse] = await Promise.all([
             fetch('assets/pointnclick/data/levels.json'),
