@@ -3626,6 +3626,7 @@ document.addEventListener("keydown", async e => {
     if (_rhythmStarted) return;
       if (cancelEnter) return;
       if (!inDialogue) return;
+      if (inPnC) return;
     if (_isTyping) { finishTyping(document.getElementById("dialog-text")); return; }
     if (document.getElementById("choice-container").style.display === "flex") return;
 
@@ -3867,7 +3868,7 @@ let itemDatabase = {};
 let lastItemId = null;
 let currentBgmAudio = null; 
 let currentBgmFile = "";
-
+let inPnC = false;
 
 async function startPointNClick(levelName) {
     try {
@@ -3893,6 +3894,7 @@ async function startPointNClick(levelName) {
 
         const firstRoom = currentLevelRooms[0];
         loadRoom(firstRoom);
+        inPnC = true;
         doInvUI();
         const inv = document.getElementById("inventory-slots-row");
         inv.style.display = "flex";
@@ -3911,6 +3913,7 @@ async function startPointNClick(levelName) {
     function exitPointNClick() {
             
     fadeOverlay.classList.add("is-active");
+    inPnc = false;
 
 
     setTimeout(() => {
