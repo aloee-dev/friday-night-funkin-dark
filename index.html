@@ -3457,7 +3457,7 @@ async function loadDialogue(sceneName, arrayId = null) {
         const data = await response.json();
         
         currentSceneName = sceneName;
-        saveScene(sceneName, arrayId);
+        saveScene(sceneName);
             if (!inFreeplay) {
             shownDialogs.add(sceneName);
             saveDialogue();
