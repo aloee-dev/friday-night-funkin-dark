@@ -3842,14 +3842,12 @@ function saveSlot3(sceneName, lineId) {
     localStorage.setItem(SLOT3_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
 }
 
-function saveScene(sceneName, lineId) {
-    localStorage.setItem(SCENE_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
-    console.log("Current Scene Saved:", sceneName);
+function saveScene(sceneName) {
+    localStorage.setItem(SCENE_SAVE_KEY, JSON.stringify(getGame(sceneName)));
 }
 
 function saveChapter(sceneName, lineId) {
     localStorage.setItem(CHAPTER_SAVE_KEY, JSON.stringify(getGame(sceneName, lineId)));
-    console.log("Chapter Milestone Saved:", sceneName);
 }
 
 
