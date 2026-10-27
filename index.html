@@ -5031,6 +5031,7 @@ async function loadSongData(songId) {
 async function startSong(songId) {
     sId++;
     const mySId = sId;
+    eventId = 0;
 
     for (let i = 0; i < 4; i++) {
         _playerLaneHitTimes[i] = -1;
@@ -5613,46 +5614,7 @@ function updateRhythmLoop(rSId) {
         }
     }
 
-    if (_activeSong.events) {
-    const holdTicks = 5;
-    for (let i = 0; i < _activeSong.events.length; i++) {
-        const ev = _activeSong.events[i];
-
-        if (currentTime >= ev.time && !ev.hasFired) {
-            if (ev.animation) {
-                triggerSpecial(ev.target, ev.animation, holdTicks);
-            } 
-            
-            if (ev.event === "hpDrain") {
-                hpDraining = true;
-                
-                if (hpDrainInterval) clearInterval(hpDrainInterval);
-
-                hpDrainInterval = setInterval(() => {
-                    if (hp > 1) {
-                        hp = Math.max(1, hp - 0.3);
-                        updateHPBar(currentTime);
-                    }
-                }, 100);
-            }
-            
-            if (ev.cameraCommand) {
-                if (ev.cameraCommand === "MANUAL_PAN") {
-                    camera.manualCamera = true;
-                    camera.targetX = ev.x || 0;
-                    camera.targetY = ev.y || 1000;
-                    camera.targetZoom = ev.zoom || 1.0;
-                } 
-                else if (ev.cameraCommand === "RELEASE_CAMERA") {
-                    camera.manualCamera = false;
-                }
-            }
-
-            ev.hasFired = true; 
-        }
-    }
-}
-
+    handleEvents(currentTime);
     animateCharacters(currentTime);
     updateHPBar(currentTime);
     updateCamera();
@@ -6084,7 +6046,52 @@ function createNoteElement(n, isPlayer) {
     container.appendChild(imgNode);
   }
 }
+    
+let eventId = 0; 
 
+function handleEvents(currentTime) {
+    if (!_activeSong || !_activeSong.events) return;
+
+    const holdTicks = 5;
+    const events = _activeSong.events;
+
+    while (eventId < events.length) {
+        const ev = events[eventId];
+
+        if (currentTime < ev.time) {
+            break; 
+        }
+
+        if (ev.animation) {
+            triggerSpecial(ev.target, ev.animation, holdTicks);
+        } 
+        
+        if (ev.event === "hpDrain") {
+            hpDraining = true;
+            if (hpDrainInterval) clearInterval(hpDrainInterval);
+            hpDrainInterval = setInterval(() => {
+                if (hp > 1) {
+                    hp = Math.max(1, hp - 0.3);
+                    updateHPBar(currentTime);
+                }
+            }, 100);
+        }
+        
+        if (ev.cameraCommand) {
+            if (ev.cameraCommand === "MANUAL_PAN") {
+                camera.manualCamera = true;
+                camera.targetX = ev.x || 0;
+                camera.targetY = ev.y || 1000;
+                camera.targetZoom = ev.zoom || 1.0;
+            } 
+            else if (ev.cameraCommand === "RELEASE_CAMERA") {
+                camera.manualCamera = false;
+            }
+        }
+
+        eventId++;
+    }
+}
 
 
 const breakfastPico = new Audio('assets/final/pause/breakfast-pico.mp3');
@@ -6216,6 +6223,7 @@ function doPauseAction() {
 
     sId++;
     const mySId = sId;
+    eventId = 0;
     _rhythmStarted = false;
     cancelEnter = true;
     blueBalled = false;
