@@ -1072,9 +1072,17 @@ a,
 .note-splash-container img {
     position: absolute;
     top: 0;
+    left: 0;
     width: 900px;
     height: 300px;
+    animation: splash 180ms steps(3) forwards;
 }
+
+@keyframes splash {
+    from { left: 0px; }
+    to { left: -900px; }
+}
+    
 .r-0 { }
 .r-1 { } 
 .r-2 { } 
@@ -4349,7 +4357,6 @@ let misses = 0;
 let accuracy = "100.00";
 let grade = "??";
 let comboRank = "??";
-let splashes = []; 
 
 let canPause = false;
 let isPaused = false;
@@ -4617,12 +4624,7 @@ window.addEventListener("keydown", (e) => {
             accuracy = calculateAccuracy(sicks, goods, bads, shits, misses);
             grade = calculateGrade(accuracy);
             comboRank = calculateComboRank(sicks, goods, bads, shits, misses);
-            
-            splashes.push({
-                lane: targetLane,
-                startTime: currentTime,
-                el: null
-            });
+            spawnSplash(targetLane);
         } else if (hitTiming <= timing.good) {
             if (!hpDraining) {
                 hp = Math.min(maxHP, hp + 2); 
@@ -4918,6 +4920,24 @@ function triggerSpecial(target, animName, holdTicks) {
     document.getElementById("rhythm-ui").appendChild(comboContainer);
         
     setTimeout(() => comboContainer.remove(), 1200);
+}
+
+function spawnSplash(lane) {
+    if (!playerLanes) return;
+
+    const div = document.createElement("div");
+    div.className = "note-splash-container";
+    div.style.left = (lane * 155) + "px";
+
+    const img = document.createElement("img");
+    img.src = `assets/final/notes/altsplash_${lane}.png`;
+   
+    div.appendChild(img);
+    playerLanes.appendChild(div);
+
+    div.addEventListener('animationend', () => {
+        div.remove();
+    });
 }
 
 function resetScore() {
@@ -5920,40 +5940,6 @@ if (playerLanes) {
             el.remove();
         }
     });
-
-    const frameDuration = 60;
-
-    for (let i = splashes.length - 1; i >= 0; i--) {
-        const splash = splashes[i];
-        const elapsed = currentTime - splash.startTime;
-        const currentFrame = Math.floor(elapsed / frameDuration);
-
-        if (currentFrame >= 3) {
-            if (splash.el) splash.el.remove();
-            splashes.splice(i, 1);
-            continue;
-        }
-
-        if (!splash.el && playerLanes) {
-            const div = document.createElement("div");
-            div.className = "note-splash-container";
-            div.style.left = (splash.lane * 155) + "px";
-
-            const img = document.createElement("img");
-            img.src = `assets/final/notes/altsplash_${splash.lane}.png`;
-           
-            div.appendChild(img);
-            playerLanes.appendChild(div);
-            splash.el = div;
-        }
-
-        if (splash.el) {
-            const innerImg = splash.el.querySelector("img");
-            if (innerImg) {
-                innerImg.style.left = -(currentFrame * 300) + "px";
-            }
-        }
-    }
 
     requestAnimationFrame(() => updateRhythmLoop(rSId));
 }
