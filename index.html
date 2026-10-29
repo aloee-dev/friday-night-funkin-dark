@@ -3065,6 +3065,7 @@ function playSongPreview(songId) {
     
 let inventory = new Map();
 let gameFlags = {};
+let stickers = {};
 
 async function addRandomData() {
     try {
@@ -3075,6 +3076,10 @@ async function addRandomData() {
         const flagsResponse = await fetch('data/flags.json');
         const flagsData = await flagsResponse.json();
         gameFlags = flagsData;
+
+        //const stickersResponse = await fetch('data/stickers.json');
+        //const sitckersData = await stickersResponse.json();
+        //stickers = stickersData;
 
     } catch (error) {
         console.error("Error:", error);
