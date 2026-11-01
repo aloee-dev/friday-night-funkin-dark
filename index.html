@@ -1045,8 +1045,8 @@ a,
 #player-lanes { right: 100px; }
 
     .lane-overlay {
-    background-color: rgba(0, 0, 0, 1);
-    }
+  background-color: rgba(0, 0, 0, var(--overlay-opacity, 1));
+}
     
 .receptor {
     width: 150px;
@@ -5405,9 +5405,24 @@ if (_opponentChar && _opponentChar.healthbar) {
     requestAnimationFrame(() => updateRhythmLoop(mySId));
 }
 
+    function getOverlay() {
+  const opp = document.getElementById("opponent-lanes");
+  const pla = document.getElementById("player-lanes");
+
+  const percentageString = overlayOptions[settings.overlay]; 
+  
+  const dOpacity = Number(percentageString) / 100;
+
+  opp.style.setProperty('--overlay-opacity', dOpacity);
+  pla.style.setProperty('--overlay-opacity', dOpacity);
+}
+
+
 function setupReceptors() {
     const opp = document.getElementById("opponent-lanes");
     const pla = document.getElementById("player-lanes");
+
+    getOverlay();
 
     opp.classList.add('lane-overlay');
     pla.classList.add('lane-overlay');
