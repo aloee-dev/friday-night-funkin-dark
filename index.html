@@ -6558,8 +6558,8 @@ function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks, bpm
     const scale = charData.scale !== undefined ? charData.scale : 1;
 
     if (targetShader && charData.loadedShaders && charData.loadedShaders[targetShader]) {
-        const shade = charData.loadedShaders[targetShader];
-        shade(ctx, img, frame, targetShader);
+    const shade = charData.loadedShaders[targetShader];
+    shade(ctx, img, frame, targetShader, scale); 
     } else {
         ctx.drawImage(
             img,
