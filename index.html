@@ -1068,19 +1068,18 @@ a,
     z-index: 99;
     top: -75px;
     transform: translateX(-75px);
-}
-.note-splash-container img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 900px;
-    height: 300px;
-    animation: splash 180ms steps(3) forwards;
+    background-repeat: no-repeat;
+    background-size: 900px 300px;
+    background-position: 0px 0px;
 }
 
-@keyframes splash {
-    from { left: 0px; }
-    to { left: -900px; }
+.note-splash-active {
+    animation: splashAnimation 180ms steps(3) forwards;
+}
+
+@keyframes splashAnimation {
+    from { background-position: 0px 0px; }
+    to { background-position: -900px 0px; } 
 }
     
 .r-0 { }
@@ -4931,18 +4930,16 @@ function triggerSpecial(target, animName, holdTicks) {
 function spawnSplash(lane) {
     if (!playerLanes) return;
 
-    const div = document.createElement("div");
-    div.className = "note-splash-container";
-    div.style.left = (lane * 155) + "px";
+    const splash = document.createElement("div");
+    splash.className = "note-splash-container note-splash-active";
+    
+    splash.style.left = (lane * 155) + "px";
+    splash.style.backgroundImage = `url('assets/final/notes/altsplash_${lane}.png')`;
 
-    const img = document.createElement("img");
-    img.src = `assets/final/notes/altsplash_${lane}.png`;
-   
-    div.appendChild(img);
-    playerLanes.appendChild(div);
+    playerLanes.appendChild(splash);
 
-    div.addEventListener('animationend', () => {
-        div.remove();
+    splash.addEventListener('animationend', () => {
+        splash.remove();
     });
 }
 
