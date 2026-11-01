@@ -1810,6 +1810,12 @@ a,
         <img class="arrow right" id="speed-right" src="assets/arrow_right.png">
       </div>
 
+        <div class="settings-row">
+        <img class="arrow left" id="overlay-left" src="assets/arrow_left.png">
+        <span class="settings-label">LANE BACKGROUND: <span id="overlay-value">0</span></span>
+        <img class="arrow right" id="overlay-right" src="assets/arrow_right.png">
+      </div>
+
       <div class="settings-row">
         <span class="settings-label">SKIP PROLOGUE</span>
         <img id="skip-box" class="checkbox" src="assets/checkbox_empty.png">
@@ -2510,17 +2516,18 @@ async function transLoad(scene, arrayId = null) {
     loadDialogue(scene, arrayId);
 }
     
-    // below i will yoink things from my previous game well i added a lot in between what i was referring to, i did not mean the settings, i meant the dialogue
 let currentChapter = 0;
 let settings = {
   fontSize: 1,
   speed: 1,
+  overlay: 0,
   skipPrologue: false,
   showFPS: false
 };
     
 const fontOptions = ["SMALL", "NORMAL", "LARGE"];
 const speedOptions = ["SLOW", "NORMAL", "FAST", "INSTANT"];
+const overlayOptions = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"];
 
 const changeKeybindsBtn = document.getElementById('change-keybinds-btn');
 const keybindOverlay = document.getElementById('keybind-overlay');
