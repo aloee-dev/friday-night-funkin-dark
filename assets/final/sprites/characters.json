@@ -4,6 +4,7 @@
       "src": "assets/final/bf-sprit.png",
       "xml": "assets/final/bf-sprit.xml",
       "healthbar": "assets/final/healthbar-blue.png",
+      "scale": 0.5,
       "shaders": [
         { "name": "light", "src": "data/shaders/light.js" }
       ],
