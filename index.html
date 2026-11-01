@@ -566,9 +566,11 @@ a,
   padding: 40px 60px;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.5);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  grid-template-rows: auto 1fr auto; 
+  gap: 20px 80px;
+  
   background-image: 
     linear-gradient(to bottom, transparent 60%, #181818 100%), 
     url('assets/gear.png');
@@ -578,21 +580,28 @@ a,
   background-color: #353434;
 }
 
-
-
-.settings-title {
-  font-size: 140px;
-  margin-bottom: 40px;
-  font-family: 'Docallisme';
+.settings-content-wrapper {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 80px;
+  align-content: start;
 }
 
 .settings-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 480px; 
-  margin: 20px 0;
+  width: 100%;
+  max-width: 550px;
+  margin: 15px auto;
   font-size: 30px;
+}
+
+#settings-back {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: auto;
 }
 
 .settings-label {
@@ -1781,39 +1790,40 @@ a,
 </div>
 
 <div id="settings-menu" style="display:none;">
-    <div id="settings-box">
+  <div id="settings-box">
+    <div class="settings-content-wrapper">
+      
+      <div class="settings-row">
+        <img class="arrow left" id="font-left" src="assets/arrow_left.png">
+        <span class="settings-label">FONT: <span id="font-value">NORMAL</span></span>
+        <img class="arrow right" id="font-right" src="assets/arrow_right.png">
+      </div>
+
+      <div class="settings-row">
+        <img class="arrow left" id="speed-left" src="assets/arrow_left.png">
+        <span class="settings-label">SPEED: <span id="speed-value">NORMAL</span></span>
+        <img class="arrow right" id="speed-right" src="assets/arrow_right.png">
+      </div>
+
+      <div class="settings-row">
+        <span class="settings-label">SKIP PROLOGUE</span>
+        <img id="skip-box" class="checkbox" src="assets/checkbox_empty.png">
+      </div>
+
+      <div class="settings-row">
+        <span class="settings-label">SHOW FPS</span>
+        <img id="fps-box" class="checkbox" src="assets/checkbox_empty.png">
+      </div>
+
+      <div class="settings-row">
+        <span id="change-keybinds-btn" class="settings-label clickable">CHANGE KEYBINDS</span>
+      </div>
+    </div>
+    <div id="settings-back">
+      <button class="settings-exit" id="menu-back">BACK</button>
+    </div>
     
-  <div class="settings-title">SETTINGS</div>
-  <div class="settings-row">
-    <img class="arrow left" id="font-left" src="assets/arrow_left.png">
-    <span class="settings-label">FONT: <span id="font-value">NORMAL</span></span>
-    <img class="arrow right" id="font-right" src="assets/arrow_right.png">
   </div>
-
-  <div class="settings-row">
-    <img class="arrow left" id="speed-left" src="assets/arrow_left.png">
-    <span class="settings-label">SPEED: <span id="speed-value">NORMAL</span></span>
-    <img class="arrow right" id="speed-right" src="assets/arrow_right.png">
-  </div>
-
-  <div class="settings-row">
-    <span class="settings-label">SKIP PROLOGUE</span>
-    <img id="skip-box" class="checkbox" src="assets/checkbox_empty.png">
-  </div>
-
-        <div class="settings-row">
-    <span class="settings-label">SHOW FPS</span>
-    <img id="fps-box" class="checkbox" src="assets/checkbox_empty.png">
-  </div>
-
-         <div class="settings-row">
-  <span id="change-keybinds-btn" class="settings-label clickable">CHANGE KEYBINDS</span>
-</div>
-
-  <div id="settings-back">
-    <button class="settings-exit" id="menu-back">BACK</button>
-  </div>
- </div>
 </div>
 
     <div id="credits-screen" style="display:none;">
