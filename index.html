@@ -4762,6 +4762,7 @@ addCharacterData();
 
         const xmlPaths = Array.isArray(charData.xml) ? charData.xml : [charData.xml];
         const srcPaths = Array.isArray(charData.src) ? charData.src : [charData.src];
+        const scale = charData.scale !== undefined ? charData.scale : 1; 
 
         for (let fileIndex = 0; fileIndex < xmlPaths.length; fileIndex++) {
             const response = await fetch(xmlPaths[fileIndex]);
@@ -4784,8 +4785,8 @@ addCharacterData();
                     y: parseInt(node.getAttribute("y")),
                     w: parseInt(node.getAttribute("width")),
                     h: parseInt(node.getAttribute("height")),
-                    offsetX: parseInt(node.getAttribute("frameX")) || 0,
-                    offsetY: parseInt(node.getAttribute("frameY")) || 0,
+                    offsetX: (parseInt(node.getAttribute("frameX")) || 0) * scale,
+                    offsetY: (parseInt(node.getAttribute("frameY")) || 0) * scale,
                     sheetIndex: fileIndex 
                 };
 
@@ -6554,6 +6555,7 @@ function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks, bpm
     const activeSheet = charData.imageObjs[frame.sheetIndex];
     const img = activeSheet || charData.imageObj;
     const targetShader = _activeSong ? _activeSong.shader : null;
+    const scale = charData.scale !== undefined ? charData.scale : 1;
 
     if (targetShader && charData.loadedShaders && charData.loadedShaders[targetShader]) {
         const shade = charData.loadedShaders[targetShader];
@@ -6562,7 +6564,7 @@ function drawCharacterFrame(ctx, charData, actionState, timeTick, holdTicks, bpm
         ctx.drawImage(
             img,
             frame.x, frame.y, frame.w, frame.h, 
-            frame.offsetX, frame.offsetY, frame.w, frame.h              
+            frame.offsetX, frame.offsetY, frame.w * scale, frame.h * scale              
         );
     }
 }
