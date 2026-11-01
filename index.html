@@ -4928,6 +4928,7 @@ function triggerSpecial(target, animName, holdTicks) {
 }
 
 function spawnSplash(lane) {
+    const playerLanes = document.getElementById("player-lanes");
     if (!playerLanes) return;
 
     const splash = document.createElement("div");
