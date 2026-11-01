@@ -1045,7 +1045,7 @@ a,
 #player-lanes { right: 100px; }
 
     .lane-overlay {
-        margin-top: -50px;
+        padding-top: 50px;
     background-color: rgba(0, 0, 0, 1);
     }
     
@@ -2673,6 +2673,7 @@ document.getElementById("menu-back").onclick = () => {
 function updateSettingsUI() {
   document.getElementById("font-value").textContent = fontOptions[settings.fontSize];
   document.getElementById("speed-value").textContent = speedOptions[settings.speed];
+    document.getElementById("overlay-value").textContent = overlayOptions[settings.overlay];
 
   document.getElementById("skip-box").src =
     settings.skipPrologue ? "assets/checkbox_check.png" : "assets/checkbox_empty.png";
@@ -2714,6 +2715,20 @@ document.getElementById("speed-left").onclick = () => {
 document.getElementById("speed-right").onclick = () => {
   if (settings.speed < speedOptions.length - 1) {
     settings.speed++;
+    updateSettingsUI();
+  }
+};
+
+document.getElementById("overlay-left").onclick = () => {
+  if (settings.overlay > 0) {
+    settings.overlay--;
+    updateSettingsUI();
+  }
+};
+
+document.getElementById("overlay-right").onclick = () => {
+  if (settings.overlay < overlayOptions.length - 1) {
+    settings.overlay++;
     updateSettingsUI();
   }
 };
