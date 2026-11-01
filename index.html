@@ -1047,6 +1047,9 @@ a,
     .lane-overlay {
   background-color: rgba(0, 0, 0, var(--overlay-opacity, 1));
 }
+    .midscroll {
+        left: 700px;
+    }
     
 .receptor {
     width: 150px;
@@ -2520,6 +2523,7 @@ let settings = {
   fontSize: 1,
   speed: 1,
   overlay: 0,
+  midscroll: true, // turn off
   skipPrologue: false,
   showFPS: false
 };
@@ -5429,6 +5433,11 @@ function setupReceptors() {
 
     if (!opp || !pla) return;
 
+    if (settings.midscroll) {
+        pla.classList.add('midscroll');
+        document.getElementById("opponent-lanes").style.display = "none";
+    }
+
     opp.innerHTML = "";
     pla.innerHTML = "";
 
@@ -5699,8 +5708,13 @@ function updateRhythmLoop(rSId) {
     autoFocusCamera(currentTime);
 
     while (_activeSong.opponentNotes.length > 0 && _activeSong.opponentNotes[0][0] < currentTime + 2000) {
+    if (settings.midscroll) {
+        _activeSong.opponentNotes.shift(); 
+    } else {
         createNoteElement(_activeSong.opponentNotes.shift(), false);
     }
+}
+
     
     while (_activeSong.playerNotes.length > 0 && _activeSong.playerNotes[0][0] < currentTime + 2000) {
         createNoteElement(_activeSong.playerNotes.shift(), true);
