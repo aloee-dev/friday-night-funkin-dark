@@ -1043,6 +1043,10 @@ a,
 
 #opponent-lanes { left: 100px; }
 #player-lanes { right: 100px; }
+
+    .lane-overlay {
+    background-color: rgba(0, 0, 0, 1);
+    }
     
 .receptor {
     width: 150px;
@@ -1111,7 +1115,7 @@ a,
     background-repeat: repeat-y;
     background-size: 100% auto;
     pointer-events: none;
-    z-index: 6;
+    z-index: 7;
 }
 
 .sustain-end {
@@ -1120,7 +1124,7 @@ a,
     height: 60px; 
     background-size: cover;
     pointer-events: none;
-    z-index: 6;
+    z-index: 7;
 }
 
 #countdown-display {
@@ -5382,6 +5386,9 @@ if (_opponentChar && _opponentChar.healthbar) {
 function setupReceptors() {
     const opp = document.getElementById("opponent-lanes");
     const pla = document.getElementById("player-lanes");
+
+    opp.classList.add('lane-overlay');
+    pla.classList.add('lane-overlay');
 
     if (!opp || !pla) return;
 
