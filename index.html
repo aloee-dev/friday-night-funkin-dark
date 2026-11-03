@@ -2665,7 +2665,7 @@ let fps = 0;
 document.getElementById("btn-settings").onclick = () => {
   document.getElementById("settings-menu").style.display = "flex";
   document.getElementById("title-buttons").style.display = "none";
-  updateSettingsUI();
+  updateSettings();
 };
         
 document.getElementById("menu-back").onclick = () => {
@@ -2673,7 +2673,7 @@ document.getElementById("menu-back").onclick = () => {
   document.getElementById("title-buttons").style.display = "flex";
 };
 
-function updateSettingsUI() {
+function updateSettings() {
   document.getElementById("font-value").textContent = fontOptions[settings.fontSize];
   document.getElementById("speed-value").textContent = speedOptions[settings.speed];
     document.getElementById("overlay-value").textContent = overlayOptions[settings.overlay];
@@ -2697,53 +2697,53 @@ function updateSettingsUI() {
 document.getElementById("font-left").onclick = () => {
   if (settings.fontSize > 0) {
     settings.fontSize--;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("font-right").onclick = () => {
   if (settings.fontSize < fontOptions.length - 1) {
     settings.fontSize++;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("speed-left").onclick = () => {
   if (settings.speed > 0) {
     settings.speed--;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("speed-right").onclick = () => {
   if (settings.speed < speedOptions.length - 1) {
     settings.speed++;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("overlay-left").onclick = () => {
   if (settings.overlay > 0) {
     settings.overlay--;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("overlay-right").onclick = () => {
   if (settings.overlay < overlayOptions.length - 1) {
     settings.overlay++;
-    updateSettingsUI();
+    updateSettings();
   }
 };
 
 document.getElementById("skip-box").onclick = () => {
   settings.skipPrologue = !settings.skipPrologue;
-  updateSettingsUI();
+  updateSettings();
 };
 
 document.getElementById("fps-box").onclick = () => {
   settings.showFPS = !settings.showFPS;
-  updateSettingsUI();
+  updateSettings();
 };
 
 document.getElementById("settings-back").onclick = () => {
@@ -2876,8 +2876,8 @@ let previewTimeout = null;
 let previewAudio = null;
 let previewFadeInterval = null;
 
-function playSongPreview(songId) {
-    if (typeof menuMusic !== 'undefined' && menuMusic) {
+function playInst(songId) {
+    if (menuMusic) {
         menuMusic.volume = 0; 
         menuMusic.pause();
         menuMusic.currentTime = 0;
@@ -3093,7 +3093,7 @@ function playSongPreview(songId) {
 
                 const selectedSongFile = sceneName.file;
                 previewTimeout = setTimeout(() => {
-                    playSongPreview(selectedSongFile);
+                    playInst(selectedSongFile);
                 }, 3000);
             }
         }
@@ -3912,7 +3912,7 @@ function loadSettings() {
     if (rawSettings) {
         settings = JSON.parse(rawSettings);
     }
-    updateSettingsUI();
+    updateSettings();
 }
 
 let currentLevelRooms = []; 
