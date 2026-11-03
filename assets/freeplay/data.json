@@ -9,7 +9,7 @@
     ]
   },
   {
-    "chapterName": "Week 1",
+    "chapterName": "What We Once Were",
     "chapterSrc": "assets/freeplay/week1.png",
     "scenes": [
       { "label": "Where 2 Go?", "file": "test.json" },
@@ -19,7 +19,7 @@
     ]
   },
   {
-    "chapterName": "Week 2",
+    "chapterName": "Meeting The Murderous Mother",
     "chapterSrc": "assets/freeplay/week2.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
@@ -27,7 +27,7 @@
     ]
   },
   {
-    "chapterName": "Week 3",
+    "chapterName": "Cryptic Center",
     "chapterSrc": "assets/freeplay/week3.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
@@ -35,7 +35,7 @@
     ]
   },
   {
-    "chapterName": "Week 4",
+    "chapterName": "Shady School Days",
     "chapterSrc": "assets/freeplay/week4.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
@@ -43,7 +43,7 @@
     ]
   },
   {
-    "chapterName": "Week 5",
+    "chapterName": "Captain, Guns",
     "chapterSrc": "assets/freeplay/week5.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
@@ -51,7 +51,7 @@
     ]
   },
   {
-    "chapterName": "Week 6",
+    "chapterName": "Settling The Score",
     "chapterSrc": "assets/freeplay/week6.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
@@ -59,7 +59,7 @@
     ]
   },
   {
-    "chapterName": "Week 7",
+    "chapterName": "De Boa",
     "chapterSrc": "assets/freeplay/week7.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
@@ -67,7 +67,7 @@
     ]
   },
   {
-    "chapterName": "Week 8",
+    "chapterName": "Sorry.",
     "chapterSrc": "assets/freeplay/week8.png",
     "scenes": [
       { "label": "Trois", "file": "test.json" },
