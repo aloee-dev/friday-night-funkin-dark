@@ -5273,6 +5273,10 @@ async function startSong(songId) {
         layerEl.className = "stage-layer";
         layerEl.style.zIndex = layer.zIndex;
 
+        if (layer.name) {
+            layerEl.setAttribute("data-name", layer.name);
+        }
+
         if (layer.type === "static") {
             const imgEl = document.createElement("img");
             imgEl.src = layer.src;
@@ -6134,6 +6138,24 @@ function handleEvents(currentTime) {
                 }
             }, 100);
         }
+
+if (ev.event === "swapBg" && ev.target) {
+    const targetLayer = stage.querySelector(`[data-name="${ev.target}"]`);
+    
+    if (targetLayer) {
+        const asset = targetLayer.querySelector("img");
+        if (asset) {
+            asset.src = ev.src;
+        } else {
+            targetLayer.style.backgroundImage = `url("${ev.src}")`;
+        }
+
+        if (ev.zIndex !== undefined) {
+            targetLayer.style.zIndex = ev.zIndex;
+        }
+    }
+}
+
         
         if (ev.cameraCommand) {
             if (ev.cameraCommand === "MANUAL_PAN") {
@@ -6347,6 +6369,10 @@ function doPauseAction() {
             layerEl.id = `layer-${layer.id}`;
             layerEl.className = "stage-layer";
             layerEl.style.zIndex = layer.zIndex;
+
+            if (layer.name) {
+            layerEl.setAttribute("data-name", layer.name);
+        }
 
             if (layer.type === "static") {
                 layerEl.style.backgroundImage = `url("${layer.src}")`;
