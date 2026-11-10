@@ -3170,6 +3170,11 @@ let _currentOnFinish = null;
   let i = 0;
   element.innerHTML = "";
 
+if (baseSpeed === 0) {
+    finishTyping(element, onFinish);
+    return;
+  }
+
   function type() {
     if (i < text.length) {
       const char = text.charAt(i);
