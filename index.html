@@ -6149,6 +6149,9 @@ if (ev.event === "swapBg" && ev.target) {
         } else {
             targetLayer.style.backgroundImage = `url("${ev.src}")`;
         }
+        if (ev.blendMode !== undefined) {
+            targetLayer.style.mixBlendMode = ev.blendMode;
+        }
 
         if (ev.zIndex !== undefined) {
             targetLayer.style.zIndex = ev.zIndex;
